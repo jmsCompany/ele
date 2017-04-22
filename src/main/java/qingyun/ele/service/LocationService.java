@@ -108,7 +108,8 @@ public class LocationService {
 			Location l = new Location();
 			l.setId(Long.parseLong(reader.get(0).trim()));
 		    l.setName(reader.get(1).trim());
-			l.setEnabled(Long.parseLong(reader.get(2).trim()));
+//			l.setEnabled(Long.parseLong(reader.get(2).trim()));
+		    l.setEnabled(0l);
 			locationRepository.save(l); 
 	
 		}
@@ -123,12 +124,13 @@ public class LocationService {
 			String name = reader.get(1).trim();
 			//String postcode =reader.get(2).trim();
 			Long locationId = Long.parseLong(reader.get(3).trim());
-			Long enabled = Long.parseLong(reader.get(4).trim());
+			//Long enabled = Long.parseLong(reader.get(4).trim());
 			Location location = locationRepository.findOne(locationId);
 			SubLocation  s = new SubLocation();
 			s.setName(name);
 			s.setId(idSubLocation);
-			s.setEnabled(enabled);
+			//s.setEnabled(enabled);
+			 s.setEnabled(0l);
 			s.setLocation(location);
 			subLocationRepository.save(s); 
 	
@@ -151,6 +153,7 @@ public class LocationService {
 			district.setId(idDistrict);
 			district.setName(sdistrict);
 			district.setSubLocation(city);
+			district.setEnabled(0l);
 			subSubLocationRepository.save(district); 
 	
 		}

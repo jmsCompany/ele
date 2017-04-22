@@ -37,12 +37,13 @@ public class Dic  implements java.io.Serializable {
      private Set<Users> usersesForPos = new HashSet<Users>(0);
      private Set<Users> usersesForEmpStatus = new HashSet<Users>(0);
      private Set<ProjectSteps> projectStepsesForDepartment = new HashSet<ProjectSteps>(0);
-     private Set<SubSubLocation> subSubLocations = new HashSet<SubSubLocation>(0);
+   
      private Set<Customer> customers = new HashSet<Customer>(0);
      private Set<Steps> stepses = new HashSet<Steps>(0);
      private Set<ProjectSteps> projectStepsesForStatus = new HashSet<ProjectSteps>(0);
      private Set<ProjectSteps> projectStepsesForProgress = new HashSet<ProjectSteps>(0);
      private Set<RolePages> rolePageses = new HashSet<RolePages>(0);
+     private Set<RoleLocations> roleLocations = new HashSet<RoleLocations>(0);
      private Set<Users> usersesForRole = new HashSet<Users>(0);
 
     public Dic() {
@@ -52,24 +53,7 @@ public class Dic  implements java.io.Serializable {
     public Dic(Long id) {
         this.id = id;
     }
-    public Dic(Long id, DicDic dicDic, String code, String descr, Set<Users> usersesForDepartment, Set<Users> usersesForPos, Set<Users> usersesForEmpStatus, Set<ProjectSteps> projectStepsesForDepartment, Set<SubSubLocation> subSubLocations, Set<Customer> customers, Set<Steps> stepses, Set<ProjectSteps> projectStepsesForStatus, Set<ProjectSteps> projectStepsesForProgress, Set<RolePages> rolePageses, Set<Users> usersesForRole) {
-       this.id = id;
-       this.dicDic = dicDic;
-       this.code = code;
-       this.descr = descr;
-       this.usersesForDepartment = usersesForDepartment;
-       this.usersesForPos = usersesForPos;
-       this.usersesForEmpStatus = usersesForEmpStatus;
-       this.projectStepsesForDepartment = projectStepsesForDepartment;
-       this.subSubLocations = subSubLocations;
-       this.customers = customers;
-       this.stepses = stepses;
-       this.projectStepsesForStatus = projectStepsesForStatus;
-       this.projectStepsesForProgress = projectStepsesForProgress;
-       this.rolePageses = rolePageses;
-       this.usersesForRole = usersesForRole;
-    }
-   
+  
      @Id 
      @GeneratedValue(strategy=IDENTITY)
     @Column(name="id", unique=true, nullable=false)
@@ -139,17 +123,7 @@ public class Dic  implements java.io.Serializable {
     public void setProjectStepsesForDepartment(Set<ProjectSteps> projectStepsesForDepartment) {
         this.projectStepsesForDepartment = projectStepsesForDepartment;
     }
-@ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-    @JoinTable(name="role_locations", catalog="ele", joinColumns = { 
-        @JoinColumn(name="id_role", nullable=false, updatable=false) }, inverseJoinColumns = { 
-        @JoinColumn(name="id_sub_sub_location", nullable=false, updatable=false) })
-    public Set<SubSubLocation> getSubSubLocations() {
-        return this.subSubLocations;
-    }
-    
-    public void setSubSubLocations(Set<SubSubLocation> subSubLocations) {
-        this.subSubLocations = subSubLocations;
-    }
+
 @OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY, mappedBy="dic")
     public Set<Customer> getCustomers() {
         return this.customers;
@@ -182,6 +156,18 @@ public class Dic  implements java.io.Serializable {
     public void setProjectStepsesForProgress(Set<ProjectSteps> projectStepsesForProgress) {
         this.projectStepsesForProgress = projectStepsesForProgress;
     }
+    
+    
+    @OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY, mappedBy="dic")
+    public Set<RoleLocations> getRoleLocations() {
+        return this.roleLocations;
+    }
+    
+    public void setRoleLocations(Set<RoleLocations> roleLocations) {
+        this.roleLocations = roleLocations;
+    }
+    
+    
 @OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY, mappedBy="dic")
     public Set<RolePages> getRolePageses() {
         return this.rolePageses;

@@ -14,4 +14,6 @@ public interface SubSubLocationRepository  extends JpaRepository<SubSubLocation,
 	@Query("select s from SubSubLocation s where s.subLocation.id=?1 and s.enabled=?2")
 	public List<SubSubLocation> findBySubLocationIdAndEnabled(Long subLocationId,Long enabled);
 
+	public List<SubSubLocation> findByEnabled(Long enabled);
+
 }

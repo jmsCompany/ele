@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import qingyun.ele.domain.db.Dic;
 import qingyun.ele.domain.db.DicDic;
+import qingyun.ele.domain.db.Pages;
 import qingyun.ele.repository.DicDicRepository;
 import qingyun.ele.repository.DicRepository;
 import qingyun.ele.service.UsrService;
@@ -155,4 +156,49 @@ public class DicController {
 	    t.setData(lst);
 	    return t;
 	}
+	
+	
+	@Transactional(readOnly = false)
+	@RequestMapping(value = "/sys/dic/deleteDic", method = RequestMethod.GET)
+	public Valid deleteDic(@RequestParam("dicId") Long dicId) {
+		
+		Valid v = new Valid();
+		Dic dic = dicRepository.findOne(dicId);
+		if(dic==null)
+		{
+			v.setValid(false);
+			v.setMsg("不能找到 此数据 ID： " +dicId);
+			return v;
+		}
+		dicRepository.delete(dicId);
+		v.setValid(true);
+		return v;
+
+	}
+	
+	
+	@Transactional(readOnly = false)
+	@RequestMapping(value = "/sys/dic/deleteDicDic", method = RequestMethod.GET)
+	public Valid deleteDicDic(@RequestParam("dicDicId") Long dicDicId) {
+		
+		Valid v = new Valid();
+		DicDic dicDic = dicDicRepository.findOne(dicDicId);
+		if(dicDic==null)
+		{
+			v.setValid(false);
+			v.setMsg("不能找到 此数据 ID： " +dicDicId);
+			return v;
+		}
+		if(!dicDic.getDics().isEmpty())
+		{
+			v.setValid(false);
+			v.setMsg("该字典有二级字典，请先删除对应的二级字典");
+			return v;
+		}
+		dicDicRepository.delete(dicDicId);
+		v.setValid(true);
+		return v;
+
+	}
+	
 }
