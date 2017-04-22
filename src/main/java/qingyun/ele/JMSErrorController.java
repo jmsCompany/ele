@@ -23,9 +23,10 @@ public class JMSErrorController implements ErrorController{
 		ErrorResponse response = new ErrorResponse();
     	response.setStatus(""+status.value());
     	response.setPath(request.getRequestURI());
-    	response.setJmsError(status.name());
+    	response.setEleError(status.name());
     	String message = (String)request.getAttribute("javax.servlet.error.message");
-    	response.setMessage(message);
+    	response.setMsg(message);
+    	response.setValid(false);
     	response.setTimestamp(new Date());
 		return response;       
 	}

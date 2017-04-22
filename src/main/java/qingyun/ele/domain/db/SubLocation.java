@@ -9,6 +9,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -24,9 +26,9 @@ public class SubLocation  implements java.io.Serializable {
 
      private Long id;
      private String name;
+     private Long enabled;
      private Set<SubSubLocation> subSubLocations = new HashSet<SubSubLocation>(0);
-     private Set<Location> locations = new HashSet<Location>(0);
-
+     private Location location;
     public SubLocation() {
     }
 
@@ -34,15 +36,9 @@ public class SubLocation  implements java.io.Serializable {
     public SubLocation(Long id) {
         this.id = id;
     }
-    public SubLocation(Long id, String name, Set<SubSubLocation> subSubLocations, Set<Location> locations) {
-       this.id = id;
-       this.name = name;
-       this.subSubLocations = subSubLocations;
-       this.locations = locations;
-    }
+  
    
      @Id 
-    
     @Column(name="id", unique=true, nullable=false)
     public Long getId() {
         return this.id;
@@ -68,16 +64,27 @@ public class SubLocation  implements java.io.Serializable {
     public void setSubSubLocations(Set<SubSubLocation> subSubLocations) {
         this.subSubLocations = subSubLocations;
     }
-@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY, mappedBy="subLocation")
-    public Set<Location> getLocations() {
-        return this.locations;
-    }
+
     
-    public void setLocations(Set<Location> locations) {
-        this.locations = locations;
-    }
 
+@ManyToOne(fetch=FetchType.LAZY)
+@JoinColumn(name="id_location")
+public Location getLocation() {
+    return this.location;
+}
 
+public void setLocation(Location location) {
+    this.location = location;
+}
+
+@Column(name="enabled")
+public Long getEnabled() {
+    return this.enabled;
+}
+
+public void setEnabled(Long enabled) {
+    this.enabled = enabled;
+}
 
 
 }

@@ -3,14 +3,16 @@ package qingyun.ele;
 import java.io.Serializable;
 import java.util.Date;
 
-public class ErrorResponse implements Serializable {
+import qingyun.ele.ws.Valid;
+
+public class ErrorResponse extends Valid implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private Date timestamp;
 	private String path;
-    private String message;
-    private String jmsError;
+    private String eleError;
     private String status;
+    
 	public Date getTimestamp() {
 		return timestamp;
 	}
@@ -23,12 +25,6 @@ public class ErrorResponse implements Serializable {
 	public void setPath(String path) {
 		this.path = path;
 	}
-	public String getMessage() {
-		return message;
-	}
-	public void setMessage(String message) {
-		this.message = message;
-	}
 
 	public String getStatus() {
 		return status;
@@ -36,10 +32,10 @@ public class ErrorResponse implements Serializable {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	public String getJmsError() {
-		return jmsError;
+	public String getEleError() {
+		return eleError;
 	}
-	public void setJmsError(String jmsError) {
-		this.jmsError = jmsError;
+	public void setEleError(String eleError) {
+		this.eleError = eleError;
 	}
 }

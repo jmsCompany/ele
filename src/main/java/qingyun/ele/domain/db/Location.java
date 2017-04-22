@@ -21,7 +21,7 @@ public class Location  implements java.io.Serializable {
 
 
      private Long id;
-     private SubLocation subLocation;
+     private Long enabled;
      private String name;
 
     public Location() {
@@ -31,9 +31,8 @@ public class Location  implements java.io.Serializable {
     public Location(Long id) {
         this.id = id;
     }
-    public Location(Long id, SubLocation subLocation, String name) {
+    public Location(Long id, String name) {
        this.id = id;
-       this.subLocation = subLocation;
        this.name = name;
     }
    
@@ -47,15 +46,7 @@ public class Location  implements java.io.Serializable {
     public void setId(Long id) {
         this.id = id;
     }
-@ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="id_sub_loc")
-    public SubLocation getSubLocation() {
-        return this.subLocation;
-    }
-    
-    public void setSubLocation(SubLocation subLocation) {
-        this.subLocation = subLocation;
-    }
+
     
     @Column(name="name", length=64)
     public String getName() {
@@ -66,7 +57,14 @@ public class Location  implements java.io.Serializable {
         this.name = name;
     }
 
-
+    @Column(name="enabled")
+    public Long getEnabled() {
+        return this.enabled;
+    }
+    
+    public void setEnabled(Long enabled) {
+        this.enabled = enabled;
+    }
 
 
 }

@@ -1,14 +1,12 @@
 package qingyun.ele;
 
 import java.io.IOException;
-
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +19,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 import org.springframework.stereotype.Component;
-
 import qingyun.ele.controller.UserController;
 
 
@@ -75,7 +72,7 @@ public class AuthenticationTokenProcessingFilter extends
 		else
 		{
 			if (SecurityContextHolder.getContext().getAuthentication() == null) {
-				String token = request.getHeader("JMS-TOKEN");
+				String token = request.getHeader("ELE-TOKEN");
 				if (token != null) {
 					if (tokenUtils.validate(token)) {
 					
@@ -92,7 +89,7 @@ public class AuthenticationTokenProcessingFilter extends
 
 						SecurityContextHolder.getContext().setAuthentication(
 								authenticated);
-						logger.debug("userid:" +userDetails.getUsername() +", ip: "+request.getRemoteAddr()+", path: "+ request.getRequestURI());
+					//	logger.debug("userid:" +userDetails.getUsername() +", ip: "+request.getRemoteAddr()+", path: "+ request.getRequestURI());
 						//System.out.println("user:" +userDetails.getUsername()+ ", call  "  +req.getClass().getCanonicalName() +", path: " +req.getLocalAddr() +","+ req.getRemoteAddr() +", " +req.getServletContext());
 					}
 				}

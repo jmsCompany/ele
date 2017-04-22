@@ -26,4 +26,11 @@ ALTER TABLE sub_sub_location modify int(11) id not null auto_increment;
 ALTER TABLE transfer_sheet modify id int(11) not null auto_increment;
 
 ALTER TABLE users modify id int(11) not null auto_increment;
+
+ALTER TABLE `ele`.`dic` 
+CHANGE COLUMN `id` `id` INT(11) NOT NULL AUTO_INCREMENT ;
+
+ALTER TABLE `ele`.`dic_dic` 
+CHANGE COLUMN `id` `id` INT(11) NOT NULL AUTO_INCREMENT ;
+
 set foreign_key_checks =1;

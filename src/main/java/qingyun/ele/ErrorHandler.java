@@ -19,8 +19,9 @@ public class ErrorHandler {
     	ErrorResponse response = new ErrorResponse();
     	response.setStatus("10000");
     	response.setPath(request.getRequestURI());
-    	response.setJmsError(e.getClass().getName());
-    	response.setMessage(e.getLocalizedMessage());
+    	response.setEleError(e.getClass().getName());
+    	response.setMsg(e.getLocalizedMessage());
+    	response.setValid(false);
     	response.setTimestamp(new Date());
         return response;         
     }

@@ -13,7 +13,12 @@ public class WSUser extends Valid implements java.io.Serializable{
     private Date creationTime;
     private Long enabled;
     private Date lastLogin;
- 
+    
+    private Long idEmpStatus;
+    private Long idRole;
+    private Long idDepartment;
+    private Long idPos;
+    
 	public Long getIdUser() {
 		return idUser;
 	}
@@ -67,6 +72,30 @@ public class WSUser extends Valid implements java.io.Serializable{
 	}
 	public void setLastLogin(Date lastLogin) {
 		this.lastLogin = lastLogin;
+	}
+	public Long getIdEmpStatus() {
+		return idEmpStatus;
+	}
+	public void setIdEmpStatus(Long idEmpStatus) {
+		this.idEmpStatus = idEmpStatus;
+	}
+	public Long getIdRole() {
+		return idRole;
+	}
+	public void setIdRole(Long idRole) {
+		this.idRole = idRole;
+	}
+	public Long getIdDepartment() {
+		return idDepartment;
+	}
+	public void setIdDepartment(Long idDepartment) {
+		this.idDepartment = idDepartment;
+	}
+	public Long getIdPos() {
+		return idPos;
+	}
+	public void setIdPos(Long idPos) {
+		this.idPos = idPos;
 	}
 
   

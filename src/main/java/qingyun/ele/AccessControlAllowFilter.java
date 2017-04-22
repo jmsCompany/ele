@@ -11,16 +11,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class AccessControlAllowFilter implements Filter {
-     public void init(FilterConfig fConfig) throws ServletException {
+     
+	public void init(FilterConfig fConfig) throws ServletException {
 	 }
 	
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
 		//LOGGER.debug("applying accessControlAllow filter");
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
-		
-		
+			
 		HttpServletResponse httpResponse = (HttpServletResponse) response;
+	    
 		httpResponse.addHeader("Access-Control-Allow-Origin", "*");
 		httpResponse.addHeader("Access-Control-Allow-Methods", "POST,GET,OPTIONS,DELETE");
 		

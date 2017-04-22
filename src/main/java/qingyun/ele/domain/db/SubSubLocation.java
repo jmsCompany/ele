@@ -29,6 +29,7 @@ public class SubSubLocation  implements java.io.Serializable {
      private Long id;
      private SubLocation subLocation;
      private String name;
+     private Long enabled;
      private Set<Dic> dics = new HashSet<Dic>(0);
      private Set<Customer> customers = new HashSet<Customer>(0);
 
@@ -96,7 +97,14 @@ public class SubSubLocation  implements java.io.Serializable {
     }
 
 
-
+    @Column(name="enabled")
+    public Long getEnabled() {
+        return this.enabled;
+    }
+    
+    public void setEnabled(Long enabled) {
+        this.enabled = enabled;
+    }
 
 }
 
