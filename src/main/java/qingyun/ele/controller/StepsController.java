@@ -121,4 +121,61 @@ public class StepsController {
 		return v;
 
 	}
+	
+	
+	@Transactional(readOnly = false)
+	@RequestMapping(value = "/sys/noti/saveNoti", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public Valid saveNoti(@RequestBody Steps steps) {
+		Valid v = new Valid();
+		if (steps.getId() == null) {
+			v.setValid(false);
+			v.setMsg("Id不能为空！");
+			return v;
+		}
+		Steps dbSteps = stepsRepository.findOne(steps.getId());
+		dbSteps.setStart_email(steps.getStart_email());
+		dbSteps.setEnd_email(steps.getEnd_email());
+		dbSteps.setDelay_email(steps.getDelay_email());
+		dbSteps.setDelay_more_email(steps.getDelay_more_email());
+		stepsRepository.save(dbSteps);
+		return v;
+	}
+	
+	
+	@RequestMapping(value="/sys/noti/notiTable", method=RequestMethod.POST)
+	public WSTableData notiTable(
+			@RequestParam Integer draw,@RequestParam Integer length) 
+	{
+		
+		Pageable pagaable =  new PageRequest(draw,length);
+		Page<Steps> page = stepsRepository.findByIdAsc(pagaable);
+		List<String[]> lst = new ArrayList<String[]>();
+		for(Steps w:page.getContent())
+		{
+			String start =(w.getStart_email()==null)?"":w.getStart_email();
+			String end =(w.getEnd_email()==null)?"":w.getEnd_email();
+			String delay =(w.getDelay_email()==null)?"":w.getDelay_email();
+			String delaymore =(w.getDelay_more_email()==null)?"":w.getDelay_more_email();
+			String[] d = {
+					""+w.getId(),
+					w.getName(),
+					""+w.getForcastDays(),
+					""+w.getLastedDays(),
+					start,
+					end,
+					delay,
+					delaymore,
+					""+w.getId()
+					};
+			lst.add(d);
+		}
+
+		WSTableData t = new WSTableData();
+		t.setDraw(draw);
+		t.setRecordsTotal((int)page.getTotalElements());
+		t.setRecordsFiltered((int)page.getTotalElements());
+	    t.setData(lst);
+	    return t;
+	}
+	
 }

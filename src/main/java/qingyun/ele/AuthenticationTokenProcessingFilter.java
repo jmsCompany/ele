@@ -1,6 +1,8 @@
 package qingyun.ele;
 
 import java.io.IOException;
+import java.util.Date;
+
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -20,6 +22,8 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 import org.springframework.stereotype.Component;
 import qingyun.ele.controller.UserController;
+import qingyun.ele.domain.db.Logs;
+import qingyun.ele.repository.LogsRepository;
 
 
 @Component
@@ -32,6 +36,8 @@ public class AuthenticationTokenProcessingFilter extends
 	private TokenUtils tokenUtils;
 	@Autowired
 	private AuthenticationManager authenticationManager;
+	@Autowired
+	private LogsRepository logsRepository;
 	private static final Log logger = LogFactory.getLog(UserController.class);
 
 	public AuthenticationTokenProcessingFilter() {
@@ -89,8 +95,14 @@ public class AuthenticationTokenProcessingFilter extends
 
 						SecurityContextHolder.getContext().setAuthentication(
 								authenticated);
-					//	logger.debug("userid:" +userDetails.getUsername() +", ip: "+request.getRemoteAddr()+", path: "+ request.getRequestURI());
-						//System.out.println("user:" +userDetails.getUsername()+ ", call  "  +req.getClass().getCanonicalName() +", path: " +req.getLocalAddr() +","+ req.getRemoteAddr() +", " +req.getServletContext());
+						logger.debug("userid:" +userDetails.getUsername() +", ip: "+request.getRemoteAddr()+", path: "+ request.getRequestURI());
+						Logs log = new Logs();
+						log.setIp(request.getRemoteAddr());
+						log.setTime(new Date());
+						log.setUrl(request.getRequestURI());
+						log.setUsers(userDetails.getUser());
+						logsRepository.save(log);
+						
 					}
 				}
 

@@ -31,6 +31,12 @@ public class Steps  implements java.io.Serializable {
      private Long forcastDays;
      private Long lastedDays;
      private String form;
+
+	private String start_email;
+     private String end_email;
+     private String delay_email;
+     private String delay_more_email;
+     
      private Set<Noti> notis = new HashSet<Noti>(0);
      private Set<ProjectSteps> projectStepses = new HashSet<ProjectSteps>(0);
 
@@ -136,6 +142,48 @@ public class Steps  implements java.io.Serializable {
 
 
 
+    @Column(name="start_email", length=64)
+    public String getStart_email() {
+		return start_email;
+	}
+
+
+	public void setStart_email(String start_email) {
+		this.start_email = start_email;
+	}
+
+    @Column(name="end_email", length=64)
+	public String getEnd_email() {
+		return end_email;
+	}
+
+
+	public void setEnd_email(String end_email) {
+		this.end_email = end_email;
+	}
+
+
+    @Column(name="delay_email", length=64)
+	public String getDelay_email() {
+		return delay_email;
+	}
+
+
+	public void setDelay_email(String delay_email) {
+		this.delay_email = delay_email;
+	}
+
+    @Column(name="delay_more_email", length=64)
+	public String getDelay_more_email() {
+		return delay_more_email;
+	}
+
+
+	public void setDelay_more_email(String delay_more_email) {
+		this.delay_more_email = delay_more_email;
+	}
+
+    
 
 }
 

@@ -52,9 +52,9 @@ public class TokenUtilsImpl implements TokenUtils {
 	    if(user!=null)
 	    {
 	    	
-//	    	if(user.getLastLogin().getTime()<new Date().getTime()-TWO_WEEKS_S)
-//	    		flag = false;
-//	    	else
+	    	if(user.getLastLogin().getTime()<new Date().getTime()-TWO_WEEKS_S)
+	    		flag = false;
+	    	else
 	    		flag = true;	
 	    }
 	    	return flag;
@@ -65,8 +65,8 @@ public class TokenUtilsImpl implements TokenUtils {
 	public MCAUserDetails getUserFromToken(String token) {
 		Users user = usersRepository.findByToken(token);
 	
-		//user.setLastLogin(new Date());
-		//usersRepository.save(user);
+		user.setLastLogin(new Date());
+		user = usersRepository.save(user);
 
 		
 		MCAUserDetails userDetails = new MCAUserDetails();
@@ -84,6 +84,7 @@ public class TokenUtilsImpl implements TokenUtils {
 		{
 			userDetails.setEnabled(true);		
 		}
+		userDetails.setUser(user);
 		//securityUtils.g
 		userDetails.setAuthorities(securityUtils.getAuthorities(user.getId()));
 		return userDetails;

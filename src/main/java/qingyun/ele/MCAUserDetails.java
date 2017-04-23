@@ -6,6 +6,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import qingyun.ele.domain.db.Users;
+
 
 @Component
 public class MCAUserDetails implements UserDetails {
@@ -17,6 +19,7 @@ public class MCAUserDetails implements UserDetails {
 	private String mobile;
 	private boolean enabled;
 	private String name;
+	private Users user;
 	public String getName() {
 		return name;
 	}
@@ -102,6 +105,14 @@ public class MCAUserDetails implements UserDetails {
 
 	public void setMobile(String mobile) {
 		this.mobile = mobile;
+	}
+
+	public Users getUser() {
+		return user;
+	}
+
+	public void setUser(Users user) {
+		this.user = user;
 	}
 
 

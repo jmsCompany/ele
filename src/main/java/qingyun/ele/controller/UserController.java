@@ -1,20 +1,31 @@
 package qingyun.ele.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import qingyun.ele.domain.db.Dic;
+import qingyun.ele.domain.db.Steps;
 import qingyun.ele.domain.db.Users;
 import qingyun.ele.repository.DicRepository;
 import qingyun.ele.repository.UsersRepository;
 import qingyun.ele.service.UsrService;
 import qingyun.ele.ws.Valid;
+import qingyun.ele.ws.WSTableData;
 import qingyun.ele.ws.WSUser;
 import qingyun.ele.ws.WSUserPassword;
 import qingyun.ele.ws.WSUserProfile;
@@ -50,7 +61,7 @@ public class UserController {
 	
 	
 	@Transactional(readOnly=false)
-	@RequestMapping(value="/user/saveUser", method=RequestMethod.POST,consumes=MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value="/sys/user/saveUser", method=RequestMethod.POST,consumes=MediaType.APPLICATION_JSON_VALUE)
 	public WSUser save(@RequestBody WSUser wsUser)  {
 		
 		if(wsUser.getUsername()==null)
@@ -100,7 +111,7 @@ public class UserController {
 
 	
 	@Transactional(readOnly=false)
-	@RequestMapping(value="/user/updateUserPassword", method=RequestMethod.POST)
+	@RequestMapping(value="/sys/user/updateUserPassword", method=RequestMethod.POST)
 	public Valid updateUserPassword(@RequestBody WSUserPassword wsUserPassword) throws Exception {
 		Valid v = new Valid();
 		Long userId = wsUserPassword.getIdUser();
@@ -123,7 +134,7 @@ public class UserController {
 	
 
 	@Transactional(readOnly=false)
-	@RequestMapping(value="/user/updateUserPasswordByAdmin", method=RequestMethod.POST)
+	@RequestMapping(value="/sys/user/updateUserPasswordByAdmin", method=RequestMethod.POST)
 	public Valid updateUserPasswordByAdmin(@RequestBody WSUserPassword wsUserPassword) throws Exception {
 		Valid v = new Valid();
 		Long userId = wsUserPassword.getIdUser();
@@ -132,6 +143,51 @@ public class UserController {
 		usersRepository.save(u);
 		v.setValid(true);
 		return v;
+	}
+	
+
+	@RequestMapping(value="/sys/user/usersTable", method=RequestMethod.POST)
+	public WSTableData stepsTable(
+			@RequestParam Integer draw,@RequestParam Integer length) 
+	{
+		
+		Pageable pagaable =  new PageRequest(draw,length);
+		Page<Users> users = usersRepository.findUsers(pagaable);
+		List<String[]> lst = new ArrayList<String[]>();
+		for(Users w:users.getContent())
+		{
+			Dic department = w.getDicByDepartment();
+			String sd = (department==null)?"":department.getCode();
+			Dic position = w.getDicByPos();
+			String sp= (position==null)?"":position.getCode();
+			Dic role = w.getDicByRole();
+			String sr= (role==null)?"":role.getCode();
+			Dic status = w.getDicByEmpStatus();
+			String ss= (status==null)?"":status.getCode();
+		    String enabled = w.getEnabled().equals(1l)?"有效":"无效";
+		    String email = (w.getEmail()==null)?"":w.getEmail();
+		    String mobile = (w.getMobile()==null)?"":w.getMobile();
+			String[] d = {
+					w.getUsername(),
+					w.getName(),
+					email,
+					mobile,
+					sd,
+					sp,
+					sr,
+					ss,
+					enabled,
+					""+w.getId()
+					};
+			lst.add(d);
+		}
+
+		WSTableData t = new WSTableData();
+		t.setDraw(draw);
+		t.setRecordsTotal((int)users.getTotalElements());
+		t.setRecordsFiltered((int)users.getTotalElements());
+	    t.setData(lst);
+	    return t;
 	}
 	
 }
