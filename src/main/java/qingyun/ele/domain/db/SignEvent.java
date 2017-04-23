@@ -24,7 +24,6 @@ public class SignEvent  implements java.io.Serializable {
 
      private Long id;
      private String remark;
-
 	 private Long idSignWorkflowSteps;
      private Long idEvent;
      private Long status;

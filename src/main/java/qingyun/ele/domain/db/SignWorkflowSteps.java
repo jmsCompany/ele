@@ -30,8 +30,7 @@ public class SignWorkflowSteps  implements java.io.Serializable {
 
      private Long id;
      private String content;
-
-	private Long idSignWorkflow;
+	 private Long idSignWorkflow;
      private Long lvl;
      private Long idSignatory;
      private Long idDepartment;
