@@ -47,19 +47,25 @@ public class LocationController {
 	
 	private static final Log logger = LogFactory.getLog(LocationController.class);
 
+//	@RequestMapping(value="/sys/location/locationSelects", method=RequestMethod.GET)
+//	public List<WSSelectObj> locationSelects(){
+//			return locationService.getLocations(1l);
+//    }
+//	
+//	@RequestMapping(value="/sys/location/subLocationSelects", method=RequestMethod.GET)
+//	public List<WSSelectObj> subLocationSelects(@RequestParam("locationId") Long locationId){
+//			return locationService.getSublocationsByLocation(locationId, 1l);
+//    }
+//	
+//	@RequestMapping(value="/sys/location/subSubLocationSelects", method=RequestMethod.GET)
+//	public List<WSSelectObj> subSubLocationSelects(@RequestParam("subLocationId") Long subLocationId){
+//			return locationService.getSubSublocations(subLocationId, 1l);
+//    }
+	
 	@RequestMapping(value="/sys/location/locationSelects", method=RequestMethod.GET)
 	public List<WSSelectObj> locationSelects(){
-			return locationService.getLocations(1l);
+			return locationService.getSubSublocations();
     }
 	
-	@RequestMapping(value="/sys/location/subLocationSelects", method=RequestMethod.GET)
-	public List<WSSelectObj> subLocationSelects(@RequestParam("locationId") Long locationId){
-			return locationService.getSublocationsByLocation(locationId, 1l);
-    }
-	
-	@RequestMapping(value="/sys/location/subSubLocationSelects", method=RequestMethod.GET)
-	public List<WSSelectObj> subSubLocationSelects(@RequestParam("subLocationId") Long subLocationId){
-			return locationService.getSubSublocations(subLocationId, 1l);
-    }
 	
 }

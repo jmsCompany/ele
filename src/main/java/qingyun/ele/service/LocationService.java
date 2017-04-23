@@ -100,6 +100,21 @@ public class LocationService {
 		return ws;
 	}
 	
+	
+	
+	public List<WSSelectObj> getSubSublocations()
+	{
+		List<WSSelectObj> ws = new ArrayList<WSSelectObj>(0);
+		for(SubSubLocation s: subSubLocationRepository.findByEnabled(1l))
+		{
+			WSSelectObj so = new WSSelectObj(s.getId(),s.getSubLocation().getLocation().getName()+","+ s.getSubLocation().getName()+","+s.getName());
+			ws.add(so);
+		   
+		}
+		return ws;
+	}
+	
+	
 	public void loadLocationsFromCSV(InputStream inputStream) throws IOException{
 		CsvReader reader = new CsvReader(inputStream,',', Charset.forName("UTF-8"));
       //  reader.readHeaders();  //Parent,  Name,     Description
