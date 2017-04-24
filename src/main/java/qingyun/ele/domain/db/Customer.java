@@ -38,6 +38,7 @@ public class Customer  implements java.io.Serializable {
      private String project;
      private Date start;
      private Date end;
+     private Long deleted;
      private Set<So> sos = new HashSet<So>(0);
      private Set<ProjectSteps> projectStepses = new HashSet<ProjectSteps>(0);
      private Set<Loan> loans = new HashSet<Loan>(0);
@@ -165,6 +166,15 @@ public class Customer  implements java.io.Serializable {
     public void setLoans(Set<Loan> loans) {
         this.loans = loans;
     }
+
+    @Column(name="deleted")
+	public Long getDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(Long deleted) {
+		this.deleted = deleted;
+	}
 
 
 

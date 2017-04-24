@@ -17,4 +17,7 @@ public interface RolePagesRepository  extends JpaRepository<RolePages, RolePages
 	
 	@Query("select r from RolePages r where r.id.idRole=?1")
 	public List<RolePages> findByRoleId(Long roleId);
+	
+	@Query("select r from RolePages r where r.id.idRole=?1 and r.id.idPage=?2")
+	public RolePages findByRoleIdAndPageId(Long roleId,Long pageId);
 }

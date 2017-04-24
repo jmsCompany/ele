@@ -29,6 +29,8 @@ public class Pages  implements java.io.Serializable {
      private String name;
      private String descr;
      private String menuName;
+     private String groups;
+     private String url;
      private Set<RolePages> rolePageses = new HashSet<RolePages>(0);
 
     public Pages() {
@@ -91,6 +93,26 @@ public class Pages  implements java.io.Serializable {
     public void setRolePageses(Set<RolePages> rolePageses) {
         this.rolePageses = rolePageses;
     }
+
+    @Column(name="groups", length=64)
+	public String getGroups() {
+		return groups;
+	}
+
+
+	public void setGroups(String groups) {
+		this.groups = groups;
+	}
+
+	@Column(name="url", length=64)
+	public String getUrl() {
+		return url;
+	}
+
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
 
 
 

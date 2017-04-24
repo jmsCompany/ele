@@ -1,6 +1,8 @@
 package qingyun.ele.ws;
 
 import java.util.Date;
+import java.util.List;
+
 public class WSUserProfile extends Valid implements java.io.Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -14,6 +16,7 @@ public class WSUserProfile extends Valid implements java.io.Serializable{
     private Long enabled;
     private Date lastLogin;
     private String token;
+    private List<WSMenu> WSMenuList;
  
 	public Long getIdUser() {
 		return idUser;
@@ -74,6 +77,12 @@ public class WSUserProfile extends Valid implements java.io.Serializable{
 	}
 	public void setToken(String token) {
 		this.token = token;
+	}
+	public List<WSMenu> getWSMenuList() {
+		return WSMenuList;
+	}
+	public void setWSMenuList(List<WSMenu> wSMenuList) {
+		WSMenuList = wSMenuList;
 	}
 
   

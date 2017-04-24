@@ -12,12 +12,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import qingyun.ele.SecurityUtils;
 import qingyun.ele.domain.db.Pages;
 import qingyun.ele.domain.db.RoleLocations;
 import qingyun.ele.domain.db.RoleLocationsId;
 import qingyun.ele.domain.db.RolePages;
 import qingyun.ele.domain.db.RolePagesId;
 import qingyun.ele.domain.db.SubSubLocation;
+import qingyun.ele.domain.db.Users;
 import qingyun.ele.repository.PagesRepository;
 import qingyun.ele.repository.RoleLocationRepository;
 import qingyun.ele.repository.RolePagesRepository;
@@ -36,7 +38,7 @@ public class RoleController {
 	@Autowired private RolePagesRepository rolePagesRepository;
 	@Autowired private SubSubLocationRepository subSubLocationRepository;
 	@Autowired private RoleLocationRepository roleLocationRepository;
-	
+	@Autowired private SecurityUtils securityUtils; 
 	
 	@Transactional(readOnly = false)
 	@RequestMapping(value = "/sys/role/saveRolePermissions", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -78,12 +80,13 @@ public class RoleController {
 	}
 	
 	@Transactional(readOnly = false)
-	@RequestMapping(value = "/sys/role/finfRolePermissions", method = RequestMethod.GET)
-	public WSRolePerms finfRolePermissions(@RequestParam("roleId") Long roleId) {
+	@RequestMapping(value = "/sys/role/findRolePermissions", method = RequestMethod.GET)
+	public WSRolePerms findRolePermissions(@RequestParam("roleId") Long roleId) {
 		
 		WSRolePerms ws = new WSRolePerms();
 		ws.setIdRole(roleId);
 		List<WSRolePage> wsRolePages = new ArrayList<WSRolePage>();
+		Users sessionUser = securityUtils.getCurrentDBUser();
 		for(Pages p: pagesRepository.findAll())
 		{
 			WSRolePage w = new WSRolePage();
@@ -93,7 +96,7 @@ public class RoleController {
 			id.setIdPage(p.getId());
 			id.setIdRole(roleId);
 			RolePages rp = rolePagesRepository.findOne(id);
-			if(rp!=null)
+			if(rp!=null||sessionUser.getUsername().equals("admin"))
 			{
 				w.setHasPerm(1l);
 			}
@@ -115,7 +118,7 @@ public class RoleController {
 			id.setIdRole(roleId);
 			id.setIdSubSubLocation(s.getId());
 			RoleLocations rp = roleLocationRepository.findOne(id);
-			if(rp!=null)
+			if(rp!=null||sessionUser.getUsername().equals("admin"))
 			{
 				w.setHasPerm(1l);
 			}

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import qingyun.ele.domain.db.Dic;
 import qingyun.ele.domain.db.DicDic;
+import qingyun.ele.domain.db.ProjectSteps;
 import qingyun.ele.domain.db.Steps;
 import qingyun.ele.repository.DicDicRepository;
 import qingyun.ele.repository.DicRepository;
@@ -80,10 +81,11 @@ public class StepsController {
 	{
 		
 		Pageable pagaable =  new PageRequest(draw,length);
-		Page<Steps> page = stepsRepository.findByIdAsc(pagaable);
+		Page<Steps> page = stepsRepository.findAll(pagaable);
 		List<String[]> lst = new ArrayList<String[]>();
 		for(Steps w:page.getContent())
 		{
+			
 			String[] d = {
 					""+w.getId(),
 					w.getName(),
@@ -148,7 +150,7 @@ public class StepsController {
 	{
 		
 		Pageable pagaable =  new PageRequest(draw,length);
-		Page<Steps> page = stepsRepository.findByIdAsc(pagaable);
+		Page<Steps> page = stepsRepository.findAll(pagaable);
 		List<String[]> lst = new ArrayList<String[]>();
 		for(Steps w:page.getContent())
 		{
