@@ -1,6 +1,7 @@
 package qingyun.ele.controller;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -19,7 +20,6 @@ import qingyun.ele.domain.db.Dic;
 import qingyun.ele.domain.db.SignEvent;
 import qingyun.ele.domain.db.SignWorkflow;
 import qingyun.ele.domain.db.SignWorkflowSteps;
-import qingyun.ele.domain.db.Steps;
 import qingyun.ele.domain.db.Users;
 import qingyun.ele.repository.DicRepository;
 import qingyun.ele.repository.SignEventRepository;
@@ -27,6 +27,7 @@ import qingyun.ele.repository.SignWorkflowRepository;
 import qingyun.ele.repository.SignWorkflowStepsRepository;
 import qingyun.ele.repository.UsersRepository;
 import qingyun.ele.ws.Valid;
+import qingyun.ele.ws.WSSignEvent;
 import qingyun.ele.ws.WSTableData;
 
 
@@ -235,9 +236,70 @@ public class SignController {
 				return v;
 			}
 		}
+		signEvent.setSignTime(new Date());
 		signEventRepository.save(signEvent);
 		v.setValid(true);
 		return v;
+	}
+	
+	
+	public List<WSSignEvent> findWSSignEventByEventId(@RequestParam("eventId") Long eventId,@RequestParam("signWorkflowId") Long signWorkflowId)
+	{
+		List<WSSignEvent> ws = new ArrayList<WSSignEvent>();
+	   	List<SignWorkflowSteps>  sws = signWorkflowStepsRepository.findByIdSignWorkflow(signWorkflowId);
+		Long signLevel = 0l;
+	   	for(SignWorkflowSteps s:sws)
+		{
+			SignEvent signEvent =signEventRepository.findByIdEventAndIdSignWorkflowSteps(eventId, signWorkflowId);
+			WSSignEvent w  = new WSSignEvent();
+			w.setIdEvent(eventId);
+			w.setIdSignWorkflowSteps(signWorkflowId);
+			w.setSignWorkflowSteps(s.getContent());
+			w.setIdDepartment(s.getIdDepartment());
+			w.setIdSignatory(s.getIdSignatory());
+			w.setLvl(s.getLvl());
+			if(s.getIdDepartment()!=null)
+			{
+				Dic depart =dicRepository.findOne(s.getIdDepartment());
+            	if(depart!=null)
+            	{
+            		w.setDepartment(depart.getCode());
+            	}
+			}
+			if(s.getIdSignatory()!=null)
+			{
+				Users signatory =usersRepository.findOne(s.getIdSignatory());
+            	if(signatory!=null)
+            	{
+            		w.setSignatory(signatory.getName());
+            	}	
+			}
+			if(signEvent!=null)
+			{
+				w.setId(signEvent.getId());
+				w.setStatus(signEvent.getStatus());
+				if(signEvent.getStatus().equals(1l)) //拒绝
+				{
+					w.setEditable(1l);
+				}
+				else if(signEvent.getStatus().equals(2l)) //签字
+				{
+					w.setEditable(0l);
+				}
+				w.setSignTime(signEvent.getSignTime());
+				w.setRemark(signEvent.getRemark());
+					
+			}else
+			{
+				w.setStatus(0l);//待签字
+			    
+			}
+		
+			
+		
+			ws.add(w);
+		}
+	    return ws;
 	}
 	
 }

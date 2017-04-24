@@ -190,4 +190,34 @@ public class UserController {
 	    return t;
 	}
 	
+	
+	@Transactional(readOnly=false)
+	@RequestMapping(value="/sys/user/findUserById", method=RequestMethod.GET)
+	public WSUser findUserById(@RequestParam Long userId)  {
+	   WSUser ws = new WSUser();
+	   Users u = usersRepository.findOne(userId);
+	   ws.setLastLogin(u.getLastLogin());
+	   ws.setEmail(u.getEmail());
+	   ws.setEnabled(u.getEnabled());
+	   ws.setIdUser(u.getId());
+	   if(u.getDicByDepartment()!=null)
+	   {
+		   ws.setIdDepartment(u.getDicByDepartment().getId());
+	   }
+	   if(u.getDicByEmpStatus()!=null)
+	   {
+		   ws.setIdEmpStatus(u.getDicByEmpStatus().getId());
+	   }
+	   if(u.getDicByRole()!=null)
+	   {
+		   ws.setIdRole(u.getDicByRole().getId());
+	   }
+	   if(u.getDicByPos()!=null)
+	   {
+		  ws.setIdPos(u.getDicByPos().getId()); 
+	   }
+	   ws.setMobile(u.getMobile());
+	   ws.setValid(true);
+	   return ws;
+	}
 }
