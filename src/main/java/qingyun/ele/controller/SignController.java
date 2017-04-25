@@ -245,7 +245,9 @@ public class SignController {
 	}
 	
 	
-	public List<WSSignEvent> findWSSignEventByEventId(@RequestParam("eventId") Long eventId,@RequestParam("signWorkflowId") Long signWorkflowId)
+	@Transactional(readOnly = true)
+	@RequestMapping(value = "/sys/sign/findWSSignEventByEventIdAndSignWorkflowId", method = RequestMethod.GET)
+	public List<WSSignEvent> findWSSignEventByEventIdAndSignWorkflowId(@RequestParam("eventId") Long eventId,@RequestParam("signWorkflowId") Long signWorkflowId)
 	{
 		List<WSSignEvent> ws = new ArrayList<WSSignEvent>();
 	   	List<SignWorkflowSteps>  sws = signWorkflowStepsRepository.findByIdSignWorkflow(signWorkflowId);

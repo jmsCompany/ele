@@ -38,7 +38,7 @@ public class CustomerDataController {
 	}
 
 	@RequestMapping(value="/info/customer/customerDataTable", method=RequestMethod.POST)
-	public WSTableData logsTable(
+	public WSTableData customerDataTable(
 			@RequestParam Integer draw,@RequestParam Integer length) 
 	{
 		Pageable pageable =  new PageRequest(draw,length);

@@ -133,8 +133,8 @@ public class CustomerController {
 	
 	//删除项目，其实是修改项目Deleted
 	@Transactional(readOnly = false)
-	@RequestMapping(value = "/project/deleteProjectStatus", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public Valid deleteProjectStatus(@RequestParam("idProject") Long idProject) {
+	@RequestMapping(value = "/project/deleteProject", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public Valid deleteProject(@RequestParam("idProject") Long idProject) {
 		Valid v = new Valid();
 		Customer dbCustomer = customerRepository.findOne(idProject);
 		dbCustomer.setDeleted(1l);

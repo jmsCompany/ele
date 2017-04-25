@@ -49,7 +49,7 @@ public class LocationController {
 	private static final Log logger = LogFactory.getLog(LocationController.class);
 
 	@RequestMapping(value="/sys/location/allLocationSelects", method=RequestMethod.GET)
-	public List<WSSelectObj> locationSelects1(){
+	public List<WSSelectObj> allLocationSelects(){
 			return locationService.getLocations(null);
     }
 	
@@ -70,7 +70,7 @@ public class LocationController {
 	
 	@Transactional(readOnly = false)
 	@RequestMapping(value = "/sys/location/enableSubSubLocation", method = RequestMethod.GET)
-	public Valid deleteDic(@RequestParam("subSubLocationId") Long subSubLocationId) {
+	public Valid enableSubSubLocation(@RequestParam("subSubLocationId") Long subSubLocationId) {
 		
 		Valid v = new Valid();
 		SubSubLocation subSubLocation = subSubLocationRepository.findOne(subSubLocationId);

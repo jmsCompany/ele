@@ -119,7 +119,7 @@ public class DicController {
 	}
 	
 	@RequestMapping(value="/sys/dic/dicDicSelects", method=RequestMethod.GET)
-	public List<WSSelectObj> findDicDics(){
+	public List<WSSelectObj> dicDicSelects(){
 			List<WSSelectObj> ws = new ArrayList<WSSelectObj>();
 			for(DicDic d: dicDicRepository.findAll())
 			{
@@ -130,7 +130,7 @@ public class DicController {
     }
 
 	@RequestMapping(value="/sys/dic/dicTable", method=RequestMethod.POST)
-	public WSTableData findDicsByDicDicId(
+	public WSTableData dicTable(
 			@RequestParam("dicDicId") Long dicDicId,
 			@RequestParam Integer draw,@RequestParam Integer length) 
 	{
@@ -168,6 +168,23 @@ public class DicController {
 		{
 			v.setValid(false);
 			v.setMsg("不能找到 此数据 ID： " +dicId);
+			return v;
+		}
+		if(!dic.getCustomers().isEmpty()||
+				!dic.getProjectStepsesForDepartment().isEmpty()||
+				!dic.getProjectStepsesForProgress().isEmpty()||
+				!dic.getProjectStepsesForStatus().isEmpty()||
+				!dic.getRoleLocations().isEmpty()||
+				!dic.getRolePageses().isEmpty()||
+				!dic.getStepses().isEmpty()||
+				!dic.getUsersesForDepartment().isEmpty()||
+				!dic.getUsersesForEmpStatus().isEmpty()||
+				!dic.getUsersesForPos().isEmpty()||
+				!dic.getUsersesForRole().isEmpty()
+				)
+		{
+			v.setValid(false);
+			v.setMsg("该字典已经被使用，不能删除 " +dicId);
 			return v;
 		}
 		dicRepository.delete(dicId);

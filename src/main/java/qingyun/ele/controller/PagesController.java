@@ -40,7 +40,7 @@ public class PagesController {
 	
 	@Transactional(readOnly = false)
 	@RequestMapping(value = "/sys/pages/savePage", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public Valid saveDicDic(@RequestBody Pages pages) {
+	public Valid savePage(@RequestBody Pages pages) {
 		Valid v = new Valid();
 
 		if (pages.getName() == null) {
@@ -83,6 +83,12 @@ public class PagesController {
 		{
 			v.setValid(false);
 			v.setMsg("不能找到此页面" +pagesId);
+			return v;
+		}
+		if(!pages.getRolePageses().isEmpty())
+		{
+			v.setValid(false);
+			v.setMsg("页面已经被使用，不能删除" +pagesId);
 			return v;
 		}
 		pagesRepository.delete(pagesId);
