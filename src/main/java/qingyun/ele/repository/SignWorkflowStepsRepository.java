@@ -15,6 +15,11 @@ public interface SignWorkflowStepsRepository  extends JpaRepository<SignWorkflow
 	 
 	 @Query("select s from SignWorkflowSteps s where s.idSignWorkflow=?1 order by s.lvl asc")	
 	 public List<SignWorkflowSteps> findByIdSignWorkflow(Long idSignWorkflow);
+	 
+	 
+	 @Query("select s from SignWorkflowSteps s where s.idSignWorkflow=?1 and s.lvl=?2")	
+	 public List<SignWorkflowSteps> findByIdSignWorkflowAndLvl(Long idSignWorkflow,Long lvl);
+
 
 
 }

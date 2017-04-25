@@ -3,7 +3,6 @@ package qingyun.ele.controller;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,20 +10,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import qingyun.ele.SecurityUtils;
 import qingyun.ele.domain.db.Customer;
-import qingyun.ele.domain.db.CustomerData;
 import qingyun.ele.domain.db.Dic;
-import qingyun.ele.domain.db.DicDic;
 import qingyun.ele.domain.db.ProjectSteps;
 import qingyun.ele.domain.db.Steps;
 import qingyun.ele.domain.db.SubSubLocation;
@@ -39,9 +33,6 @@ import qingyun.ele.service.UsrService;
 import qingyun.ele.ws.Valid;
 import qingyun.ele.ws.WSProjectSteps;
 import qingyun.ele.ws.WSTableData;
-import qingyun.ele.ws.WSUser;
-import qingyun.ele.ws.WSUserProfile;
-
 
 @RestController
 @Transactional(readOnly=true)
@@ -276,7 +267,6 @@ public class CustomerController {
 		{
 			dbProjectSteps.setDicByStatus(dicRepository.findOne(wsProjectSteps.getStatusId()));
 		}
-
 		projectStepsRepository.save(dbProjectSteps);
 		v.setValid(true);
 		return v;

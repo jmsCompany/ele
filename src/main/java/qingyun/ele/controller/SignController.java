@@ -26,6 +26,7 @@ import qingyun.ele.repository.SignEventRepository;
 import qingyun.ele.repository.SignWorkflowRepository;
 import qingyun.ele.repository.SignWorkflowStepsRepository;
 import qingyun.ele.repository.UsersRepository;
+import qingyun.ele.service.SignService;
 import qingyun.ele.ws.Valid;
 import qingyun.ele.ws.WSSignEvent;
 import qingyun.ele.ws.WSTableData;
@@ -40,6 +41,7 @@ public class SignController {
 	@Autowired private SignEventRepository signEventRepository;
 	@Autowired private DicRepository dicRepository;
 	@Autowired private UsersRepository usersRepository;
+	@Autowired private SignService signService;
 	
 	private static final Log logger = LogFactory.getLog(SignController.class);
 	
@@ -247,7 +249,6 @@ public class SignController {
 	{
 		List<WSSignEvent> ws = new ArrayList<WSSignEvent>();
 	   	List<SignWorkflowSteps>  sws = signWorkflowStepsRepository.findByIdSignWorkflow(signWorkflowId);
-		Long signLevel = 0l;
 	   	for(SignWorkflowSteps s:sws)
 		{
 			SignEvent signEvent =signEventRepository.findByIdEventAndIdSignWorkflowSteps(eventId, signWorkflowId);
@@ -294,8 +295,7 @@ public class SignController {
 				w.setStatus(0l);//待签字
 			    
 			}
-		
-			
+		   w.setEditable(signService.isEditable(s.getId(), eventId));
 		
 			ws.add(w);
 		}

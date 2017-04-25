@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import qingyun.ele.domain.db.Dic;
 import qingyun.ele.domain.db.DicDic;
 import qingyun.ele.domain.db.Steps;
+import qingyun.ele.domain.db.SubSubLocation;
 import qingyun.ele.repository.DicDicRepository;
 import qingyun.ele.repository.DicRepository;
 import qingyun.ele.repository.LocationRepository;
@@ -47,25 +48,43 @@ public class LocationController {
 	
 	private static final Log logger = LogFactory.getLog(LocationController.class);
 
-//	@RequestMapping(value="/sys/location/locationSelects", method=RequestMethod.GET)
-//	public List<WSSelectObj> locationSelects(){
-//			return locationService.getLocations(1l);
-//    }
-//	
-//	@RequestMapping(value="/sys/location/subLocationSelects", method=RequestMethod.GET)
-//	public List<WSSelectObj> subLocationSelects(@RequestParam("locationId") Long locationId){
-//			return locationService.getSublocationsByLocation(locationId, 1l);
-//    }
-//	
-//	@RequestMapping(value="/sys/location/subSubLocationSelects", method=RequestMethod.GET)
-//	public List<WSSelectObj> subSubLocationSelects(@RequestParam("subLocationId") Long subLocationId){
-//			return locationService.getSubSublocations(subLocationId, 1l);
-//    }
+	@RequestMapping(value="/sys/location/allLocationSelects", method=RequestMethod.GET)
+	public List<WSSelectObj> locationSelects1(){
+			return locationService.getLocations(null);
+    }
+	
+	@RequestMapping(value="/sys/location/subLocationSelects", method=RequestMethod.GET)
+	public List<WSSelectObj> subLocationSelects(@RequestParam("locationId") Long locationId){
+			return locationService.getSublocationsByLocation(locationId, null);
+    }
+	
+	@RequestMapping(value="/sys/location/subSubLocationSelects", method=RequestMethod.GET)
+	public List<WSSelectObj> subSubLocationSelects(@RequestParam("subLocationId") Long subLocationId){
+			return locationService.getSubSublocations(subLocationId, null);
+    }
 	
 	@RequestMapping(value="/sys/location/locationSelects", method=RequestMethod.GET)
 	public List<WSSelectObj> locationSelects(){
 			return locationService.getSubSublocations();
     }
 	
+	@Transactional(readOnly = false)
+	@RequestMapping(value = "/sys/location/enableSubSubLocation", method = RequestMethod.GET)
+	public Valid deleteDic(@RequestParam("subSubLocationId") Long subSubLocationId) {
+		
+		Valid v = new Valid();
+		SubSubLocation subSubLocation = subSubLocationRepository.findOne(subSubLocationId);
+		if(subSubLocation==null)
+		{
+			v.setValid(false);
+			v.setMsg("不能找到此数据 ID： " +subSubLocationId);
+			return v;
+		}
+		subSubLocation.setEnabled(1l);
+		subSubLocationRepository.save(subSubLocation);
+		v.setValid(true);
+		return v;
+
+	}
 	
 }
