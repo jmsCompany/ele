@@ -24,6 +24,7 @@ import qingyun.ele.repository.DicDicRepository;
 import qingyun.ele.repository.DicRepository;
 import qingyun.ele.service.UsrService;
 import qingyun.ele.ws.Valid;
+import qingyun.ele.ws.WSDic;
 import qingyun.ele.ws.WSSelectObj;
 import qingyun.ele.ws.WSTableData;
 
@@ -68,6 +69,7 @@ public class DicController {
 
 		}
 		dicDic = dicDicRepository.save(dicDic);
+	
 		v.setValid(true);
 		v.setMsg("保存成功，新字典ID：" + dicDic.getId());
 		return v;
@@ -111,6 +113,11 @@ public class DicController {
 		}
 		DicDic dicDic = dicDicRepository.findOne(dic.getDicDic().getId());
 		dic.setDicDic(dicDic);
+		dic.setSys(0l);
+		if(dic.getDescr()==null)
+		{
+			dic.setDescr(dic.getCode());
+		}
 		dic = dicRepository.save(dic);
 		v.setValid(true);
 		v.setMsg("保存成功，新字典ID：" + dic.getId());
@@ -123,29 +130,62 @@ public class DicController {
 			List<WSSelectObj> ws = new ArrayList<WSSelectObj>();
 			for(DicDic d: dicDicRepository.findAll())
 			{
-				WSSelectObj w = new WSSelectObj(d.getId(),d.getName());
+				WSSelectObj w = new WSSelectObj(d.getId(),d.getDescr());
 				ws.add(w);		
 			}
 			return ws;
     }
+	
+	
+	
+	@RequestMapping(value="/sys/dic/dicSelects", method=RequestMethod.GET)
+	public List<WSSelectObj> dicSelects(@RequestParam("dicDicName") String dicDicName){
+		  // logger.debug("dicDicName: " + dicDicName);
+			List<WSSelectObj> ws = new ArrayList<WSSelectObj>();
+			for(Dic d: dicRepository.findByDicDicName(dicDicName))
+			{
+				WSSelectObj w = new WSSelectObj(d.getId(),d.getCode());
+				ws.add(w);		
+			}
+			return ws;
+    }
+	
+	
+	
+	@RequestMapping(value="/sys/dic/findDic", method=RequestMethod.GET)
+	public WSDic findDic(@RequestParam("dicId") Long dicId){
+		WSDic wsDic = new WSDic();
+		Dic dic = dicRepository.findOne(dicId);
+		wsDic.setCode(dic.getCode());
+		wsDic.setId(dic.getId());
+		wsDic.setDicDicId(dic.getDicDic().getId());
+		wsDic.setDescr(dic.getDescr());
+		return wsDic;
+			
+    }
+	
 
 	@RequestMapping(value="/sys/dic/dicTable", method=RequestMethod.POST)
 	public WSTableData dicTable(
 			@RequestParam("dicDicId") Long dicDicId,
 			@RequestParam Integer draw,@RequestParam Integer length) 
 	{
-		
-		Pageable pagaable =  new PageRequest(draw,length);
+		//logger.debug("draw: " + draw +", length: " + length);
+		Pageable pagaable =  new PageRequest(draw-1,length);
 		Page<Dic> page = dicRepository.findByDicDicId(dicDicId,pagaable);
 		List<String[]> lst = new ArrayList<String[]>();
 		for(Dic w:page.getContent())
 		{
+			String s =(w.getSys().equals(0l))?"否":"是";
 			String[] d = {
+					""+w.getId(),
 					w.getCode(),
 					w.getDescr(),
-					w.getDicDic().getName(),
+					w.getDicDic().getDescr(),
+					s,
 					""+w.getId()
 					};
+			//logger.debug(d[0]);
 			lst.add(d);
 		}
 
@@ -174,8 +214,6 @@ public class DicController {
 				!dic.getProjectStepsesForDepartment().isEmpty()||
 				!dic.getProjectStepsesForProgress().isEmpty()||
 				!dic.getProjectStepsesForStatus().isEmpty()||
-				!dic.getRoleLocations().isEmpty()||
-				!dic.getRolePageses().isEmpty()||
 				!dic.getStepses().isEmpty()||
 				!dic.getUsersesForDepartment().isEmpty()||
 				!dic.getUsersesForEmpStatus().isEmpty()||

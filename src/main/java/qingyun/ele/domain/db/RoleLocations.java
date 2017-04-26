@@ -23,7 +23,7 @@ public class RoleLocations  implements java.io.Serializable {
 
 
      private RoleLocationsId id;
-     private Dic dic;
+     private Users users;
      private SubSubLocation subSubLocation;
      private Long seq;
 
@@ -31,17 +31,7 @@ public class RoleLocations  implements java.io.Serializable {
     }
 
 	
-    public RoleLocations(RoleLocationsId id, Dic dic, SubSubLocation subSubLocation) {
-        this.id = id;
-        this.dic = dic;
-        this.subSubLocation = subSubLocation;
-    }
-    public RoleLocations(RoleLocationsId id, Dic dic, SubSubLocation subSubLocation, Long seq) {
-       this.id = id;
-       this.dic = dic;
-       this.subSubLocation = subSubLocation;
-       this.seq = seq;
-    }
+
    
      @EmbeddedId
     
@@ -57,12 +47,12 @@ public class RoleLocations  implements java.io.Serializable {
     }
 @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="id_role", nullable=false, insertable=false, updatable=false)
-    public Dic getDic() {
-        return this.dic;
+    public Users getUsers() {
+        return this.users;
     }
     
-    public void setDic(Dic dic) {
-        this.dic = dic;
+    public void setUsers(Users users) {
+        this.users = users;
     }
 @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="id_sub_sub_location", nullable=false, insertable=false, updatable=false)

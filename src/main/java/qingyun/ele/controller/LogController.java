@@ -46,7 +46,7 @@ public class LogController {
 			@RequestParam Integer draw,@RequestParam Integer length) 
 	{
 		
-		Pageable pageable =  new PageRequest(draw,length);
+		Pageable pageable =  new PageRequest(draw-1,length);
 		Page<Logs> logs =logsRepository.findByIdDesc(pageable);
 		List<String[]> lst = new ArrayList<String[]>();
 		for(Logs w:logs.getContent())

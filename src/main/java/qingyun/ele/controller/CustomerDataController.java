@@ -41,7 +41,7 @@ public class CustomerDataController {
 	public WSTableData customerDataTable(
 			@RequestParam Integer draw,@RequestParam Integer length) 
 	{
-		Pageable pageable =  new PageRequest(draw,length);
+		Pageable pageable =  new PageRequest(draw-1,length);
 		Page<CustomerData> customerData =customerDataRepository.findByIdDesc(pageable);
 		List<String[]> lst = new ArrayList<String[]>();
 		for(CustomerData w:customerData.getContent())

@@ -33,6 +33,7 @@ public class Dic  implements java.io.Serializable {
      private DicDic dicDic;
      private String code;
      private String descr;
+     private Long sys;
      private Set<Users> usersesForDepartment = new HashSet<Users>(0);
      private Set<Users> usersesForPos = new HashSet<Users>(0);
      private Set<Users> usersesForEmpStatus = new HashSet<Users>(0);
@@ -42,8 +43,8 @@ public class Dic  implements java.io.Serializable {
      private Set<Steps> stepses = new HashSet<Steps>(0);
      private Set<ProjectSteps> projectStepsesForStatus = new HashSet<ProjectSteps>(0);
      private Set<ProjectSteps> projectStepsesForProgress = new HashSet<ProjectSteps>(0);
-     private Set<RolePages> rolePageses = new HashSet<RolePages>(0);
-     private Set<RoleLocations> roleLocations = new HashSet<RoleLocations>(0);
+    // private Set<RolePages> rolePageses = new HashSet<RolePages>(0);
+    // private Set<RoleLocations> roleLocations = new HashSet<RoleLocations>(0);
      private Set<Users> usersesForRole = new HashSet<Users>(0);
 
     public Dic() {
@@ -158,24 +159,25 @@ public class Dic  implements java.io.Serializable {
     }
     
     
-    @OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY, mappedBy="dic")
-    public Set<RoleLocations> getRoleLocations() {
-        return this.roleLocations;
-    }
+//    @OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY, mappedBy="dic")
+//    public Set<RoleLocations> getRoleLocations() {
+//        return this.roleLocations;
+//    }
+//    
+//    public void setRoleLocations(Set<RoleLocations> roleLocations) {
+//        this.roleLocations = roleLocations;
+//    }
+//    
+//    
+//@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY, mappedBy="dic")
+//    public Set<RolePages> getRolePageses() {
+//        return this.rolePageses;
+//    }
+//    
+//    public void setRolePageses(Set<RolePages> rolePageses) {
+//        this.rolePageses = rolePageses;
+//    }
     
-    public void setRoleLocations(Set<RoleLocations> roleLocations) {
-        this.roleLocations = roleLocations;
-    }
-    
-    
-@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY, mappedBy="dic")
-    public Set<RolePages> getRolePageses() {
-        return this.rolePageses;
-    }
-    
-    public void setRolePageses(Set<RolePages> rolePageses) {
-        this.rolePageses = rolePageses;
-    }
 @OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY, mappedBy="dicByRole")
     public Set<Users> getUsersesForRole() {
         return this.usersesForRole;
@@ -184,6 +186,16 @@ public class Dic  implements java.io.Serializable {
     public void setUsersesForRole(Set<Users> usersesForRole) {
         this.usersesForRole = usersesForRole;
     }
+
+    @Column(name="sys")
+	public Long getSys() {
+		return sys;
+	}
+
+
+	public void setSys(Long sys) {
+		this.sys = sys;
+	}
 
 
 

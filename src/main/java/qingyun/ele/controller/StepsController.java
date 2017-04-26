@@ -52,6 +52,7 @@ public class StepsController {
 			v.setMsg("Id不能为空！");
 			return v;
 		}
+	//	logger.debug("name:" + steps.getName());
 		if (steps.getName() == null) {
 			v.setValid(false);
 			v.setMsg("名字不能为空！");
@@ -80,17 +81,19 @@ public class StepsController {
 			@RequestParam Integer draw,@RequestParam Integer length) 
 	{
 		
-		Pageable pagaable =  new PageRequest(draw,length);
+		Pageable pagaable =  new PageRequest(draw-1,length);
 		Page<Steps> page = stepsRepository.findAll(pagaable);
 		List<String[]> lst = new ArrayList<String[]>();
 		for(Steps w:page.getContent())
 		{
 			
+			String f = (w.getForcastDays()==null)?"":""+w.getForcastDays();
+			String l = (w.getLastedDays()==null)?"":""+w.getLastedDays();
 			String[] d = {
 					""+w.getId(),
 					w.getName(),
-					""+w.getForcastDays(),
-					""+w.getLastedDays(),
+					f,
+					l,
 					w.getDic().getCode(),
 					w.getForm(),
 					""+w.getId()
@@ -140,6 +143,7 @@ public class StepsController {
 		dbSteps.setDelay_email(steps.getDelay_email());
 		dbSteps.setDelay_more_email(steps.getDelay_more_email());
 		stepsRepository.save(dbSteps);
+		v.setValid(true);
 		return v;
 	}
 	
@@ -149,11 +153,14 @@ public class StepsController {
 			@RequestParam Integer draw,@RequestParam Integer length) 
 	{
 		
-		Pageable pagaable =  new PageRequest(draw,length);
+		Pageable pagaable =  new PageRequest(draw-1,length);
 		Page<Steps> page = stepsRepository.findAll(pagaable);
 		List<String[]> lst = new ArrayList<String[]>();
 		for(Steps w:page.getContent())
 		{
+			String f = (w.getForcastDays()==null)?"":""+w.getForcastDays();
+			String l = (w.getLastedDays()==null)?"":""+w.getLastedDays();
+			String dp = (w.getDic()==null)?"":w.getDic().getCode();
 			String start =(w.getStart_email()==null)?"":w.getStart_email();
 			String end =(w.getEnd_email()==null)?"":w.getEnd_email();
 			String delay =(w.getDelay_email()==null)?"":w.getDelay_email();
@@ -161,8 +168,9 @@ public class StepsController {
 			String[] d = {
 					""+w.getId(),
 					w.getName(),
-					""+w.getForcastDays(),
-					""+w.getLastedDays(),
+					dp,
+					f,
+					l,
 					start,
 					end,
 					delay,

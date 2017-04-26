@@ -91,16 +91,16 @@ public class CustomerController {
 			@RequestParam Integer draw,@RequestParam Integer length) 
 	{
 		Users sessionUser = securityUtils.getCurrentDBUser();
-		Dic role = sessionUser.getDicByRole();
-		Pageable pageable =  new PageRequest(draw,length);
+		//Dic role = sessionUser.getDicByRole();
+		Pageable pageable =  new PageRequest(draw-1,length);
 		Page<Customer> customers;
 		if(q==null)
 		{
-			customers = customerRepository.findAllCustomers(role.getId(),pageable);
+			customers = customerRepository.findAllCustomers(sessionUser.getId(),pageable);
 		}
 		else
 		{
-			customers = customerRepository.findByQ(q,role.getId(), pageable);
+			customers = customerRepository.findByQ(q,sessionUser.getId(), pageable);
 		}
 		List<String[]> lst = new ArrayList<String[]>();
 		for(Customer w:customers.getContent())
@@ -150,7 +150,7 @@ public class CustomerController {
 			@RequestParam Integer draw,@RequestParam Integer length) 
 	{
 		
-		Pageable pageable =  new PageRequest(draw,length);
+		Pageable pageable =  new PageRequest(draw-1,length);
 		Page<Steps> steps = stepsRepository.findAll(pageable);
 		List<String[]> lst = new ArrayList<String[]>();
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm"); 

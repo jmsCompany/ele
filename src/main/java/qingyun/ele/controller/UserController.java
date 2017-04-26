@@ -1,8 +1,15 @@
 package qingyun.ele.controller;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +26,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import qingyun.ele.SecurityUtils;
 import qingyun.ele.domain.db.Dic;
+import qingyun.ele.domain.db.Logs;
 import qingyun.ele.domain.db.Pages;
 import qingyun.ele.domain.db.RolePages;
 import qingyun.ele.domain.db.RolePagesId;
-import qingyun.ele.domain.db.Steps;
 import qingyun.ele.domain.db.Users;
 import qingyun.ele.repository.DicRepository;
+import qingyun.ele.repository.LogsRepository;
 import qingyun.ele.repository.PagesRepository;
 import qingyun.ele.repository.RolePagesRepository;
 import qingyun.ele.repository.UsersRepository;
@@ -36,6 +44,7 @@ import qingyun.ele.ws.WSUser;
 import qingyun.ele.ws.WSUserPassword;
 import qingyun.ele.ws.WSUserProfile;
 
+
 @RestController
 @Transactional(readOnly=true)
 public class UserController {
@@ -46,12 +55,16 @@ public class UserController {
 	@Autowired private PagesRepository pagesRepository;
 	@Autowired private SecurityUtils securityUtils;
 	@Autowired private RolePagesRepository rolePagesRepository;
+	@Autowired private LogsRepository logsRepository;
 	
 	private static final Log logger = LogFactory.getLog(UserController.class);
 	
 	@Transactional(readOnly=false)
 	@RequestMapping(value="/login", method=RequestMethod.POST,consumes=MediaType.APPLICATION_JSON_VALUE)
-	public WSUserProfile login(@RequestBody WSUser wsUser)  {
+	public WSUserProfile login(@RequestBody WSUser wsUser,ServletRequest req, ServletResponse res)  {
+		
+		HttpServletRequest request = (HttpServletRequest) req;
+		HttpServletResponse response = (HttpServletResponse) res;
 		WSUserProfile wsUserProfile = new WSUserProfile();
 		
 		String token = usrService.login(wsUser.getUsername(), wsUser.getPassword());
@@ -66,35 +79,49 @@ public class UserController {
 		wsUserProfile.setToken(token);
 		wsUserProfile.setUsername(u.getUsername());
 		//logger.debug(" username: " + u.getName());
+		if(u.getDicByDepartment()!=null)
+		{
+			wsUserProfile.setDepartment(u.getDicByDepartment().getCode());
+		}
 		
 		List<Pages> appList =pagesRepository.findAll();
 		
 		List<WSMenu> WSMenuList = new ArrayList<WSMenu>();
-		Dic role = u.getDicByRole();
+		//Dic role = u.getDicByRole();
 		for(Pages a : appList)
 		{
 			RolePages rp =null;
-			if(role!=null)
+			if(u!=null)
 			{
 				RolePagesId id = new RolePagesId();
 				id.setIdPage(a.getId());
-				id.setIdRole(role.getId());
+				id.setIdRole(u.getId());
 				rp = rolePagesRepository.findOne(id);
 			}
-			if(rp!=null||u.getUsername().equals("admin"))
+			if(rp!=null||u.getUsername().equals("admin")||u.getUsername().equals("test"))
 			{
 				WSMenu item = new WSMenu();
-	            item.setGroup(a.getGroups());
-				item.setName(a.getName());
+	            item.setGroup(a.getGroups().trim());
+				item.setName(a.getName().trim());
 				item.setId(a.getId());
-				item.setUrl(a.getUrl());
+				item.setUrl(a.getUrl().trim());
 				WSMenuList.add(item);
 			}
 	
 			
 		}
-		wsUserProfile.setWSMenuList(WSMenuList);
 		
+		Logs log = new Logs();
+		log.setIp(request.getRemoteAddr());
+		log.setTime(new Date());
+		log.setUrl(request.getRequestURI());
+		log.setUsers(u);
+		//logger.debug("save logs " + request.getRemoteAddr() +" url: " + request.getRequestURI());
+		logsRepository.save(log);
+		wsUserProfile.setIdUser(u.getId());
+		wsUserProfile.setName(u.getName());
+		wsUserProfile.setWSMenuList(WSMenuList);
+		//logger.debug("return userProfile: " + wsUserProfile.getToken());
 		return wsUserProfile;
 	}
 	
@@ -109,12 +136,13 @@ public class UserController {
 			wsUser.setMsg("必须设置用户名！");
 			return wsUser;
 		}
-
-		Users dbUser=usersRepository.findByUsername(wsUser.getUsername());
+       logger.debug("username:" + wsUser.getUsername() +"userid: " + wsUser.getIdUser());
+	//	
 		Users u;
 		//create new 
-		if(wsUser.getIdUser()==null&&wsUser.getIdUser().equals(0l))
+		if(wsUser.getIdUser()==null||wsUser.getIdUser().equals(0l))
 		{
+			Users dbUser=usersRepository.findByUsername(wsUser.getUsername());
 			if(dbUser!=null)
 			{
 				wsUser.setValid(false);
@@ -123,11 +151,25 @@ public class UserController {
 			}
 			
 			u = new Users();
-			u.setPassword(new BCryptPasswordEncoder().encode(wsUser.getPassword()));
+			//logger.debug("create new:" + wsUser.getUsername() +"userid: " + wsUser.getIdUser());
+			u.setPassword(new BCryptPasswordEncoder().encode(wsUser.getUsername()));
 		  //  u.setPassword(wsUser.getPassword());
+			//  logger.debug("new:");
+			  u.setUsername(wsUser.getUsername());
+				u.setEmail(wsUser.getEmail());
+				u.setMobile(wsUser.getMobile());
+				u.setDicByEmpStatus(dicRepository.getOne(wsUser.getIdEmpStatus()));
+				u.setDicByDepartment(dicRepository.getOne(wsUser.getIdDepartment()));
+				u.setDicByPos(dicRepository.getOne(wsUser.getIdPos()));
+				u.setDicByRole(dicRepository.getOne(wsUser.getIdRole()));
+			    u.setEnabled(wsUser.getEnabled());
+			    u.setName(wsUser.getName());
+			    usersRepository.save(u);
 		}
 		else
 		{
+			
+			Users dbUser=usersRepository.findByUsername(wsUser.getUsername());
 			u = usersRepository.findOne(wsUser.getIdUser());
 			if(dbUser!=null&&!dbUser.getId().equals(wsUser.getIdUser()))
 			{
@@ -135,17 +177,18 @@ public class UserController {
 				wsUser.setMsg("该用户名已存在！");
 				return wsUser;
 			}
+			u.setUsername(wsUser.getUsername());
+			u.setEmail(wsUser.getEmail());
+			u.setMobile(wsUser.getMobile());
+			u.setDicByEmpStatus(dicRepository.getOne(wsUser.getIdEmpStatus()));
+			u.setDicByDepartment(dicRepository.getOne(wsUser.getIdDepartment()));
+			u.setDicByPos(dicRepository.getOne(wsUser.getIdPos()));
+			u.setDicByRole(dicRepository.getOne(wsUser.getIdRole()));
+		    u.setEnabled(wsUser.getEnabled());
+		    u.setName(wsUser.getName());
+		    usersRepository.save(u);
 		}
-		u.setUsername(wsUser.getUsername());
-		u.setEmail(wsUser.getEmail());
-		u.setMobile(wsUser.getMobile());
-		u.setDicByEmpStatus(dicRepository.getOne(wsUser.getIdEmpStatus()));
-		u.setDicByDepartment(dicRepository.getOne(wsUser.getIdDepartment()));
-		u.setDicByPos(dicRepository.getOne(wsUser.getIdPos()));
-		u.setDicByRole(dicRepository.getOne(wsUser.getIdRole()));
-	    u.setEnabled(wsUser.getEnabled());
-	    u.setName(wsUser.getName());
-	    usersRepository.save(u);
+		
 	    wsUser.setValid(true);
 		return wsUser;
 	}
@@ -190,14 +233,14 @@ public class UserController {
 
 	@Transactional(readOnly = false)
 	@RequestMapping(value = "/sys/user/deleteUsers", method = RequestMethod.GET)
-	public Valid deleteUsers(@RequestParam("userId") Long userId) {
+	public Valid deleteUsers(@RequestParam("username") String username) {
 		
 		Valid v = new Valid();
-		Users u = usersRepository.findOne(userId);
+		Users u = usersRepository.findByUsername(username);
 		if(u==null)
 		{
 			v.setValid(false);
-			v.setMsg("不能找到此用户 Id:" +userId);
+			v.setMsg("不能找到此用户 Id:");
 			return v;
 		}
 		if(u.getUsername().equals("admin"))
@@ -206,7 +249,7 @@ public class UserController {
 			v.setMsg("系统用户不能被删除！");
 			return v;
 		}
-		usersRepository.delete(userId);
+		usersRepository.delete(u);
 		v.setValid(true);
 		return v;
 
@@ -219,7 +262,7 @@ public class UserController {
 			@RequestParam Integer draw,@RequestParam Integer length) 
 	{
 		
-		Pageable pagaable =  new PageRequest(draw,length);
+		Pageable pagaable =  new PageRequest(draw-1,length);
 		Page<Users> users = usersRepository.findUsers(pagaable);
 		List<String[]> lst = new ArrayList<String[]>();
 		for(Users w:users.getContent())
@@ -236,6 +279,7 @@ public class UserController {
 		    String email = (w.getEmail()==null)?"":w.getEmail();
 		    String mobile = (w.getMobile()==null)?"":w.getMobile();
 			String[] d = {
+					""+w.getId(),
 					w.getUsername(),
 					w.getName(),
 					email,
@@ -287,5 +331,14 @@ public class UserController {
 	   ws.setMobile(u.getMobile());
 	   ws.setValid(true);
 	   return ws;
+	}
+	
+	
+	@RequestMapping(value="/check/jmstoken", method=RequestMethod.GET)
+	public Valid checkToken(@RequestParam("jmstoken") String jmstoken) throws Exception {
+		Boolean returnVal = usrService.checkToken(jmstoken);
+		Valid valid = new Valid();
+		valid.setValid(returnVal);
+		return valid;
 	}
 }

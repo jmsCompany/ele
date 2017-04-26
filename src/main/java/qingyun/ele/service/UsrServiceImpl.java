@@ -64,7 +64,15 @@ public class UsrServiceImpl implements UsrService {
 		return defaultMsg;
 		
 	}
+	@Override
+	public Boolean checkToken(String jmstoken) {
 
-
+		Users u = usersRepository.findByToken(jmstoken);
+		if(u!=null)
+			return true;
+		else
+			return false;
+		
+	}
 
 }

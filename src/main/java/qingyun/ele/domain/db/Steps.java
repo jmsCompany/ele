@@ -59,7 +59,6 @@ public class Steps  implements java.io.Serializable {
     }
    
      @Id 
-    
     @Column(name="id", unique=true, nullable=false)
     public Long getId() {
         return this.id;
@@ -78,7 +77,7 @@ public class Steps  implements java.io.Serializable {
         this.dic = dic;
     }
     
-    @Column(name="name", length=20)
+    @Column(name="name", length=64)
     public String getName() {
         return this.name;
     }

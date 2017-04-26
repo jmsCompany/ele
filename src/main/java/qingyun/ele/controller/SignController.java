@@ -137,7 +137,7 @@ public class SignController {
 	public WSTableData signWorkflowTable(
 			@RequestParam Integer draw,@RequestParam Integer length) 
 	{
-		Pageable pageable =  new PageRequest(draw,length);
+		Pageable pageable =  new PageRequest(draw-1,length);
 		Page<SignWorkflow> signWorkflowData =signWorkflowRepository.findAll(pageable);
 		List<String[]> lst = new ArrayList<String[]>();
 		for(SignWorkflow w:signWorkflowData.getContent())
@@ -164,7 +164,7 @@ public class SignController {
 			@RequestParam Long idSignWorkflow,
 			@RequestParam Integer draw,@RequestParam Integer length) 
 	{
-		Pageable pageable =  new PageRequest(draw,length);
+		Pageable pageable =  new PageRequest(draw-1,length);
 		Page<SignWorkflowSteps> signWorkflowStepsData =signWorkflowStepsRepository.findByIdSignWorkflow(idSignWorkflow, pageable);
 		List<String[]> lst = new ArrayList<String[]>();
 		int seq =1;

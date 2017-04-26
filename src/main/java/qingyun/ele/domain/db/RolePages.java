@@ -23,7 +23,7 @@ public class RolePages  implements java.io.Serializable {
 
 
      private RolePagesId id;
-     private Dic dic;
+     private Users users;
      private Pages pages;
      private Long seq;
 
@@ -31,18 +31,7 @@ public class RolePages  implements java.io.Serializable {
     }
 
 	
-    public RolePages(RolePagesId id, Dic dic, Pages pages) {
-        this.id = id;
-        this.dic = dic;
-        this.pages = pages;
-    }
-    public RolePages(RolePagesId id, Dic dic, Pages pages, Long seq) {
-       this.id = id;
-       this.dic = dic;
-       this.pages = pages;
-       this.seq = seq;
-    }
-   
+  
      @EmbeddedId
     
     @AttributeOverrides( {
@@ -57,12 +46,12 @@ public class RolePages  implements java.io.Serializable {
     }
 @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="id_role", nullable=false, insertable=false, updatable=false)
-    public Dic getDic() {
-        return this.dic;
+    public Users getUsers() {
+        return this.users;
     }
     
-    public void setDic(Dic dic) {
-        this.dic = dic;
+    public void setUsers(Users users) {
+        this.users = users;
     }
 @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="id_page", nullable=false, insertable=false, updatable=false)

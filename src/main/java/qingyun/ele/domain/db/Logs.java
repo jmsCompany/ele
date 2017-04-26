@@ -76,7 +76,7 @@ public class Logs  implements java.io.Serializable {
         this.time = time;
     }
     
-    @Column(name="url", length=20)
+    @Column(name="url", length=1024)
     public String getUrl() {
         return this.url;
     }

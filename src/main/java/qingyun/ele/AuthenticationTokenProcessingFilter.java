@@ -78,7 +78,7 @@ public class AuthenticationTokenProcessingFilter extends
 		else
 		{
 			if (SecurityContextHolder.getContext().getAuthentication() == null) {
-				String token = request.getHeader("ELE-TOKEN");
+				String token = request.getHeader("JMS-TOKEN");
 				if (token != null) {
 					if (tokenUtils.validate(token)) {
 					
@@ -95,7 +95,7 @@ public class AuthenticationTokenProcessingFilter extends
 
 						SecurityContextHolder.getContext().setAuthentication(
 								authenticated);
-						logger.debug("userid:" +userDetails.getUsername() +", ip: "+request.getRemoteAddr()+", path: "+ request.getRequestURI());
+						//logger.debug("userid:" +userDetails.getUsername() +", ip: "+request.getRemoteAddr()+", path: "+ request.getRequestURI());
 						Logs log = new Logs();
 						log.setIp(request.getRemoteAddr());
 						log.setTime(new Date());

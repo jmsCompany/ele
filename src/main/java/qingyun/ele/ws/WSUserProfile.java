@@ -16,6 +16,7 @@ public class WSUserProfile extends Valid implements java.io.Serializable{
     private Long enabled;
     private Date lastLogin;
     private String token;
+    private String department;
     private List<WSMenu> WSMenuList;
  
 	public Long getIdUser() {
@@ -83,6 +84,12 @@ public class WSUserProfile extends Valid implements java.io.Serializable{
 	}
 	public void setWSMenuList(List<WSMenu> wSMenuList) {
 		WSMenuList = wSMenuList;
+	}
+	public String getDepartment() {
+		return department;
+	}
+	public void setDepartment(String department) {
+		this.department = department;
 	}
 
   
