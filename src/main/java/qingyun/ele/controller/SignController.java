@@ -134,10 +134,12 @@ public class SignController {
 	
 	
 	@RequestMapping(value="/sys/sign/signWorkflowTable", method=RequestMethod.POST)
-	public WSTableData signWorkflowTable(
+	public WSTableData signWorkflowTable(@RequestParam Integer start,
 			@RequestParam Integer draw,@RequestParam Integer length) 
 	{
-		Pageable pageable =  new PageRequest(draw-1,length);
+		int  page_num = (start.intValue() / length.intValue()) + 1;
+		Pageable pageable = new PageRequest(page_num - 1, length);
+		
 		Page<SignWorkflow> signWorkflowData =signWorkflowRepository.findAll(pageable);
 		List<String[]> lst = new ArrayList<String[]>();
 		for(SignWorkflow w:signWorkflowData.getContent())
@@ -145,6 +147,7 @@ public class SignController {
 			String[] d = {
 					""+w.getId(),
 					w.getName(),
+					w.getForm(),
 					""+w.getId()
 					};
 			lst.add(d);
@@ -161,10 +164,11 @@ public class SignController {
 	
 	@RequestMapping(value="/sys/sign/signWorkflowStepsTable", method=RequestMethod.POST)
 	public WSTableData signWorkflowStepsTable(
-			@RequestParam Long idSignWorkflow,
+			@RequestParam Long idSignWorkflow,@RequestParam Integer start,
 			@RequestParam Integer draw,@RequestParam Integer length) 
 	{
-		Pageable pageable =  new PageRequest(draw-1,length);
+		int  page_num = (start.intValue() / length.intValue()) + 1;
+		Pageable pageable = new PageRequest(page_num - 1, length);
 		Page<SignWorkflowSteps> signWorkflowStepsData =signWorkflowStepsRepository.findByIdSignWorkflow(idSignWorkflow, pageable);
 		List<String[]> lst = new ArrayList<String[]>();
 		int seq =1;

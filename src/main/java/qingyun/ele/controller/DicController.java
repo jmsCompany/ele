@@ -1,9 +1,7 @@
 package qingyun.ele.controller;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import qingyun.ele.domain.db.Dic;
 import qingyun.ele.domain.db.DicDic;
-import qingyun.ele.domain.db.Pages;
 import qingyun.ele.repository.DicDicRepository;
 import qingyun.ele.repository.DicRepository;
 import qingyun.ele.service.UsrService;
@@ -32,12 +29,9 @@ import qingyun.ele.ws.WSTableData;
 @Transactional(readOnly = true)
 public class DicController {
 
-	@Autowired
-	private UsrService usrService;
-	@Autowired
-	private DicDicRepository dicDicRepository;
-	@Autowired
-	private DicRepository dicRepository;
+	@Autowired private UsrService usrService;
+	@Autowired private DicDicRepository dicDicRepository;
+	@Autowired private DicRepository dicRepository;
 	private static final Log logger = LogFactory.getLog(DicController.class);
 
 	@Transactional(readOnly = false)
@@ -69,7 +63,6 @@ public class DicController {
 
 		}
 		dicDic = dicDicRepository.save(dicDic);
-	
 		v.setValid(true);
 		v.setMsg("保存成功，新字典ID：" + dicDic.getId());
 		return v;
@@ -77,7 +70,6 @@ public class DicController {
 	}
 	
 	
-
 	@Transactional(readOnly = false)
 	@RequestMapping(value = "/sys/dic/saveDic", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public Valid saveDic(@RequestBody Dic dic) {
@@ -125,6 +117,7 @@ public class DicController {
 
 	}
 	
+
 	@RequestMapping(value="/sys/dic/dicDicSelects", method=RequestMethod.GET)
 	public List<WSSelectObj> dicDicSelects(){
 			List<WSSelectObj> ws = new ArrayList<WSSelectObj>();
@@ -140,7 +133,6 @@ public class DicController {
 	
 	@RequestMapping(value="/sys/dic/dicSelects", method=RequestMethod.GET)
 	public List<WSSelectObj> dicSelects(@RequestParam("dicDicName") String dicDicName){
-		  // logger.debug("dicDicName: " + dicDicName);
 			List<WSSelectObj> ws = new ArrayList<WSSelectObj>();
 			for(Dic d: dicRepository.findByDicDicName(dicDicName))
 			{
@@ -167,12 +159,12 @@ public class DicController {
 
 	@RequestMapping(value="/sys/dic/dicTable", method=RequestMethod.POST)
 	public WSTableData dicTable(
-			@RequestParam("dicDicId") Long dicDicId,
+			@RequestParam("dicDicId") Long dicDicId,@RequestParam Integer start,
 			@RequestParam Integer draw,@RequestParam Integer length) 
 	{
-		//logger.debug("draw: " + draw +", length: " + length);
-		Pageable pagaable =  new PageRequest(draw-1,length);
-		Page<Dic> page = dicRepository.findByDicDicId(dicDicId,pagaable);
+		int  page_num = (start.intValue() / length.intValue()) + 1;
+		Pageable pageable = new PageRequest(page_num - 1, length);
+		Page<Dic> page = dicRepository.findByDicDicId(dicDicId,pageable);
 		List<String[]> lst = new ArrayList<String[]>();
 		for(Dic w:page.getContent())
 		{
@@ -255,5 +247,6 @@ public class DicController {
 		return v;
 
 	}
+	
 	
 }

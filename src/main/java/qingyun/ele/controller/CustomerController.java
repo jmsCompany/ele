@@ -2,6 +2,7 @@ package qingyun.ele.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -59,6 +60,8 @@ public class CustomerController {
 		if (customer.getId() == null || customer.getId().equals(0l)) {
 			dbCustomer = new Customer();
 			dbCustomer.setDeleted(0l);
+			dbCustomer.setCreationTime(new Date());
+			dbCustomer.setCreator(securityUtils.getCurrentDBUser().getId());
 		} else {
 		   dbCustomer = customerRepository.findOne(customer.getId());
 	
@@ -146,11 +149,14 @@ public class CustomerController {
 
 	@RequestMapping(value="/project/projectStepsTable", method=RequestMethod.POST)
 	public WSTableData projectStepsTable(
-			@RequestParam() Long projectId,
+			@RequestParam Long projectId,
+			@RequestParam Integer start,
 			@RequestParam Integer draw,@RequestParam Integer length) 
 	{
 		
-		Pageable pageable =  new PageRequest(draw-1,length);
+		
+		int  page_num = (start.intValue() / length.intValue()) + 1;
+		Pageable pageable = new PageRequest(page_num - 1, length);
 		Page<Steps> steps = stepsRepository.findAll(pageable);
 		List<String[]> lst = new ArrayList<String[]>();
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm"); 

@@ -2,6 +2,8 @@ package qingyun.ele.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import qingyun.ele.domain.db.SubSubLocation;
@@ -15,5 +17,6 @@ public interface SubSubLocationRepository  extends JpaRepository<SubSubLocation,
 	public List<SubSubLocation> findBySubLocationIdAndEnabled(Long subLocationId,Long enabled);
 
 	public List<SubSubLocation> findByEnabled(Long enabled);
+	public Page<SubSubLocation> findByEnabled(Long enabled,Pageable pageable);
 
 }

@@ -115,6 +115,9 @@ public class LocationService {
 	}
 	
 	
+	
+	
+	
 	public void loadLocationsFromCSV(InputStream inputStream) throws IOException{
 		CsvReader reader = new CsvReader(inputStream,',', Charset.forName("UTF-8"));
       //  reader.readHeaders();  //Parent,  Name,     Description
@@ -145,7 +148,7 @@ public class LocationService {
 			s.setName(name);
 			s.setId(idSubLocation);
 			//s.setEnabled(enabled);
-			 s.setEnabled(0l);
+			s.setEnabled(0l);
 			s.setLocation(location);
 			subLocationRepository.save(s); 
 	

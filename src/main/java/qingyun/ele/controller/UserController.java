@@ -39,6 +39,7 @@ import qingyun.ele.repository.UsersRepository;
 import qingyun.ele.service.UsrService;
 import qingyun.ele.ws.Valid;
 import qingyun.ele.ws.WSMenu;
+import qingyun.ele.ws.WSSelectObj;
 import qingyun.ele.ws.WSTableData;
 import qingyun.ele.ws.WSUser;
 import qingyun.ele.ws.WSUserPassword;
@@ -136,7 +137,14 @@ public class UserController {
 			wsUser.setMsg("必须设置用户名！");
 			return wsUser;
 		}
-       logger.debug("username:" + wsUser.getUsername() +"userid: " + wsUser.getIdUser());
+		if(wsUser.getUsername().equals("admin"))
+		{
+			wsUser.setValid(false);
+			wsUser.setMsg("系统用户，不允许被修改！");
+			return wsUser;
+		}
+		
+       //logger.debug("username:" + wsUser.getUsername() +"userid: " + wsUser.getIdUser());
 	//	
 		Users u;
 		//create new 
@@ -150,14 +158,14 @@ public class UserController {
 				return wsUser;
 			}
 			
-			u = new Users();
+			   u = new Users();
 			//logger.debug("create new:" + wsUser.getUsername() +"userid: " + wsUser.getIdUser());
-			u.setPassword(new BCryptPasswordEncoder().encode(wsUser.getUsername()));
+			    u.setPassword(new BCryptPasswordEncoder().encode(wsUser.getUsername()));
 		  //  u.setPassword(wsUser.getPassword());
 			//  logger.debug("new:");
-			  u.setUsername(wsUser.getUsername());
+			    u.setUsername(wsUser.getUsername());
 				u.setEmail(wsUser.getEmail());
-				u.setMobile(wsUser.getMobile());
+			    u.setMobile(wsUser.getMobile());
 				u.setDicByEmpStatus(dicRepository.getOne(wsUser.getIdEmpStatus()));
 				u.setDicByDepartment(dicRepository.getOne(wsUser.getIdDepartment()));
 				u.setDicByPos(dicRepository.getOne(wsUser.getIdPos()));
@@ -258,12 +266,13 @@ public class UserController {
 	
 	
 	@RequestMapping(value="/sys/user/usersTable", method=RequestMethod.POST)
-	public WSTableData usersTable(
+	public WSTableData usersTable(@RequestParam Integer start,
 			@RequestParam Integer draw,@RequestParam Integer length) 
 	{
 		
-		Pageable pagaable =  new PageRequest(draw-1,length);
-		Page<Users> users = usersRepository.findUsers(pagaable);
+		int  page_num = (start.intValue() / length.intValue()) + 1;
+		Pageable pageable = new PageRequest(page_num - 1, length);
+		Page<Users> users = usersRepository.findUsers(pageable);
 		List<String[]> lst = new ArrayList<String[]>();
 		for(Users w:users.getContent())
 		{
@@ -341,4 +350,15 @@ public class UserController {
 		valid.setValid(returnVal);
 		return valid;
 	}
+	
+	@RequestMapping(value="/sys/user/userSelects", method=RequestMethod.GET)
+	public List<WSSelectObj> userSelects(){
+			List<WSSelectObj> ws = new ArrayList<WSSelectObj>();
+			for(Users u: usersRepository.findAll())
+			{
+				WSSelectObj w = new WSSelectObj(u.getId(),u.getName());
+				ws.add(w);		
+			}
+			return ws;
+    }
 }

@@ -39,26 +39,35 @@ public class Customer  implements java.io.Serializable {
      private Date start;
      private Date end;
      private Long deleted;
+     
+     private Date creationTime;
+     private Long creator;
      private Set<So> sos = new HashSet<So>(0);
      private Set<ProjectSteps> projectStepses = new HashSet<ProjectSteps>(0);
      private Set<Loan> loans = new HashSet<Loan>(0);
 
-    public Customer() {
+     private Integer saleMan;
+     private Float actVol;
+     private Float unitPrice;
+     private Float unitCost;
+     
+     
+     private Float saleCost;
+     private Float managementCost;
+     private Float agentCost;
+     private Float devCost;
+     private Float monthLoan;
+     private Integer durationLoan;
+     private Integer monthIncome;
+     private Integer netProfit;
+     private String loanTime;
+
+     
+     
+     public Customer() {
     }
 
-    public Customer(SubSubLocation subSubLocation, Dic dic, String name, String address, String code, String project, Date start, Date end, Set<So> sos, Set<ProjectSteps> projectStepses, Set<Loan> loans) {
-       this.subSubLocation = subSubLocation;
-       this.dic = dic;
-       this.name = name;
-       this.address = address;
-       this.code = code;
-       this.project = project;
-       this.start = start;
-       this.end = end;
-       this.sos = sos;
-       this.projectStepses = projectStepses;
-       this.loans = loans;
-    }
+   
    
      @Id @GeneratedValue(strategy=IDENTITY)
     
@@ -174,6 +183,180 @@ public class Customer  implements java.io.Serializable {
 
 	public void setDeleted(Long deleted) {
 		this.deleted = deleted;
+	}
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name="creation_time", length=19)
+	public Date getCreationTime() {
+		return creationTime;
+	}
+
+	public void setCreationTime(Date creationTime) {
+		this.creationTime = creationTime;
+	}
+
+    @Column(name="creator")
+	public Long getCreator() {
+		return creator;
+	}
+
+	public void setCreator(Long creator) {
+		this.creator = creator;
+	}
+
+	 @Column(name="sale_cosyt", precision=12, scale=0)
+
+	public Float getSaleCost() {
+		return saleCost;
+	}
+
+
+
+	public void setSaleCost(Float saleCost) {
+		this.saleCost = saleCost;
+	}
+
+
+	 @Column(name="management_cost", precision=12, scale=0)
+	public Float getManagementCost() {
+		return managementCost;
+	}
+
+
+
+	public void setManagementCost(Float managementCost) {
+		this.managementCost = managementCost;
+	}
+
+
+	 @Column(name="agent_cost", precision=12, scale=0)
+	public Float getAgentCost() {
+		return agentCost;
+	}
+
+
+
+	public void setAgentCost(Float agentCost) {
+		this.agentCost = agentCost;
+	}
+
+
+	 @Column(name="dev_cost", precision=12, scale=0)
+	public Float getDevCost() {
+		return devCost;
+	}
+
+
+
+	public void setDevCost(Float devCost) {
+		this.devCost = devCost;
+	}
+
+
+	 @Column(name="month_loan", precision=12, scale=0)
+	public Float getMonthLoan() {
+		return monthLoan;
+	}
+
+
+
+	public void setMonthLoan(Float monthLoan) {
+		this.monthLoan = monthLoan;
+	}
+
+
+	 @Column(name="duration_loan")
+	public Integer getDurationLoan() {
+		return durationLoan;
+	}
+
+
+
+	public void setDurationLoan(Integer durationLoan) {
+		this.durationLoan = durationLoan;
+	}
+
+
+	@Column(name="month_income")
+	public Integer getMonthIncome() {
+		return monthIncome;
+	}
+
+
+
+	public void setMonthIncome(Integer monthIncome) {
+		this.monthIncome = monthIncome;
+	}
+
+
+	 @Column(name="net_profit")
+	public Integer getNetProfit() {
+		return netProfit;
+	}
+
+
+
+	public void setNetProfit(Integer netProfit) {
+		this.netProfit = netProfit;
+	}
+
+
+	@Column(name="loan_time", length=64)
+	public String getLoanTime() {
+		return loanTime;
+	}
+
+
+
+	public void setLoanTime(String loanTime) {
+		this.loanTime = loanTime;
+	}
+
+
+	 @Column(name="sales_man")
+	public Integer getSaleMan() {
+		return saleMan;
+	}
+
+
+
+	public void setSaleMan(Integer saleMan) {
+		this.saleMan = saleMan;
+	}
+
+
+	 @Column(name="act_vol", precision=12, scale=0)
+	public Float getActVol() {
+		return actVol;
+	}
+
+
+
+	public void setActVol(Float actVol) {
+		this.actVol = actVol;
+	}
+
+
+	 @Column(name="unit_price", precision=12, scale=0)
+	public Float getUnitPrice() {
+		return unitPrice;
+	}
+
+
+
+	public void setUnitPrice(Float unitPrice) {
+		this.unitPrice = unitPrice;
+	}
+
+
+	 @Column(name="unit_cost", precision=12, scale=0)
+	public Float getUnitCost() {
+		return unitCost;
+	}
+
+
+
+	public void setUnitCost(Float unitCost) {
+		this.unitCost = unitCost;
 	}
 
 

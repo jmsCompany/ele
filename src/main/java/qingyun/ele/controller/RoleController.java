@@ -5,6 +5,9 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +21,7 @@ import qingyun.ele.domain.db.RoleLocations;
 import qingyun.ele.domain.db.RoleLocationsId;
 import qingyun.ele.domain.db.RolePages;
 import qingyun.ele.domain.db.RolePagesId;
+import qingyun.ele.domain.db.SignWorkflow;
 import qingyun.ele.domain.db.SubSubLocation;
 import qingyun.ele.domain.db.Users;
 import qingyun.ele.repository.PagesRepository;
@@ -28,6 +32,7 @@ import qingyun.ele.ws.Valid;
 import qingyun.ele.ws.WSRoleLocation;
 import qingyun.ele.ws.WSRolePage;
 import qingyun.ele.ws.WSRolePerms;
+import qingyun.ele.ws.WSTableData;
 
 @RestController
 @Transactional(readOnly=true)
@@ -49,8 +54,13 @@ public class RoleController {
 			v.setMsg("角色ID不能为空！");
 			return v;
 		}
-		
-
+		/*
+		 * {
+		 *   idRole:1,
+		 *   locationList:[{idLocation:3},{idLocation:4}],
+		 *   pageList:[{idPage:4}{idPage:7}]
+		 * }
+		 */
 		roleLocationRepository.delete(roleLocationRepository.findByRoleId(wsRolePerms.getIdRole()));
 		rolePagesRepository.delete(rolePagesRepository.findByRoleId(wsRolePerms.getIdRole()));
 		
@@ -61,7 +71,6 @@ public class RoleController {
 			id.setIdSubSubLocation(rl.getIdLocation());
 			RoleLocations drl = new RoleLocations();
 			drl.setId(id);
-
 			roleLocationRepository.save(drl);
 		}
 		for(WSRolePage rp: wsRolePerms.getPageList())
@@ -133,6 +142,78 @@ public class RoleController {
 		return ws;
 
 	}
+	
+	
+	@RequestMapping(value="/sys/role/pageTable", method=RequestMethod.POST)
+	public WSTableData pageTable(
+			@RequestParam("roleId") Long roleId) 
+	{
+		
+		Users sessionUser = securityUtils.getCurrentDBUser();
+		List<String[]> lst = new ArrayList<String[]>();
+		for(Pages p: pagesRepository.findAll())
+		{
+			
+			RolePagesId id = new RolePagesId();
+			id.setIdPage(p.getId());
+			id.setIdRole(roleId);
+			RolePages rp = rolePagesRepository.findOne(id);
+			String xq = "无";
+			if(rp!=null)
+			{
+				xq ="有";
+			}
+	
+			String[] d = {
+					""+p.getId(),
+					p.getName(),
+					xq,
+					""+p.getId()
+					};
+			lst.add(d);
+		}
+		WSTableData t = new WSTableData();
+	    t.setData(lst);
+	    return t;
+	}
+	
+	
+	
+	@RequestMapping(value="/sys/role/locationTable", method=RequestMethod.POST)
+	public WSTableData locationTable(
+			@RequestParam("roleId") Long roleId) 
+	{
+		
+		Users sessionUser = securityUtils.getCurrentDBUser();
+		List<String[]> lst = new ArrayList<String[]>();
+		
+		for(SubSubLocation s: subSubLocationRepository.findByEnabled(1l))
+		{
+			RoleLocationsId id = new RoleLocationsId();
+			id.setIdRole(roleId);
+			id.setIdSubSubLocation(s.getId());
+			RoleLocations rp = roleLocationRepository.findOne(id);
+			String xq = "无";
+			if(rp!=null)
+			{
+				xq ="有";
+			}
+			String[] d = {
+					""+s.getId(),
+					s.getSubLocation().getLocation().getName() +" "+s.getSubLocation().getName() +" " +s.getName(),
+					xq,
+					""+s.getId()
+					};
+			lst.add(d);
+		}
+		
+	
+		WSTableData t = new WSTableData();
+	    t.setData(lst);
+	    return t;
+	}
+	
+	
 	
 
 }

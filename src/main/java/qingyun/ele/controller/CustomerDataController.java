@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import qingyun.ele.domain.db.CustomerData;
+import qingyun.ele.domain.db.Steps;
 import qingyun.ele.repository.CustomerDataRepository;
 import qingyun.ele.ws.Valid;
 import qingyun.ele.ws.WSTableData;
@@ -39,9 +40,11 @@ public class CustomerDataController {
 
 	@RequestMapping(value="/info/customer/customerDataTable", method=RequestMethod.POST)
 	public WSTableData customerDataTable(
-			@RequestParam Integer draw,@RequestParam Integer length) 
+			@RequestParam Integer start,@RequestParam Integer draw,@RequestParam Integer length) 
 	{
-		Pageable pageable =  new PageRequest(draw-1,length);
+		int  page_num = (start.intValue() / length.intValue()) + 1;
+		Pageable pageable = new PageRequest(page_num - 1, length);
+
 		Page<CustomerData> customerData =customerDataRepository.findByIdDesc(pageable);
 		List<String[]> lst = new ArrayList<String[]>();
 		for(CustomerData w:customerData.getContent())

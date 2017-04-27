@@ -30,6 +30,8 @@ public class SignWorkflow  implements java.io.Serializable {
 
      private Long id;
      private String name;
+     
+     private String form;
     
     public SignWorkflow() {
     }
@@ -58,6 +60,16 @@ public class SignWorkflow  implements java.io.Serializable {
     public void setName(String name) {
         this.name = name;
     }
+
+    @Column(name="form", length=64)
+	public String getForm() {
+		return form;
+	}
+
+
+	public void setForm(String form) {
+		this.form = form;
+	}
     
 
 }

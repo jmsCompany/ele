@@ -77,12 +77,13 @@ public class StepsController {
 	}
 	
 	@RequestMapping(value="/sys/steps/stepsTable", method=RequestMethod.POST)
-	public WSTableData stepsTable(
+	public WSTableData stepsTable(@RequestParam Integer start,
 			@RequestParam Integer draw,@RequestParam Integer length) 
 	{
 		
-		Pageable pagaable =  new PageRequest(draw-1,length);
-		Page<Steps> page = stepsRepository.findAll(pagaable);
+		int  page_num = (start.intValue() / length.intValue()) + 1;
+		Pageable pageable = new PageRequest(page_num - 1, length);
+		Page<Steps> page = stepsRepository.findAll(pageable);
 		List<String[]> lst = new ArrayList<String[]>();
 		for(Steps w:page.getContent())
 		{
