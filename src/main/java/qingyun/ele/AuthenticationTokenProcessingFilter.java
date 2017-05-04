@@ -25,13 +25,9 @@ import qingyun.ele.controller.UserController;
 import qingyun.ele.domain.db.Logs;
 import qingyun.ele.repository.LogsRepository;
 
-
 @Component
-public class AuthenticationTokenProcessingFilter extends
-		AbstractPreAuthenticatedProcessingFilter {
+public class AuthenticationTokenProcessingFilter extends AbstractPreAuthenticatedProcessingFilter {
 
-	@Autowired
-	private UserDetailsService userDetailsService;
 	@Autowired
 	private TokenUtils tokenUtils;
 	@Autowired
@@ -65,48 +61,41 @@ public class AuthenticationTokenProcessingFilter extends
 	}
 
 	@Override
-	public void doFilter(ServletRequest req, ServletResponse res,
-			FilterChain chain) throws IOException, ServletException {
+	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
+			throws IOException, ServletException {
 		HttpServletRequest request = (HttpServletRequest) req;
 		HttpServletResponse response = (HttpServletResponse) res;
-	//	logger.debug("request: " + request.getHeader("User-Agent"));
-	//	logger.debug("from: " + request.getRequestURI());
+		// logger.debug("request: " + request.getHeader("User-Agent"));
+		// logger.debug("from: " + request.getRequestURI());
 		if (req instanceof org.apache.catalina.connector.RequestFacade) {
 			chain.doFilter(request, response);
-			
-		}
-		else
-		{
+
+		} else {
 			if (SecurityContextHolder.getContext().getAuthentication() == null) {
 				String token = request.getHeader("JMS-TOKEN");
 				if (token != null) {
 					if (tokenUtils.validate(token)) {
-					
-						MCAUserDetails userDetails = tokenUtils
-								.getUserFromToken(token);
-						UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-								userDetails.getUsername(),
-								userDetails.getPassword());
-						authentication
-								.setDetails(new WebAuthenticationDetailsSource()
-										.buildDetails((HttpServletRequest) request));
-						Authentication authenticated = authenticationManager
-								.authenticate(authentication);
 
-						SecurityContextHolder.getContext().setAuthentication(
-								authenticated);
-						//logger.debug("userid:" +userDetails.getUsername() +", ip: "+request.getRemoteAddr()+", path: "+ request.getRequestURI());
+						MCAUserDetails userDetails = tokenUtils.getUserFromToken(token);
+						UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+								userDetails.getUsername(), userDetails.getPassword());
+						authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+						Authentication authenticated = authenticationManager.authenticate(authentication);
+
+						SecurityContextHolder.getContext().setAuthentication(authenticated);
+						// logger.debug("userid:" +userDetails.getUsername() +",
+						// ip: "+request.getRemoteAddr()+", path: "+
+						// request.getRequestURI());
 						Logs log = new Logs();
 						log.setIp(request.getRemoteAddr());
 						log.setTime(new Date());
 						log.setUrl(request.getRequestURI());
 						log.setUsers(userDetails.getUser());
 						logsRepository.save(log);
-						
+
 					}
 				}
 
-				
 			}
 			chain.doFilter(request, response);
 		}

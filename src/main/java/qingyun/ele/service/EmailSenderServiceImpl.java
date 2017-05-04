@@ -14,7 +14,8 @@ import org.springframework.stereotype.Service;
 @Service("emailSenderService")
 public class EmailSenderServiceImpl implements EmailSenderService {
 
-	@Autowired private JavaMailSender mailSender;
+	@Autowired
+	private JavaMailSender mailSender;
 	private String from = "system@yashidun.com.cn";
 
 	@Override
@@ -22,6 +23,7 @@ public class EmailSenderServiceImpl implements EmailSenderService {
 			final String[] files) {
 
 		MimeMessagePreparator preparator = new MimeMessagePreparator() {
+			@Override
 			public void prepare(MimeMessage mimeMessage) {
 				MimeMessageHelper message;
 				try {
@@ -30,7 +32,7 @@ public class EmailSenderServiceImpl implements EmailSenderService {
 					message.setFrom(new InternetAddress(from));
 					message.setSubject(subject);
 					String body = "hello world";
-					//System.out.println("body: " + body);
+					// System.out.println("body: " + body);
 					message.setText(body, true);
 					if (files != null) {
 						for (String f : files) {
@@ -39,14 +41,13 @@ public class EmailSenderServiceImpl implements EmailSenderService {
 						}
 					}
 
-				}
-		    catch (MessagingException e) {
+				} catch (MessagingException e) {
 					e.printStackTrace();
 				}
-		  }
-		};	
+			}
+		};
 		this.mailSender.send(preparator);
-		
+
 	}
 
 }

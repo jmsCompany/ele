@@ -1,7 +1,5 @@
 package qingyun.ele.ws;
 
-import java.util.Date;
-
 public class WSDic implements java.io.Serializable {
 
 	private Long id;

@@ -28,10 +28,11 @@ public class LogController {
 	private static final Log logger = LogFactory.getLog(LogController.class);
 
 	@RequestMapping(value = "/info/log/logsTable", method = RequestMethod.POST)
-	public WSTableData logsTable(@RequestParam Integer draw,@RequestParam Integer start, @RequestParam Integer length) {
+	public WSTableData logsTable(@RequestParam Integer draw, @RequestParam Integer start,
+			@RequestParam Integer length) {
 
-		int  page_num = (start.intValue() / length.intValue()) + 1;
-		//logger.debug("page_num: " + page_num);
+		int page_num = (start.intValue() / length.intValue()) + 1;
+		// logger.debug("page_num: " + page_num);
 		Pageable pageable = new PageRequest(page_num - 1, length);
 		Page<Logs> logs = logsRepository.findByIdDesc(pageable);
 		List<String[]> lst = new ArrayList<String[]>();
@@ -40,7 +41,7 @@ public class LogController {
 			String name = (u == null) ? "" : u.getUsername();
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 			String[] d = { formatter.format(w.getTime()), name, w.getIp(), w.getUrl() };
-			//logger.debug("url: " + w.getUrl());
+			// logger.debug("url: " + w.getUrl());
 			lst.add(d);
 		}
 

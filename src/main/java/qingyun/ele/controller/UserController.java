@@ -3,8 +3,6 @@ package qingyun.ele.controller;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
-
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -45,142 +43,137 @@ import qingyun.ele.ws.WSUser;
 import qingyun.ele.ws.WSUserPassword;
 import qingyun.ele.ws.WSUserProfile;
 
-
 @RestController
-@Transactional(readOnly=true)
+@Transactional(readOnly = true)
 public class UserController {
-	
-	@Autowired private UsrService usrService;
-	@Autowired private UsersRepository usersRepository;
-	@Autowired private DicRepository dicRepository;
-	@Autowired private PagesRepository pagesRepository;
-	@Autowired private SecurityUtils securityUtils;
-	@Autowired private RolePagesRepository rolePagesRepository;
-	@Autowired private LogsRepository logsRepository;
-	
+
+	@Autowired
+	private UsrService usrService;
+	@Autowired
+	private UsersRepository usersRepository;
+	@Autowired
+	private DicRepository dicRepository;
+	@Autowired
+	private PagesRepository pagesRepository;
+	@Autowired
+	private SecurityUtils securityUtils;
+	@Autowired
+	private RolePagesRepository rolePagesRepository;
+	@Autowired
+	private LogsRepository logsRepository;
+
 	private static final Log logger = LogFactory.getLog(UserController.class);
-	
-	@Transactional(readOnly=false)
-	@RequestMapping(value="/login", method=RequestMethod.POST,consumes=MediaType.APPLICATION_JSON_VALUE)
-	public WSUserProfile login(@RequestBody WSUser wsUser,ServletRequest req, ServletResponse res)  {
-		
+
+	@Transactional(readOnly = false)
+	@RequestMapping(value = "/login", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public WSUserProfile login(@RequestBody WSUser wsUser, ServletRequest req, ServletResponse res) {
+
 		HttpServletRequest request = (HttpServletRequest) req;
 		HttpServletResponse response = (HttpServletResponse) res;
 		WSUserProfile wsUserProfile = new WSUserProfile();
-		
+
 		String token = usrService.login(wsUser.getUsername(), wsUser.getPassword());
-		if(token==null)
-		{
+		if (token == null) {
 			wsUserProfile.setValid(false);
 			wsUserProfile.setMsg("用户名或密码错误");
 			return wsUserProfile;
 		}
-		Users u =usersRepository.findByUsername(wsUser.getUsername());
+		Users u = usersRepository.findByUsername(wsUser.getUsername());
 		wsUserProfile.setValid(true);
 		wsUserProfile.setToken(token);
 		wsUserProfile.setUsername(u.getUsername());
-		//logger.debug(" username: " + u.getName());
-		if(u.getDicByDepartment()!=null)
-		{
+		// logger.debug(" username: " + u.getName());
+		if (u.getDicByDepartment() != null) {
 			wsUserProfile.setDepartment(u.getDicByDepartment().getCode());
 		}
-		
-		List<Pages> appList =pagesRepository.findAll();
-		
+
+		List<Pages> appList = pagesRepository.findAll();
+
 		List<WSMenu> WSMenuList = new ArrayList<WSMenu>();
-		//Dic role = u.getDicByRole();
-		for(Pages a : appList)
-		{
-			RolePages rp =null;
-			if(u!=null)
-			{
+		// Dic role = u.getDicByRole();
+		for (Pages a : appList) {
+			RolePages rp = null;
+			if (u != null) {
 				RolePagesId id = new RolePagesId();
 				id.setIdPage(a.getId());
 				id.setIdRole(u.getId());
 				rp = rolePagesRepository.findOne(id);
 			}
-			if(rp!=null||u.getUsername().equals("admin")||u.getUsername().equals("test"))
-			{
+			if (rp != null || u.getUsername().equals("admin") || u.getUsername().equals("test")) {
 				WSMenu item = new WSMenu();
-	            item.setGroup(a.getGroups().trim());
+				item.setGroup(a.getGroups().trim());
 				item.setName(a.getName().trim());
 				item.setId(a.getId());
 				item.setUrl(a.getUrl().trim());
 				WSMenuList.add(item);
 			}
-	
-			
+
 		}
-		
+
 		Logs log = new Logs();
 		log.setIp(request.getRemoteAddr());
 		log.setTime(new Date());
 		log.setUrl(request.getRequestURI());
 		log.setUsers(u);
-		//logger.debug("save logs " + request.getRemoteAddr() +" url: " + request.getRequestURI());
+		// logger.debug("save logs " + request.getRemoteAddr() +" url: " +
+		// request.getRequestURI());
 		logsRepository.save(log);
 		wsUserProfile.setIdUser(u.getId());
 		wsUserProfile.setName(u.getName());
 		wsUserProfile.setWSMenuList(WSMenuList);
-		//logger.debug("return userProfile: " + wsUserProfile.getToken());
+		// logger.debug("return userProfile: " + wsUserProfile.getToken());
 		return wsUserProfile;
 	}
-	
-	
-	@Transactional(readOnly=false)
-	@RequestMapping(value="/sys/user/saveUser", method=RequestMethod.POST,consumes=MediaType.APPLICATION_JSON_VALUE)
-	public WSUser save(@RequestBody WSUser wsUser)  {
-		
-		if(wsUser.getUsername()==null)
-		{
+
+	@Transactional(readOnly = false)
+	@RequestMapping(value = "/sys/user/saveUser", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public WSUser save(@RequestBody WSUser wsUser) {
+
+		if (wsUser.getUsername() == null) {
 			wsUser.setValid(false);
 			wsUser.setMsg("必须设置用户名！");
 			return wsUser;
 		}
-		if(wsUser.getUsername().equals("admin"))
-		{
+		if (wsUser.getUsername().equals("admin")) {
 			wsUser.setValid(false);
 			wsUser.setMsg("系统用户，不允许被修改！");
 			return wsUser;
 		}
-		
-       //logger.debug("username:" + wsUser.getUsername() +"userid: " + wsUser.getIdUser());
-	//	
+
+		// logger.debug("username:" + wsUser.getUsername() +"userid: " +
+		// wsUser.getIdUser());
+		//
 		Users u;
-		//create new 
-		if(wsUser.getIdUser()==null||wsUser.getIdUser().equals(0l))
-		{
-			Users dbUser=usersRepository.findByUsername(wsUser.getUsername());
-			if(dbUser!=null)
-			{
+		// create new
+		if (wsUser.getIdUser() == null || wsUser.getIdUser().equals(0l)) {
+			Users dbUser = usersRepository.findByUsername(wsUser.getUsername());
+			if (dbUser != null) {
 				wsUser.setValid(false);
 				wsUser.setMsg("该用户名已存在！");
 				return wsUser;
 			}
-			
-			   u = new Users();
-			//logger.debug("create new:" + wsUser.getUsername() +"userid: " + wsUser.getIdUser());
-			    u.setPassword(new BCryptPasswordEncoder().encode(wsUser.getUsername()));
-		  //  u.setPassword(wsUser.getPassword());
-			//  logger.debug("new:");
-			    u.setUsername(wsUser.getUsername());
-				u.setEmail(wsUser.getEmail());
-			    u.setMobile(wsUser.getMobile());
-				u.setDicByEmpStatus(dicRepository.getOne(wsUser.getIdEmpStatus()));
-				u.setDicByDepartment(dicRepository.getOne(wsUser.getIdDepartment()));
-				u.setDicByPos(dicRepository.getOne(wsUser.getIdPos()));
-				u.setDicByRole(dicRepository.getOne(wsUser.getIdRole()));
-			    u.setEnabled(wsUser.getEnabled());
-			    u.setName(wsUser.getName());
-			    usersRepository.save(u);
-		}
-		else
-		{
-			
-			Users dbUser=usersRepository.findByUsername(wsUser.getUsername());
+
+			u = new Users();
+			// logger.debug("create new:" + wsUser.getUsername() +"userid: " +
+			// wsUser.getIdUser());
+			u.setPassword(new BCryptPasswordEncoder().encode(wsUser.getUsername()));
+			// u.setPassword(wsUser.getPassword());
+			// logger.debug("new:");
+			u.setUsername(wsUser.getUsername());
+			u.setEmail(wsUser.getEmail());
+			u.setMobile(wsUser.getMobile());
+			u.setDicByEmpStatus(dicRepository.getOne(wsUser.getIdEmpStatus()));
+			u.setDicByDepartment(dicRepository.getOne(wsUser.getIdDepartment()));
+			u.setDicByPos(dicRepository.getOne(wsUser.getIdPos()));
+			u.setDicByRole(dicRepository.getOne(wsUser.getIdRole()));
+			u.setEnabled(wsUser.getEnabled());
+			u.setName(wsUser.getName());
+			usersRepository.save(u);
+		} else {
+
+			Users dbUser = usersRepository.findByUsername(wsUser.getUsername());
 			u = usersRepository.findOne(wsUser.getIdUser());
-			if(dbUser!=null&&!dbUser.getId().equals(wsUser.getIdUser()))
-			{
+			if (dbUser != null && !dbUser.getId().equals(wsUser.getIdUser())) {
 				wsUser.setValid(false);
 				wsUser.setMsg("该用户名已存在！");
 				return wsUser;
@@ -192,44 +185,38 @@ public class UserController {
 			u.setDicByDepartment(dicRepository.getOne(wsUser.getIdDepartment()));
 			u.setDicByPos(dicRepository.getOne(wsUser.getIdPos()));
 			u.setDicByRole(dicRepository.getOne(wsUser.getIdRole()));
-		    u.setEnabled(wsUser.getEnabled());
-		    u.setName(wsUser.getName());
-		    usersRepository.save(u);
+			u.setEnabled(wsUser.getEnabled());
+			u.setName(wsUser.getName());
+			usersRepository.save(u);
 		}
-		
-	    wsUser.setValid(true);
+
+		wsUser.setValid(true);
 		return wsUser;
 	}
 
-	
-	@Transactional(readOnly=false)
-	@RequestMapping(value="/sys/user/updateUserPassword", method=RequestMethod.POST)
+	@Transactional(readOnly = false)
+	@RequestMapping(value = "/sys/user/updateUserPassword", method = RequestMethod.POST)
 	public Valid updateUserPassword(@RequestBody WSUserPassword wsUserPassword) throws Exception {
 		Valid v = new Valid();
 		Long userId = wsUserPassword.getIdUser();
 		Users u = usersRepository.findOne(userId);
-		if(new BCryptPasswordEncoder().matches(wsUserPassword.getPassword(), u.getPassword()))
-    	{
+		if (new BCryptPasswordEncoder().matches(wsUserPassword.getPassword(), u.getPassword())) {
 			u.setPassword(new BCryptPasswordEncoder().encode(wsUserPassword.getNewPassword()));
 			usersRepository.save(u);
 			v.setValid(true);
 			return v;
-    	}
-		else
-		{
+		} else {
 			v.setValid(false);
 			v.setMsg("您输入的原密码不对！");
 			return v;
 		}
 	}
-	
-	
 
-	@Transactional(readOnly=false)
-	@RequestMapping(value="/sys/user/updateUserPasswordByAdmin", method=RequestMethod.POST)
+	@Transactional(readOnly = false)
+	@RequestMapping(value = "/sys/user/updateUserPasswordByAdmin", method = RequestMethod.POST)
 	public Valid updateUserPasswordByAdmin(@RequestBody WSUserPassword wsUserPassword) throws Exception {
 		Valid v = new Valid();
-		
+
 		Long userId = wsUserPassword.getIdUser();
 		Users u = usersRepository.findOne(userId);
 		u.setPassword(new BCryptPasswordEncoder().encode(wsUserPassword.getNewPassword()));
@@ -237,22 +224,19 @@ public class UserController {
 		v.setValid(true);
 		return v;
 	}
-	
 
 	@Transactional(readOnly = false)
 	@RequestMapping(value = "/sys/user/deleteUsers", method = RequestMethod.GET)
 	public Valid deleteUsers(@RequestParam("username") String username) {
-		
+
 		Valid v = new Valid();
 		Users u = usersRepository.findByUsername(username);
-		if(u==null)
-		{
+		if (u == null) {
 			v.setValid(false);
 			v.setMsg("不能找到此用户 Id:");
 			return v;
 		}
-		if(u.getUsername().equals("admin"))
-		{
+		if (u.getUsername().equals("admin")) {
 			v.setValid(false);
 			v.setMsg("系统用户不能被删除！");
 			return v;
@@ -262,103 +246,81 @@ public class UserController {
 		return v;
 
 	}
-	
-	
-	
-	@RequestMapping(value="/sys/user/usersTable", method=RequestMethod.POST)
-	public WSTableData usersTable(@RequestParam Integer start,
-			@RequestParam Integer draw,@RequestParam Integer length) 
-	{
-		
-		int  page_num = (start.intValue() / length.intValue()) + 1;
+
+	@RequestMapping(value = "/sys/user/usersTable", method = RequestMethod.POST)
+	public WSTableData usersTable(@RequestParam Integer start, @RequestParam Integer draw,
+			@RequestParam Integer length) {
+
+		int page_num = (start.intValue() / length.intValue()) + 1;
 		Pageable pageable = new PageRequest(page_num - 1, length);
 		Page<Users> users = usersRepository.findUsers(pageable);
 		List<String[]> lst = new ArrayList<String[]>();
-		for(Users w:users.getContent())
-		{
+		for (Users w : users.getContent()) {
 			Dic department = w.getDicByDepartment();
-			String sd = (department==null)?"":department.getCode();
+			String sd = (department == null) ? "" : department.getCode();
 			Dic position = w.getDicByPos();
-			String sp= (position==null)?"":position.getCode();
+			String sp = (position == null) ? "" : position.getCode();
 			Dic role = w.getDicByRole();
-			String sr= (role==null)?"":role.getCode();
+			String sr = (role == null) ? "" : role.getCode();
 			Dic status = w.getDicByEmpStatus();
-			String ss= (status==null)?"":status.getCode();
-		    String enabled = w.getEnabled().equals(1l)?"有效":"无效";
-		    String email = (w.getEmail()==null)?"":w.getEmail();
-		    String mobile = (w.getMobile()==null)?"":w.getMobile();
-			String[] d = {
-					""+w.getId(),
-					w.getUsername(),
-					w.getName(),
-					email,
-					mobile,
-					sd,
-					sp,
-					sr,
-					ss,
-					enabled,
-					""+w.getId()
-					};
+			String ss = (status == null) ? "" : status.getCode();
+			String enabled = w.getEnabled().equals(1l) ? "有效" : "无效";
+			String email = (w.getEmail() == null) ? "" : w.getEmail();
+			String mobile = (w.getMobile() == null) ? "" : w.getMobile();
+			String[] d = { "" + w.getId(), w.getUsername(), w.getName(), email, mobile, sd, sp, sr, ss, enabled,
+					"" + w.getId() };
 			lst.add(d);
 		}
 
 		WSTableData t = new WSTableData();
 		t.setDraw(draw);
-		t.setRecordsTotal((int)users.getTotalElements());
-		t.setRecordsFiltered((int)users.getTotalElements());
-	    t.setData(lst);
-	    return t;
+		t.setRecordsTotal((int) users.getTotalElements());
+		t.setRecordsFiltered((int) users.getTotalElements());
+		t.setData(lst);
+		return t;
 	}
-	
-	
-	@Transactional(readOnly=false)
-	@RequestMapping(value="/sys/user/findUserById", method=RequestMethod.GET)
-	public WSUser findUserById(@RequestParam Long userId)  {
-	   WSUser ws = new WSUser();
-	   Users u = usersRepository.findOne(userId);
-	   ws.setLastLogin(u.getLastLogin());
-	   ws.setEmail(u.getEmail());
-	   ws.setEnabled(u.getEnabled());
-	   ws.setIdUser(u.getId());
-	   if(u.getDicByDepartment()!=null)
-	   {
-		   ws.setIdDepartment(u.getDicByDepartment().getId());
-	   }
-	   if(u.getDicByEmpStatus()!=null)
-	   {
-		   ws.setIdEmpStatus(u.getDicByEmpStatus().getId());
-	   }
-	   if(u.getDicByRole()!=null)
-	   {
-		   ws.setIdRole(u.getDicByRole().getId());
-	   }
-	   if(u.getDicByPos()!=null)
-	   {
-		  ws.setIdPos(u.getDicByPos().getId()); 
-	   }
-	   ws.setMobile(u.getMobile());
-	   ws.setValid(true);
-	   return ws;
+
+	@Transactional(readOnly = false)
+	@RequestMapping(value = "/sys/user/findUserById", method = RequestMethod.GET)
+	public WSUser findUserById(@RequestParam Long userId) {
+		WSUser ws = new WSUser();
+		Users u = usersRepository.findOne(userId);
+		ws.setLastLogin(u.getLastLogin());
+		ws.setEmail(u.getEmail());
+		ws.setEnabled(u.getEnabled());
+		ws.setIdUser(u.getId());
+		if (u.getDicByDepartment() != null) {
+			ws.setIdDepartment(u.getDicByDepartment().getId());
+		}
+		if (u.getDicByEmpStatus() != null) {
+			ws.setIdEmpStatus(u.getDicByEmpStatus().getId());
+		}
+		if (u.getDicByRole() != null) {
+			ws.setIdRole(u.getDicByRole().getId());
+		}
+		if (u.getDicByPos() != null) {
+			ws.setIdPos(u.getDicByPos().getId());
+		}
+		ws.setMobile(u.getMobile());
+		ws.setValid(true);
+		return ws;
 	}
-	
-	
-	@RequestMapping(value="/check/jmstoken", method=RequestMethod.GET)
+
+	@RequestMapping(value = "/check/jmstoken", method = RequestMethod.GET)
 	public Valid checkToken(@RequestParam("jmstoken") String jmstoken) throws Exception {
 		Boolean returnVal = usrService.checkToken(jmstoken);
 		Valid valid = new Valid();
 		valid.setValid(returnVal);
 		return valid;
 	}
-	
-	@RequestMapping(value="/sys/user/userSelects", method=RequestMethod.GET)
-	public List<WSSelectObj> userSelects(){
-			List<WSSelectObj> ws = new ArrayList<WSSelectObj>();
-			for(Users u: usersRepository.findAll())
-			{
-				WSSelectObj w = new WSSelectObj(u.getId(),u.getName());
-				ws.add(w);		
-			}
-			return ws;
-    }
+
+	@RequestMapping(value = "/sys/user/userSelects", method = RequestMethod.GET)
+	public List<WSSelectObj> userSelects() {
+		List<WSSelectObj> ws = new ArrayList<WSSelectObj>();
+		for (Users u : usersRepository.findByEnabled(1l)) {
+			WSSelectObj w = new WSSelectObj(u.getId(), u.getName());
+			ws.add(w);
+		}
+		return ws;
+	}
 }

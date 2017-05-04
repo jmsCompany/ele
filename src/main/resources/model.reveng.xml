@@ -4,5 +4,5 @@
    <type-mapping>
      <sql-type jdbc-type="INTEGER" hibernate-type="Long"/>
     </type-mapping>
-    <table-filter match-name=".*" package="qingyun.ele.domain.db" />
+    <table-filter match-name=".*" package="qingyun.ele.domain.db1" />
 </hibernate-reverse-engineering>

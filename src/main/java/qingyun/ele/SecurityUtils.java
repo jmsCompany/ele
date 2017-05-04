@@ -13,66 +13,66 @@ import org.springframework.transaction.annotation.Transactional;
 import qingyun.ele.domain.db.Users;
 import qingyun.ele.repository.UsersRepository;
 
-
 @Service
 public class SecurityUtils {
 	@Autowired
-	private  UsersRepository usersRepository;
-	
+	private UsersRepository usersRepository;
+
 	public String getUsername() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        if (auth.getPrincipal() instanceof UserDetails) {
-            return ((MCAUserDetails) auth.getPrincipal()).getUsername();
-        } else {
-            return auth.getPrincipal().toString();
-        }
-    }
+		if (auth.getPrincipal() instanceof UserDetails) {
+			return ((MCAUserDetails) auth.getPrincipal()).getUsername();
+		} else {
+			return auth.getPrincipal().toString();
+		}
+	}
+
 	public Users getCurrentDBUser() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Long userid;
-        if (auth.getPrincipal() instanceof UserDetails) {
-        	userid =((MCAUserDetails) auth.getPrincipal()).getUserId();
-        } else {
-        	userid = null;
-        }
-        
-       return usersRepository.findOne(userid);
-    }
-	public MCAUserDetails getCurrentUser() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth.getPrincipal() instanceof UserDetails) {
-            return ((MCAUserDetails) auth.getPrincipal());
-        } else {
-            return null;
-        }
-    }
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Long userid;
+		if (auth.getPrincipal() instanceof UserDetails) {
+			userid = ((MCAUserDetails) auth.getPrincipal()).getUserId();
+		} else {
+			userid = null;
+		}
 
-	@Transactional(readOnly=true)
-	public  Collection<GrantedAuthority> getAuthorities(Long idUser) {
-		
+		return usersRepository.findOne(userid);
+	}
+
+	public MCAUserDetails getCurrentUser() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth.getPrincipal() instanceof UserDetails) {
+			return ((MCAUserDetails) auth.getPrincipal());
+		} else {
+			return null;
+		}
+	}
+
+	@Transactional(readOnly = true)
+	public Collection<GrantedAuthority> getAuthorities(Long idUser) {
+
 		List<GrantedAuthority> l = new ArrayList<GrantedAuthority>();
 		Users user = usersRepository.findOne(idUser);
-		if(user == null) {
+		if (user == null) {
 			return l;
 		}
 
-		  l.add( new GrantedAuthority() {
-				private static final long serialVersionUID = 1L;
-				
-				@Override
-				public String getAuthority() {
-					return "user";
-				}
-				
-				@Override
-				public String toString() {
-					return getAuthority();
-				}
-			});
-	   
-		
-		return l;		
+		l.add(new GrantedAuthority() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public String getAuthority() {
+				return "user";
+			}
+
+			@Override
+			public String toString() {
+				return getAuthority();
+			}
+		});
+
+		return l;
 	}
-    
+
 }

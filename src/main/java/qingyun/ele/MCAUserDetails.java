@@ -8,10 +8,9 @@ import org.springframework.stereotype.Component;
 
 import qingyun.ele.domain.db.Users;
 
-
 @Component
 public class MCAUserDetails implements UserDetails {
-	
+
 	private long userId;
 	private String username;
 	private String password;
@@ -20,6 +19,7 @@ public class MCAUserDetails implements UserDetails {
 	private boolean enabled;
 	private String name;
 	private Users user;
+
 	public String getName() {
 		return name;
 	}
@@ -33,40 +33,45 @@ public class MCAUserDetails implements UserDetails {
 	}
 
 	private Collection<GrantedAuthority> authorities;
-	
-	public MCAUserDetails(){}
 
+	public MCAUserDetails() {
+	}
+
+	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return this.authorities;
 	}
 
-	
 	public void setAuthorities(Collection<GrantedAuthority> authorities) {
-		this.authorities=authorities;
+		this.authorities = authorities;
 	}
+
+	@Override
 	public String getUsername() {
 		return this.username;
 	}
 
+	@Override
 	public boolean isAccountNonExpired() {
 		return true;
 	}
 
+	@Override
 	public boolean isAccountNonLocked() {
 		return true;
 	}
 
+	@Override
 	public boolean isCredentialsNonExpired() {
 		return true;
 	}
 
+	@Override
 	public boolean isEnabled() {
 		return this.enabled;
 	}
 
 	private static final long serialVersionUID = 5639683223516504866L;
-
-
 
 	public void setUsername(String username) {
 		this.username = username;
@@ -90,12 +95,11 @@ public class MCAUserDetails implements UserDetails {
 
 	@Override
 	public String getPassword() {
-		
+
 		return this.password;
 	}
 
-	public void setPassword(String password)
-	{
+	public void setPassword(String password) {
 		this.password = password;
 	}
 
@@ -114,6 +118,5 @@ public class MCAUserDetails implements UserDetails {
 	public void setUser(Users user) {
 		this.user = user;
 	}
-
 
 }

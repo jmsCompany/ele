@@ -3,7 +3,7 @@ package qingyun.ele.ws;
 import java.io.Serializable;
 
 public class Valid implements Serializable {
-	
+
 	private static final long serialVersionUID = 742134586991767616L;
 	private Boolean valid;
 	private String msg;

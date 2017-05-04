@@ -14,12 +14,12 @@ public class WSSignEvent implements java.io.Serializable {
 	private SignStatusEnum signStatusEnum;
 	private Date signTime;
 	private Long editable;
-    private Long lvl;
-    private Long idSignatory;
-    private Long idDepartment;
-    private String signatory;
-    private String department;
-	
+	private Long lvl;
+	private Long idSignatory;
+	private Long idDepartment;
+	private String signatory;
+	private String department;
+
 	public Long getId() {
 		return id;
 	}

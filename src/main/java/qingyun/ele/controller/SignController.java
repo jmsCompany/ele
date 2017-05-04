@@ -1,5 +1,6 @@
 package qingyun.ele.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -31,20 +32,25 @@ import qingyun.ele.ws.Valid;
 import qingyun.ele.ws.WSSignEvent;
 import qingyun.ele.ws.WSTableData;
 
-
 @RestController
-@Transactional(readOnly=true)
+@Transactional(readOnly = true)
 public class SignController {
-	
-	@Autowired private SignWorkflowRepository signWorkflowRepository;
-	@Autowired private SignWorkflowStepsRepository signWorkflowStepsRepository;
-	@Autowired private SignEventRepository signEventRepository;
-	@Autowired private DicRepository dicRepository;
-	@Autowired private UsersRepository usersRepository;
-	@Autowired private SignService signService;
-	
+
+	@Autowired
+	private SignWorkflowRepository signWorkflowRepository;
+	@Autowired
+	private SignWorkflowStepsRepository signWorkflowStepsRepository;
+	@Autowired
+	private SignEventRepository signEventRepository;
+	@Autowired
+	private DicRepository dicRepository;
+	@Autowired
+	private UsersRepository usersRepository;
+	@Autowired
+	private SignService signService;
+
 	private static final Log logger = LogFactory.getLog(SignController.class);
-	
+
 	@Transactional(readOnly = false)
 	@RequestMapping(value = "/sys/sign/saveSignWorkflow", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public Valid saveSignWorkflow(@RequestBody SignWorkflow signWorkflow) {
@@ -70,60 +76,64 @@ public class SignController {
 				return v;
 			}
 		}
-		
+
 		signWorkflowRepository.save(signWorkflow);
 		v.setValid(true);
 		return v;
 	}
 
-	
 	@Transactional(readOnly = false)
 	@RequestMapping(value = "/sys/sign/deleteSignWorkflow", method = RequestMethod.GET)
 	public Valid deleteSignWorkflow(@RequestParam("signWorkflowId") Long signWorkflowId) {
-		
+
 		Valid v = new Valid();
 		SignWorkflow signWorkflow = signWorkflowRepository.findOne(signWorkflowId);
-		if(signWorkflow==null)
-		{
+		if (signWorkflow == null) {
 			v.setValid(false);
-			v.setMsg("不能找到此签字 Id:" +signWorkflowId);
+			v.setMsg("不能找到此签字 Id:" + signWorkflowId);
 			return v;
 		}
-		if(!signWorkflowStepsRepository.findByIdSignWorkflow(signWorkflowId).isEmpty())
-		{
+		if (!signWorkflowStepsRepository.findByIdSignWorkflow(signWorkflowId).isEmpty()) {
 			v.setValid(false);
-			v.setMsg("不能删除，此签字有签字内容" +signWorkflowId);
+			v.setMsg("不能删除，此签字有签字内容" + signWorkflowId);
 			return v;
 		}
-		
+
 		signWorkflowRepository.delete(signWorkflowId);
 		v.setValid(true);
 		return v;
 
 	}
-	
-	
-	
+
 	@Transactional(readOnly = false)
 	@RequestMapping(value = "/sys/sign/saveSignWorkflowSteps", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public Valid saveSignWorkflowSteps(@RequestBody SignWorkflowSteps signWorkflowSteps) {
 		Valid v = new Valid();
+		Long idUser = signWorkflowSteps.getIdSignatory();
+		if (signWorkflowSteps.getId() == null || signWorkflowSteps.getId().equals(0l)) {
+			signWorkflowSteps.setId(null);
+		}
+		if (idUser != null) {
+			Users u = usersRepository.findOne(idUser);
+			Long idDepartment = u.getDicByDepartment().getId();
+			if (idDepartment != null) {
+				signWorkflowSteps.setIdDepartment(idDepartment);
+			}
+		}
 		signWorkflowStepsRepository.save(signWorkflowSteps);
 		v.setValid(true);
 		return v;
 	}
-	
-	
+
 	@Transactional(readOnly = false)
 	@RequestMapping(value = "/sys/sign/deleteSignWorkflowStep", method = RequestMethod.GET)
 	public Valid deleteSignWorkflowStep(@RequestParam("signWorkflowStepId") Long signWorkflowStepId) {
-		
+
 		Valid v = new Valid();
 		SignWorkflowSteps signWorkflowSteps = signWorkflowStepsRepository.findOne(signWorkflowStepId);
-		if(signWorkflowSteps==null)
-		{
+		if (signWorkflowSteps == null) {
 			v.setValid(false);
-			v.setMsg("不能找到此签字内容 Id:" +signWorkflowStepId);
+			v.setMsg("不能找到此签字内容 Id:" + signWorkflowStepId);
 			return v;
 		}
 		signWorkflowStepsRepository.delete(signWorkflowStepId);
@@ -131,112 +141,87 @@ public class SignController {
 		return v;
 
 	}
-	
-	
-	@RequestMapping(value="/sys/sign/signWorkflowTable", method=RequestMethod.POST)
-	public WSTableData signWorkflowTable(@RequestParam Integer start,
-			@RequestParam Integer draw,@RequestParam Integer length) 
-	{
-		int  page_num = (start.intValue() / length.intValue()) + 1;
+
+	@RequestMapping(value = "/sys/sign/signWorkflowTable", method = RequestMethod.POST)
+	public WSTableData signWorkflowTable(@RequestParam Integer start, @RequestParam Integer draw,
+			@RequestParam Integer length) {
+
+		int page_num = (start.intValue() / length.intValue()) + 1;
 		Pageable pageable = new PageRequest(page_num - 1, length);
-		
-		Page<SignWorkflow> signWorkflowData =signWorkflowRepository.findAll(pageable);
+
+		Page<SignWorkflow> signWorkflowData = signWorkflowRepository.findAll(pageable);
 		List<String[]> lst = new ArrayList<String[]>();
-		for(SignWorkflow w:signWorkflowData.getContent())
-		{
-			String[] d = {
-					""+w.getId(),
-					w.getName(),
-					w.getForm(),
-					""+w.getId()
-					};
+		for (SignWorkflow w : signWorkflowData.getContent()) {
+			String[] d = { "" + w.getId(), w.getName(), w.getForm(), "" + w.getId() };
 			lst.add(d);
 		}
 
 		WSTableData t = new WSTableData();
 		t.setDraw(draw);
-		t.setRecordsTotal((int)signWorkflowData.getTotalElements());
-		t.setRecordsFiltered((int)signWorkflowData.getTotalElements());
-	    t.setData(lst);
-	    return t;
+		t.setRecordsTotal((int) signWorkflowData.getTotalElements());
+		t.setRecordsFiltered((int) signWorkflowData.getTotalElements());
+		t.setData(lst);
+		return t;
 	}
-	
-	
-	@RequestMapping(value="/sys/sign/signWorkflowStepsTable", method=RequestMethod.POST)
-	public WSTableData signWorkflowStepsTable(
-			@RequestParam Long idSignWorkflow,@RequestParam Integer start,
-			@RequestParam Integer draw,@RequestParam Integer length) 
-	{
-		int  page_num = (start.intValue() / length.intValue()) + 1;
+
+	@RequestMapping(value = "/sys/sign/signWorkflowStepsTable", method = RequestMethod.POST)
+	public WSTableData signWorkflowStepsTable(@RequestParam Long idSignWorkflow, @RequestParam Integer start,
+			@RequestParam Integer draw, @RequestParam Integer length) {
+		int page_num = (start.intValue() / length.intValue()) + 1;
 		Pageable pageable = new PageRequest(page_num - 1, length);
-		Page<SignWorkflowSteps> signWorkflowStepsData =signWorkflowStepsRepository.findByIdSignWorkflow(idSignWorkflow, pageable);
+		Page<SignWorkflowSteps> signWorkflowStepsData = signWorkflowStepsRepository.findByIdSignWorkflow(idSignWorkflow,
+				pageable);
 		List<String[]> lst = new ArrayList<String[]>();
-		int seq =1;
-		for(SignWorkflowSteps w:signWorkflowStepsData.getContent())
-		{
-            Long idDepartment = w.getIdDepartment();
-            String sd ="";
-            if(idDepartment!=null)
-            {
-            	Dic depart =dicRepository.findOne(idDepartment);
-            	if(depart!=null)
-            	{
-            		sd = depart.getCode();
-            	}
-            }
-            
-            Long idSignatory = w.getIdSignatory();
-            String sn ="";
-            if(idSignatory!=null)
-            {
-            	Users signatory =usersRepository.findOne(idSignatory);
-            	if(signatory!=null)
-            	{
-            		sn = signatory.getName();
-            	}
-            }
-            
-			String[] d = {
-					""+seq,
-					""+w.getLvl(),
-					w.getContent(),
-					sd,
-					sn,
-					""+w.getId()
-					};
+		int seq = 1;
+		for (SignWorkflowSteps w : signWorkflowStepsData.getContent()) {
+			Long idDepartment = w.getIdDepartment();
+			String sd = "";
+			if (idDepartment != null) {
+				Dic depart = dicRepository.findOne(idDepartment);
+				if (depart != null) {
+					sd = depart.getCode();
+				}
+			}
+
+			Long idSignatory = w.getIdSignatory();
+			String sn = "";
+			if (idSignatory != null) {
+				Users signatory = usersRepository.findOne(idSignatory);
+				if (signatory != null) {
+					sn = signatory.getName();
+				}
+			}
+
+			String[] d = { "" + w.getId(), "" + w.getLvl(), w.getContent(), sd, sn, "" + w.getId() };
 			lst.add(d);
 			seq++;
 		}
 
 		WSTableData t = new WSTableData();
 		t.setDraw(draw);
-		t.setRecordsTotal((int)signWorkflowStepsData.getTotalElements());
-		t.setRecordsFiltered((int)signWorkflowStepsData.getTotalElements());
-	    t.setData(lst);
-	    return t;
+		t.setRecordsTotal((int) signWorkflowStepsData.getTotalElements());
+		t.setRecordsFiltered((int) signWorkflowStepsData.getTotalElements());
+		t.setData(lst);
+		return t;
 	}
-	
-	
+
 	@Transactional(readOnly = false)
 	@RequestMapping(value = "/sys/sign/saveSignEvent", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public Valid saveSignEvent(@RequestBody SignEvent signEvent) {
 		Valid v = new Valid();
-		if (signEvent.getId() == null || signEvent.getId().equals(0l)) 
-		{
-			SignEvent dbSignEvent = signEventRepository.findByIdEventAndIdSignWorkflowSteps(signEvent.getIdEvent(), signEvent.getIdSignWorkflowSteps());
-			if(dbSignEvent!=null)
-			{
+		if (signEvent.getId() == null || signEvent.getId().equals(0l)) {
+			SignEvent dbSignEvent = signEventRepository.findByIdEventAndIdSignWorkflowSteps(signEvent.getIdEvent(),
+					signEvent.getIdSignWorkflowSteps());
+			if (dbSignEvent != null) {
 				v.setValid(false);
 				v.setMsg("该内容已经签字");
 				return v;
 			}
-			
-		}
-		else
-		{
-			SignEvent dbSignEvent = signEventRepository.findByIdEventAndIdSignWorkflowSteps(signEvent.getIdEvent(), signEvent.getIdSignWorkflowSteps());
-			if(!dbSignEvent.getId().equals(signEvent.getId()))
-			{
+
+		} else {
+			SignEvent dbSignEvent = signEventRepository.findByIdEventAndIdSignWorkflowSteps(signEvent.getIdEvent(),
+					signEvent.getIdSignWorkflowSteps());
+			if (!dbSignEvent.getId().equals(signEvent.getId())) {
 				v.setValid(false);
 				v.setMsg("该内容已经签字");
 				return v;
@@ -247,65 +232,123 @@ public class SignController {
 		v.setValid(true);
 		return v;
 	}
-	
-	
+
 	@Transactional(readOnly = true)
 	@RequestMapping(value = "/sys/sign/findWSSignEventByEventIdAndSignWorkflowId", method = RequestMethod.GET)
-	public List<WSSignEvent> findWSSignEventByEventIdAndSignWorkflowId(@RequestParam("eventId") Long eventId,@RequestParam("signWorkflowId") Long signWorkflowId)
-	{
+	public List<WSSignEvent> findWSSignEventByEventIdAndSignWorkflowId(@RequestParam("eventId") Long eventId,
+			@RequestParam("signWorkflowId") Long signWorkflowId) {
 		List<WSSignEvent> ws = new ArrayList<WSSignEvent>();
-	   	List<SignWorkflowSteps>  sws = signWorkflowStepsRepository.findByIdSignWorkflow(signWorkflowId);
-	   	for(SignWorkflowSteps s:sws)
-		{
-			SignEvent signEvent =signEventRepository.findByIdEventAndIdSignWorkflowSteps(eventId, signWorkflowId);
-			WSSignEvent w  = new WSSignEvent();
+		List<SignWorkflowSteps> sws = signWorkflowStepsRepository.findByIdSignWorkflow(signWorkflowId);
+		for (SignWorkflowSteps s : sws) {
+			SignEvent signEvent = signEventRepository.findByIdEventAndIdSignWorkflowSteps(eventId, signWorkflowId);
+			WSSignEvent w = new WSSignEvent();
 			w.setIdEvent(eventId);
 			w.setIdSignWorkflowSteps(signWorkflowId);
 			w.setSignWorkflowSteps(s.getContent());
 			w.setIdDepartment(s.getIdDepartment());
 			w.setIdSignatory(s.getIdSignatory());
 			w.setLvl(s.getLvl());
-			if(s.getIdDepartment()!=null)
-			{
-				Dic depart =dicRepository.findOne(s.getIdDepartment());
-            	if(depart!=null)
-            	{
-            		w.setDepartment(depart.getCode());
-            	}
+			if (s.getIdDepartment() != null) {
+				Dic depart = dicRepository.findOne(s.getIdDepartment());
+				if (depart != null) {
+					w.setDepartment(depart.getCode());
+				}
 			}
-			if(s.getIdSignatory()!=null)
-			{
-				Users signatory =usersRepository.findOne(s.getIdSignatory());
-            	if(signatory!=null)
-            	{
-            		w.setSignatory(signatory.getName());
-            	}	
+			if (s.getIdSignatory() != null) {
+				Users signatory = usersRepository.findOne(s.getIdSignatory());
+				if (signatory != null) {
+					w.setSignatory(signatory.getName());
+				}
 			}
-			if(signEvent!=null)
-			{
+			if (signEvent != null) {
 				w.setId(signEvent.getId());
 				w.setStatus(signEvent.getStatus());
-				if(signEvent.getStatus().equals(1l)) //拒绝
+				if (signEvent.getStatus().equals(1l)) // 拒绝
 				{
 					w.setEditable(1l);
-				}
-				else if(signEvent.getStatus().equals(2l)) //签字
+				} else if (signEvent.getStatus().equals(2l)) // 签字
 				{
 					w.setEditable(0l);
 				}
 				w.setSignTime(signEvent.getSignTime());
 				w.setRemark(signEvent.getRemark());
-					
-			}else
-			{
-				w.setStatus(0l);//待签字
-			    
+
+			} else {
+				w.setStatus(0l);// 待签字
+
 			}
-		   w.setEditable(signService.isEditable(s.getId(), eventId));
-		
+			w.setEditable(signService.isEditable(s.getId(), eventId));
+
 			ws.add(w);
 		}
-	    return ws;
+		return ws;
 	}
-	
+
+	@Transactional(readOnly = true)
+	@RequestMapping(value = "/sys/sign/signTable", method = RequestMethod.POST)
+	public WSTableData signTable(@RequestParam("eventId") Long eventId,
+			@RequestParam("signWorkflowId") Long signWorkflowId) {
+
+		WSTableData t = new WSTableData();
+		List<String[]> lst = new ArrayList<String[]>();
+
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
+		// List<WSSignEvent> ws = new ArrayList<WSSignEvent>();
+		List<SignWorkflowSteps> sws = signWorkflowStepsRepository.findByIdSignWorkflow(signWorkflowId);
+		int seq = 1;
+		for (SignWorkflowSteps s : sws) {
+			SignEvent signEvent = signEventRepository.findByIdEventAndIdSignWorkflowSteps(eventId, signWorkflowId);
+			WSSignEvent w = new WSSignEvent();
+			w.setIdEvent(eventId);
+			w.setIdSignWorkflowSteps(signWorkflowId);
+			w.setSignWorkflowSteps(s.getContent());
+			w.setIdDepartment(s.getIdDepartment());
+			w.setIdSignatory(s.getIdSignatory());
+			w.setLvl(s.getLvl());
+			if (s.getIdDepartment() != null) {
+				Dic depart = dicRepository.findOne(s.getIdDepartment());
+				if (depart != null) {
+					w.setDepartment(depart.getCode());
+				}
+			}
+			if (s.getIdSignatory() != null) {
+				Users signatory = usersRepository.findOne(s.getIdSignatory());
+				if (signatory != null) {
+					w.setSignatory(signatory.getName());
+				}
+			}
+			if (signEvent != null) {
+				w.setId(signEvent.getId());
+				w.setStatus(signEvent.getStatus());
+				if (signEvent.getStatus().equals(1l)) // 拒绝
+				{
+					w.setEditable(1l);
+				} else if (signEvent.getStatus().equals(2l)) // 签字
+				{
+					w.setEditable(0l);
+				}
+				w.setSignTime(signEvent.getSignTime());
+				w.setRemark(signEvent.getRemark());
+
+			} else {
+				w.setStatus(0l);// 待签字
+
+			}
+			w.setEditable(signService.isEditable(s.getId(), eventId));
+
+			// ws.add(w);
+			String time = "";
+			if (w.getSignTime() != null) {
+				time = formatter.format(w.getSignTime());
+			}
+			String[] d = { "" + seq, "" + w.getId(), "" + w.getLvl(), w.getSignWorkflowSteps(), w.getDepartment(),
+					w.getSignatory(), w.getRemark(), time, "" + w.getEditable() };
+			lst.add(d);
+			seq++;
+		}
+		t.setData(lst);
+		return t;
+	}
+
 }

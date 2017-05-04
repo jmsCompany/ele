@@ -29,9 +29,12 @@ import qingyun.ele.ws.WSTableData;
 @Transactional(readOnly = true)
 public class DicController {
 
-	@Autowired private UsrService usrService;
-	@Autowired private DicDicRepository dicDicRepository;
-	@Autowired private DicRepository dicRepository;
+	@Autowired
+	private UsrService usrService;
+	@Autowired
+	private DicDicRepository dicDicRepository;
+	@Autowired
+	private DicRepository dicRepository;
 	private static final Log logger = LogFactory.getLog(DicController.class);
 
 	@Transactional(readOnly = false)
@@ -68,8 +71,7 @@ public class DicController {
 		return v;
 
 	}
-	
-	
+
 	@Transactional(readOnly = false)
 	@RequestMapping(value = "/sys/dic/saveDic", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public Valid saveDic(@RequestBody Dic dic) {
@@ -80,7 +82,7 @@ public class DicController {
 			v.setMsg("名字不能为空！");
 			return v;
 		}
-		if (dic.getDicDic() == null||dic.getDicDic().getId()==null) {
+		if (dic.getDicDic() == null || dic.getDicDic().getId() == null) {
 			v.setValid(false);
 			v.setMsg("字典元数据不能为空！");
 			return v;
@@ -106,8 +108,7 @@ public class DicController {
 		DicDic dicDic = dicDicRepository.findOne(dic.getDicDic().getId());
 		dic.setDicDic(dicDic);
 		dic.setSys(0l);
-		if(dic.getDescr()==null)
-		{
+		if (dic.getDescr() == null) {
 			dic.setDescr(dic.getCode());
 		}
 		dic = dicRepository.save(dic);
@@ -116,36 +117,29 @@ public class DicController {
 		return v;
 
 	}
-	
 
-	@RequestMapping(value="/sys/dic/dicDicSelects", method=RequestMethod.GET)
-	public List<WSSelectObj> dicDicSelects(){
-			List<WSSelectObj> ws = new ArrayList<WSSelectObj>();
-			for(DicDic d: dicDicRepository.findAll())
-			{
-				WSSelectObj w = new WSSelectObj(d.getId(),d.getDescr());
-				ws.add(w);		
-			}
-			return ws;
-    }
-	
-	
-	
-	@RequestMapping(value="/sys/dic/dicSelects", method=RequestMethod.GET)
-	public List<WSSelectObj> dicSelects(@RequestParam("dicDicName") String dicDicName){
-			List<WSSelectObj> ws = new ArrayList<WSSelectObj>();
-			for(Dic d: dicRepository.findByDicDicName(dicDicName))
-			{
-				WSSelectObj w = new WSSelectObj(d.getId(),d.getCode());
-				ws.add(w);		
-			}
-			return ws;
-    }
-	
-	
-	
-	@RequestMapping(value="/sys/dic/findDic", method=RequestMethod.GET)
-	public WSDic findDic(@RequestParam("dicId") Long dicId){
+	@RequestMapping(value = "/sys/dic/dicDicSelects", method = RequestMethod.GET)
+	public List<WSSelectObj> dicDicSelects() {
+		List<WSSelectObj> ws = new ArrayList<WSSelectObj>();
+		for (DicDic d : dicDicRepository.findAll()) {
+			WSSelectObj w = new WSSelectObj(d.getId(), d.getDescr());
+			ws.add(w);
+		}
+		return ws;
+	}
+
+	@RequestMapping(value = "/sys/dic/dicSelects", method = RequestMethod.GET)
+	public List<WSSelectObj> dicSelects(@RequestParam("dicDicName") String dicDicName) {
+		List<WSSelectObj> ws = new ArrayList<WSSelectObj>();
+		for (Dic d : dicRepository.findByDicDicName(dicDicName)) {
+			WSSelectObj w = new WSSelectObj(d.getId(), d.getCode());
+			ws.add(w);
+		}
+		return ws;
+	}
+
+	@RequestMapping(value = "/sys/dic/findDic", method = RequestMethod.GET)
+	public WSDic findDic(@RequestParam("dicId") Long dicId) {
 		WSDic wsDic = new WSDic();
 		Dic dic = dicRepository.findOne(dicId);
 		wsDic.setCode(dic.getCode());
@@ -153,68 +147,49 @@ public class DicController {
 		wsDic.setDicDicId(dic.getDicDic().getId());
 		wsDic.setDescr(dic.getDescr());
 		return wsDic;
-			
-    }
-	
 
-	@RequestMapping(value="/sys/dic/dicTable", method=RequestMethod.POST)
-	public WSTableData dicTable(
-			@RequestParam("dicDicId") Long dicDicId,@RequestParam Integer start,
-			@RequestParam Integer draw,@RequestParam Integer length) 
-	{
-		int  page_num = (start.intValue() / length.intValue()) + 1;
+	}
+
+	@RequestMapping(value = "/sys/dic/dicTable", method = RequestMethod.POST)
+	public WSTableData dicTable(@RequestParam("dicDicId") Long dicDicId, @RequestParam Integer start,
+			@RequestParam Integer draw, @RequestParam Integer length) {
+		int page_num = (start.intValue() / length.intValue()) + 1;
 		Pageable pageable = new PageRequest(page_num - 1, length);
-		Page<Dic> page = dicRepository.findByDicDicId(dicDicId,pageable);
+		Page<Dic> page = dicRepository.findByDicDicId(dicDicId, pageable);
 		List<String[]> lst = new ArrayList<String[]>();
-		for(Dic w:page.getContent())
-		{
-			String s =(w.getSys().equals(0l))?"否":"是";
-			String[] d = {
-					""+w.getId(),
-					w.getCode(),
-					w.getDescr(),
-					w.getDicDic().getDescr(),
-					s,
-					""+w.getId()
-					};
-			//logger.debug(d[0]);
+		for (Dic w : page.getContent()) {
+			String s = (w.getSys().equals(0l)) ? "否" : "是";
+			String[] d = { "" + w.getId(), w.getCode(), w.getDescr(), w.getDicDic().getDescr(), s, "" + w.getId() };
+			// logger.debug(d[0]);
 			lst.add(d);
 		}
 
 		WSTableData t = new WSTableData();
 		t.setDraw(draw);
-		t.setRecordsTotal((int)page.getTotalElements());
-		t.setRecordsFiltered((int)page.getTotalElements());
-	    t.setData(lst);
-	    return t;
+		t.setRecordsTotal((int) page.getTotalElements());
+		t.setRecordsFiltered((int) page.getTotalElements());
+		t.setData(lst);
+		return t;
 	}
-	
-	
+
 	@Transactional(readOnly = false)
 	@RequestMapping(value = "/sys/dic/deleteDic", method = RequestMethod.GET)
 	public Valid deleteDic(@RequestParam("dicId") Long dicId) {
-		
+
 		Valid v = new Valid();
 		Dic dic = dicRepository.findOne(dicId);
-		if(dic==null)
-		{
+		if (dic == null) {
 			v.setValid(false);
-			v.setMsg("不能找到 此数据 ID： " +dicId);
+			v.setMsg("不能找到 此数据 ID： " + dicId);
 			return v;
 		}
-		if(!dic.getCustomers().isEmpty()||
-				!dic.getProjectStepsesForDepartment().isEmpty()||
-				!dic.getProjectStepsesForProgress().isEmpty()||
-				!dic.getProjectStepsesForStatus().isEmpty()||
-				!dic.getStepses().isEmpty()||
-				!dic.getUsersesForDepartment().isEmpty()||
-				!dic.getUsersesForEmpStatus().isEmpty()||
-				!dic.getUsersesForPos().isEmpty()||
-				!dic.getUsersesForRole().isEmpty()
-				)
-		{
+		if (!dic.getCustomers().isEmpty() || !dic.getProjectStepsesForDepartment().isEmpty()
+				|| !dic.getProjectStepsesForProgress().isEmpty() || !dic.getProjectStepsesForStatus().isEmpty()
+				|| !dic.getStepses().isEmpty() || !dic.getUsersesForDepartment().isEmpty()
+				|| !dic.getUsersesForEmpStatus().isEmpty() || !dic.getUsersesForPos().isEmpty()
+				|| !dic.getUsersesForRole().isEmpty()) {
 			v.setValid(false);
-			v.setMsg("该字典已经被使用，不能删除 " +dicId);
+			v.setMsg("该字典已经被使用，不能删除 " + dicId);
 			return v;
 		}
 		dicRepository.delete(dicId);
@@ -222,22 +197,19 @@ public class DicController {
 		return v;
 
 	}
-	
-	
+
 	@Transactional(readOnly = false)
 	@RequestMapping(value = "/sys/dic/deleteDicDic", method = RequestMethod.GET)
 	public Valid deleteDicDic(@RequestParam("dicDicId") Long dicDicId) {
-		
+
 		Valid v = new Valid();
 		DicDic dicDic = dicDicRepository.findOne(dicDicId);
-		if(dicDic==null)
-		{
+		if (dicDic == null) {
 			v.setValid(false);
-			v.setMsg("不能找到 此数据 ID： " +dicDicId);
+			v.setMsg("不能找到 此数据 ID： " + dicDicId);
 			return v;
 		}
-		if(!dicDic.getDics().isEmpty())
-		{
+		if (!dicDic.getDics().isEmpty()) {
 			v.setValid(false);
 			v.setMsg("该字典有二级字典，请先删除对应的二级字典");
 			return v;
@@ -247,6 +219,5 @@ public class DicController {
 		return v;
 
 	}
-	
-	
+
 }
