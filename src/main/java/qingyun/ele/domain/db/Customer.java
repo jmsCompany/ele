@@ -1,5 +1,7 @@
 package qingyun.ele.domain.db;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -52,7 +54,13 @@ public class Customer implements java.io.Serializable {
 	private Float mainternanceCost;
 	private Float percent;
 	private String content;
-	
+	//当前步骤
+	private Long currStep;
+	//0 保存  1 提交签名
+	private Long commit;
+
+
+
 	private Set<So> sos = new HashSet<So>(0);
 	private Set<ProjectSteps> projectStepses = new HashSet<ProjectSteps>(0);
 
@@ -365,5 +373,22 @@ public class Customer implements java.io.Serializable {
 		this.content = content;
 	}
 
+	@Column(name = "curr_step")
+	public Long getCurrStep() {
+		return this.currStep;
+	}
+
+	public void setCurrStep(Long currStep) {
+		this.currStep = currStep;
+	}
+
+	@Column(name = "commit")
+	public Long getCommit() {
+		return this.commit;
+	}
+
+	public void setCommit(Long commit) {
+		this.commit = commit;
+	}
 
 }
