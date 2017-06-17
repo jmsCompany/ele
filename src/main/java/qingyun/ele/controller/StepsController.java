@@ -16,12 +16,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 import qingyun.ele.domain.db.Steps;
 import qingyun.ele.repository.DicDicRepository;
 import qingyun.ele.repository.DicRepository;
 import qingyun.ele.repository.StepsRepository;
 import qingyun.ele.service.UsrService;
 import qingyun.ele.ws.Valid;
+import qingyun.ele.ws.WSSelectObj;
 import qingyun.ele.ws.WSTableData;
 
 @RestController
@@ -68,6 +70,18 @@ public class StepsController {
 		v.setMsg("保存成功");
 		return v;
 
+	}
+
+	@RequestMapping(value = "/sys/steps/stepSelects", method = RequestMethod.GET)
+	public List<WSSelectObj> stepSelects() {
+		List<WSSelectObj> ws = new ArrayList<WSSelectObj>();
+		WSSelectObj w1 = new WSSelectObj("", "请选择步骤");
+		ws.add(w1);
+		for (Steps s : stepsRepository.findAll()) {
+			WSSelectObj w = new WSSelectObj(""+s.getId(), s.getName());
+			ws.add(w);
+		}
+		return ws;
 	}
 
 	@RequestMapping(value = "/sys/steps/stepsTable", method = RequestMethod.POST)

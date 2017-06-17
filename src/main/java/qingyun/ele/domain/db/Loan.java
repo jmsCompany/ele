@@ -17,31 +17,32 @@ import javax.persistence.Transient;
 public class Loan implements java.io.Serializable {
 
 	private Long id;
-	private String code;  //编号
-	private String bank; //贷款银行
-	private Long duration; //贷款年限 来至跟踪单
-	private String capacity;//实际容量 form2
-	private Long radio; //贷款比例
-	private String amount; //贷款金额
-	private Float amountPermonth; //每月还款金额 跟踪单
-	private String paymentTime; //每月还款时间 跟踪单
-	private Float unitPrice; //度电单价
-	private Float subsidyPrice; //补贴价格
-	private Float estimateCapacity; //预估发电量
-	private Float estimateIncomePermonth; //预估月收入
-	private Float estimateIncomePeryear; //预估年收入
-	private Float actCapacity; //实际发电量
-	private Float actIncomePermonth; //实际月收入
-	private Float actIncomePeryear;//实际年收入
-	private Float recharge;//充值金额
-	private Float balance;//贷款账户余额
-	private Float risk;//预测还贷风险
+	private String code; // 编号
+	private String bank; // 贷款银行
+	private Long duration; // 贷款年限 来至跟踪单
+	private String capacity;// 实际容量 form2
+	private Long radio; // 贷款比例
+	private String amount; // 贷款金额
+	private Float amountPermonth; // 每月还款金额 跟踪单
+	private String paymentTime; // 每月还款时间 跟踪单
+	private Float unitPrice; // 度电单价
+	private Float subsidyPrice; // 补贴价格
+	private Float estimateCapacity; // 预估发电量
+	private Float estimateIncomePermonth; // 预估月收入
+	private Float estimateIncomePeryear; // 预估年收入
+	private Float actCapacity; // 实际发电量
+	private Float actIncomePermonth; // 实际月收入
+	private Float actIncomePeryear;// 实际年收入
+	private Float recharge;// 充值金额
+	private Float balance;// 贷款账户余额
+	private Float risk;// 预测还贷风险
 	private Long idProject;
-	
+
 	private String c1;
 	private String c2;
 	private String c3;
 	private String content;
+
 	@Column(name = "id_project")
 	public Long getIdProject() {
 		return idProject;
@@ -54,10 +55,8 @@ public class Loan implements java.io.Serializable {
 	public Loan() {
 	}
 
-
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
-
 	@Column(name = "id", unique = true, nullable = false)
 	public Long getId() {
 		return this.id;
@@ -66,9 +65,6 @@ public class Loan implements java.io.Serializable {
 	public void setId(Long id) {
 		this.id = id;
 	}
-
-	
-
 
 	@Column(name = "code", length = 64)
 	public String getCode() {
@@ -88,7 +84,7 @@ public class Loan implements java.io.Serializable {
 		this.bank = bank;
 	}
 
-	//@Column(name = "duration")
+	// @Column(name = "duration")
 	@Transient
 	public Long getDuration() {
 		return this.duration;
@@ -98,7 +94,7 @@ public class Loan implements java.io.Serializable {
 		this.duration = duration;
 	}
 
-	//@Column(name = "capacity")
+	// @Column(name = "capacity")
 	@Transient
 	public String getCapacity() {
 		return this.capacity;
@@ -118,7 +114,7 @@ public class Loan implements java.io.Serializable {
 	}
 
 	@Transient
-	//@Column(name = "amount")
+	// @Column(name = "amount")
 	public String getAmount() {
 		return this.amount;
 	}
@@ -127,7 +123,7 @@ public class Loan implements java.io.Serializable {
 		this.amount = amount;
 	}
 
-	//@Column(name = "amount_permonth", precision = 12, scale = 0)
+	// @Column(name = "amount_permonth", precision = 12, scale = 0)
 	@Transient
 	public Float getAmountPermonth() {
 		return this.amountPermonth;
@@ -137,7 +133,7 @@ public class Loan implements java.io.Serializable {
 		this.amountPermonth = amountPermonth;
 	}
 
-	//@Column(name = "payment_time", length = 20)
+	// @Column(name = "payment_time", length = 20)
 	@Transient
 	public String getPaymentTime() {
 		return this.paymentTime;
@@ -254,6 +250,7 @@ public class Loan implements java.io.Serializable {
 	public void setC1(String c1) {
 		this.c1 = c1;
 	}
+
 	@Transient
 	public String getC2() {
 		return c2;
@@ -262,6 +259,7 @@ public class Loan implements java.io.Serializable {
 	public void setC2(String c2) {
 		this.c2 = c2;
 	}
+
 	@Transient
 	public String getC3() {
 		return c3;
@@ -270,7 +268,8 @@ public class Loan implements java.io.Serializable {
 	public void setC3(String c3) {
 		this.c3 = c3;
 	}
-	@Column(name="content",length = 16777216)
+
+	@Column(name = "content", length = 16777216)
 	public String getContent() {
 		return content;
 	}

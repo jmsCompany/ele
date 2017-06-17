@@ -317,8 +317,10 @@ public class UserController {
 	@RequestMapping(value = "/sys/user/userSelects", method = RequestMethod.GET)
 	public List<WSSelectObj> userSelects() {
 		List<WSSelectObj> ws = new ArrayList<WSSelectObj>();
+		WSSelectObj w1 = new WSSelectObj("", "请选择员工");
+		ws.add(w1);
 		for (Users u : usersRepository.findByEnabled(1l)) {
-			WSSelectObj w = new WSSelectObj(u.getId(), u.getName());
+			WSSelectObj w = new WSSelectObj(""+u.getId(), u.getName());
 			ws.add(w);
 		}
 		return ws;

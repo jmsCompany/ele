@@ -2,7 +2,6 @@ package qingyun.ele;
 
 import java.io.Serializable;
 import java.util.Date;
-
 import qingyun.ele.ws.Valid;
 
 public class ErrorResponse extends Valid implements Serializable {

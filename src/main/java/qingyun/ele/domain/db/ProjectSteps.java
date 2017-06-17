@@ -4,9 +4,6 @@ package qingyun.ele.domain.db;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,7 +11,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -40,8 +36,13 @@ public class ProjectSteps implements java.io.Serializable {
 	private Date end;
 	private Long actDays;
 	private String remark;
-//	private Set<Loan> loans = new HashSet<Loan>(0);
-//	private Set<Info> infos = new HashSet<Info>(0);
+
+	private Long sE;
+	private Long eE;
+	private Long dE;
+	private Long dME;
+	// private Set<Loan> loans = new HashSet<Loan>(0);
+	// private Set<Info> infos = new HashSet<Info>(0);
 
 	public ProjectSteps() {
 	}
@@ -49,8 +50,6 @@ public class ProjectSteps implements java.io.Serializable {
 	public ProjectSteps(Long id) {
 		this.id = id;
 	}
-
-
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -188,6 +187,40 @@ public class ProjectSteps implements java.io.Serializable {
 		this.remark = remark;
 	}
 
+	@Column(name = "s_e")
+	public Long getsE() {
+		return sE;
+	}
 
+	public void setsE(Long sE) {
+		this.sE = sE;
+	}
+
+	@Column(name = "e_e")
+	public Long geteE() {
+		return eE;
+	}
+
+	public void seteE(Long eE) {
+		this.eE = eE;
+	}
+
+	@Column(name = "d_e")
+	public Long getdE() {
+		return dE;
+	}
+
+	public void setdE(Long dE) {
+		this.dE = dE;
+	}
+
+	@Column(name = "d_m_e")
+	public Long getdME() {
+		return dME;
+	}
+
+	public void setdME(Long dME) {
+		this.dME = dME;
+	}
 
 }

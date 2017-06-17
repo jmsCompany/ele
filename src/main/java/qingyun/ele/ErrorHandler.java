@@ -1,9 +1,7 @@
 package qingyun.ele;
 
 import java.util.Date;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ErrorHandler {
 
-	// todo email to developer, or report to jira
 	@ExceptionHandler(value = { Exception.class, RuntimeException.class })
 	public ErrorResponse defaultErrorHandler(HttpServletRequest request, Exception e) {
 		e.printStackTrace();

@@ -6,26 +6,43 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import qingyun.ele.SecurityUtils;
 import qingyun.ele.domain.db.SignEvent;
 import qingyun.ele.domain.db.SignWorkflowSteps;
+import qingyun.ele.domain.db.Users;
 import qingyun.ele.repository.SignEventRepository;
-import qingyun.ele.repository.SignWorkflowRepository;
 import qingyun.ele.repository.SignWorkflowStepsRepository;
+import qingyun.ele.repository.UsersRepository;
 
 @Service
 @Transactional(readOnly = true)
 public class SignService {
 
 	@Autowired
-	private SignWorkflowRepository signWorkflowRepository;
+	private UsersRepository usersRepository;
 	@Autowired
 	private SignWorkflowStepsRepository signWorkflowStepsRepository;
 	@Autowired
 	private SignEventRepository signEventRepository;
 
+	@Autowired
+	private SecurityUtils securityUtils;
+
 	// 判断是否出现签字按钮 0不出现，1出现
-	public Long isEditable(Long signWorkflowStepsId, Long eventId) {
+	public Long isEditable(Long signWorkflowStepsId, Long eventId, Long idSignatory) {
+		Users usr = securityUtils.getCurrentDBUser();
+		System.out.println(" signId: "+idSignatory +", uid: " + usr.getId() );
+		//System.out.println(" signId: "+idSignatory );
+		if (idSignatory == null) {
+			return 0l;
+		} else {
+			if (!usr.getId().equals(idSignatory)) {
+				return 0l;
+			}
+		}
+
 		Long editable = 0l;
+		System.out.println(" stepId: "+signWorkflowStepsId);
 		SignWorkflowSteps signWorkflowSteps = signWorkflowStepsRepository.findOne(signWorkflowStepsId);
 		SignEvent signEvent = signEventRepository.findByIdEventAndIdSignWorkflowSteps(eventId, signWorkflowStepsId);
 		Long currentLvl = signWorkflowSteps.getLvl();
@@ -36,6 +53,7 @@ public class SignService {
 		{
 			if (currentLvl.equals(1l)) // 第一层，可签字
 			{
+				System.out.println("第一层，可签");
 				editable = 1l;
 				return editable;
 
@@ -52,7 +70,7 @@ public class SignService {
 			}
 		} else // 已经签字
 		{
-			if (signEvent.getStatus().equals(1l))// 拒绝
+			if (signEvent.getStatus().equals(0l))// 拒绝
 			{
 				editable = 1l;
 				return editable;
@@ -75,7 +93,7 @@ public class SignService {
 				finished = false;
 				return finished;
 			} else {
-				if (signEvent.getStatus().equals(1l)) {
+				if (signEvent.getStatus().equals(0l)) {
 					finished = false;
 					return finished;
 				}

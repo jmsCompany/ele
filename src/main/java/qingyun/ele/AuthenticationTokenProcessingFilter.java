@@ -17,7 +17,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 import org.springframework.stereotype.Component;
@@ -75,17 +74,12 @@ public class AuthenticationTokenProcessingFilter extends AbstractPreAuthenticate
 				String token = request.getHeader("JMS-TOKEN");
 				if (token != null) {
 					if (tokenUtils.validate(token)) {
-
 						MCAUserDetails userDetails = tokenUtils.getUserFromToken(token);
 						UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
 								userDetails.getUsername(), userDetails.getPassword());
 						authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 						Authentication authenticated = authenticationManager.authenticate(authentication);
-
 						SecurityContextHolder.getContext().setAuthentication(authenticated);
-						// logger.debug("userid:" +userDetails.getUsername() +",
-						// ip: "+request.getRemoteAddr()+", path: "+
-						// request.getRequestURI());
 						Logs log = new Logs();
 						log.setIp(request.getRemoteAddr());
 						log.setTime(new Date());

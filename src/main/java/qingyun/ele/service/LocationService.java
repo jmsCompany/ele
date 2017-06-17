@@ -44,9 +44,11 @@ public class LocationService {
 			locations = locationRepository.findByEnabled(enabled);
 		}
 		List<WSSelectObj> ws = new ArrayList<WSSelectObj>(0);
+		WSSelectObj w1 = new WSSelectObj("", "请选择省");
+		ws.add(w1);
 		for (Location location : locations) {
 			WSSelectObj so = new WSSelectObj();
-			so.setId(location.getId());
+			so.setId(""+location.getId());
 			so.setName(location.getName());
 			ws.add(so);
 		}
@@ -62,8 +64,10 @@ public class LocationService {
 		} else {
 			subLocations = subLocationRepository.findByLocationIdAndEnabled(locationId, enabled);
 		}
+		WSSelectObj w1 = new WSSelectObj("", "请选择市县");
+		ws.add(w1);
 		for (SubLocation s : subLocations) {
-			WSSelectObj so = new WSSelectObj(s.getId(), s.getName());
+			WSSelectObj so = new WSSelectObj(""+s.getId(), s.getName());
 			ws.add(so);
 		}
 		return ws;
@@ -79,8 +83,10 @@ public class LocationService {
 			subSubLocations = subSubLocationRepository.findBySubLocationIdAndEnabled(subLocationId, enabled);
 
 		}
+		WSSelectObj w1 = new WSSelectObj("", "请选择区域");
+		ws.add(w1);
 		for (SubSubLocation s : subSubLocations) {
-			WSSelectObj so = new WSSelectObj(s.getId(), s.getName());
+			WSSelectObj so = new WSSelectObj(""+s.getId(), s.getName());
 			ws.add(so);
 
 		}
@@ -91,8 +97,10 @@ public class LocationService {
 	public List<WSSelectObj> getSubSublocations() {
 		Users sessionUser = securityUtils.getCurrentDBUser();
 		List<WSSelectObj> ws = new ArrayList<WSSelectObj>(0);
-		for (SubSubLocation s : subSubLocationRepository.findByEnabledAndRoleId(1l,sessionUser.getId())) {
-			WSSelectObj so = new WSSelectObj(s.getId(), s.getSubLocation().getLocation().getName() + ","
+		WSSelectObj w1 = new WSSelectObj("", "请选择区域");
+		ws.add(w1);
+		for (SubSubLocation s : subSubLocationRepository.findByEnabledAndRoleId(1l, sessionUser.getId())) {
+			WSSelectObj so = new WSSelectObj(""+s.getId(), s.getSubLocation().getLocation().getName() + ","
 					+ s.getSubLocation().getName() + "," + s.getName());
 			ws.add(so);
 

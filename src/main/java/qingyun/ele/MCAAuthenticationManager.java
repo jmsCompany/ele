@@ -32,7 +32,7 @@ public class MCAAuthenticationManager implements AuthenticationManager {
 		if (password.equals(userDetails.getPassword()) && userDetails.isEnabled())
 			return authenticatedToken(userDetails, authentication);
 		else
-			throw new UsernameNotFoundException("密码错误 或则 用户没有被激活！");
+			throw new UsernameNotFoundException("密码错误或者用户没有被激活！");
 
 	}
 

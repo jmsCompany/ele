@@ -19,7 +19,6 @@ import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "customer", catalog = "ele")
-
 public class Customer implements java.io.Serializable {
 
 	private Long id;
@@ -49,14 +48,15 @@ public class Customer implements java.io.Serializable {
 	private Float netProfit;
 	private String loanTime;
 	private Date soCreationTime;
-
+	private Long currentStep;
+	private Float mainternanceCost;
+	private Float percent;
+	private String content;
 	
 	private Set<So> sos = new HashSet<So>(0);
 	private Set<ProjectSteps> projectStepses = new HashSet<ProjectSteps>(0);
 
-
-	public Customer() {
-	}
+	public Customer() {}
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -163,7 +163,6 @@ public class Customer implements java.io.Serializable {
 		this.projectStepses = projectStepses;
 	}
 
-	
 	@Column(name = "deleted")
 	public Long getDeleted() {
 		return deleted;
@@ -327,5 +326,44 @@ public class Customer implements java.io.Serializable {
 	public void setSoCreationTime(Date soCreationTime) {
 		this.soCreationTime = soCreationTime;
 	}
+
+	@Column(name = "current_step")
+	public Long getCurrentStep() {
+		return currentStep;
+	}
+
+	public void setCurrentStep(Long currentStep) {
+		this.currentStep = currentStep;
+	}
+	
+	@Column(name = "mainternance_cost", precision = 12, scale = 0)
+	public Float getMainternanceCost() {
+		return mainternanceCost;
+	}
+
+	public void setMainternanceCost(Float mainternanceCost) {
+		this.mainternanceCost = mainternanceCost;
+	}
+	
+	@Column(name = "percent", precision = 12, scale = 0)
+	public Float getPercent() {
+		return percent;
+	}
+
+	public void setPercent(Float percent) {
+		this.percent = percent;
+	}
+	
+	
+	@Column(name = "content", length = 16777216)
+	public String getContent() {
+
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
 
 }

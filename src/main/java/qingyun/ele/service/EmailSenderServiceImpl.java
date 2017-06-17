@@ -31,7 +31,7 @@ public class EmailSenderServiceImpl implements EmailSenderService {
 					message.setTo(toEmailAddresses);
 					message.setFrom(new InternetAddress(from));
 					message.setSubject(subject);
-					String body = "hello world";
+					// String body = "hello world";
 					// System.out.println("body: " + body);
 					message.setText(body, true);
 					if (files != null) {

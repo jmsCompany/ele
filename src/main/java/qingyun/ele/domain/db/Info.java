@@ -4,13 +4,9 @@ package qingyun.ele.domain.db;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -119,8 +115,8 @@ public class Info implements java.io.Serializable {
 	private String p6;
 	private String p7;
 	private String p8;
-	//private ProjectSteps projectSteps;
-	
+	// private ProjectSteps projectSteps;
+
 	private String content;
 
 	// private Long idProject;
@@ -136,18 +132,18 @@ public class Info implements java.io.Serializable {
 	public Info() {
 	}
 
-	public Info(String code, String c1, String c2, String c3, String c4, String c5,
-			String c6, String c7, String c8, String c9, String c10, String c11, String c12, String c13, String c14,
-			String c15, String c16, String c17, String c18, String c19, String c20, String c21, String c22, String c23,
-			String c24, String c25, String c26, String c27, String c28, String c29, String c30, String c31, String c32,
-			String c33, String c34, String c35, String c36, String c37, String c38, String c39, String c40, String c41,
-			String c42, String c43, String c44, String c45, String c46, String c47, String c48, String c49, String c50,
-			String c51, String c52, String c53, String c54, String c55, String c56, String c57, String c58, String c59,
-			String c60, String c61, String c62, String c63, String c64, Date d1, Date d2, Date d3, Date d4, Date d5,
-			Date d6, Date d7, Date d8, Date d9, Date d10, Date d11, String s1, String s2, String s3, String s4,
-			String s5, String s6, String s7, String s8, String s9, String s10, String s11, String p1, String p2,
-			String p3, String p4, String p5, String p6, String p7, String p8) {
-	
+	public Info(String code, String c1, String c2, String c3, String c4, String c5, String c6, String c7, String c8,
+			String c9, String c10, String c11, String c12, String c13, String c14, String c15, String c16, String c17,
+			String c18, String c19, String c20, String c21, String c22, String c23, String c24, String c25, String c26,
+			String c27, String c28, String c29, String c30, String c31, String c32, String c33, String c34, String c35,
+			String c36, String c37, String c38, String c39, String c40, String c41, String c42, String c43, String c44,
+			String c45, String c46, String c47, String c48, String c49, String c50, String c51, String c52, String c53,
+			String c54, String c55, String c56, String c57, String c58, String c59, String c60, String c61, String c62,
+			String c63, String c64, Date d1, Date d2, Date d3, Date d4, Date d5, Date d6, Date d7, Date d8, Date d9,
+			Date d10, Date d11, String s1, String s2, String s3, String s4, String s5, String s6, String s7, String s8,
+			String s9, String s10, String s11, String p1, String p2, String p3, String p4, String p5, String p6,
+			String p7, String p8) {
+
 		this.code = code;
 		this.c1 = c1;
 		this.c2 = c2;
@@ -256,7 +252,6 @@ public class Info implements java.io.Serializable {
 	public void setId(Long id) {
 		this.id = id;
 	}
-
 
 	@Column(name = "code", length = 20)
 	public String getCode() {
@@ -1124,8 +1119,8 @@ public class Info implements java.io.Serializable {
 		this.p8 = p8;
 	}
 
-	//@Lob(type = LobType.CLOB, fetch = FetchType.LAZY)  
-	@Column(name="content",length = 16777216)
+	// @Lob(type = LobType.CLOB, fetch = FetchType.LAZY)
+	@Column(name = "content", length = 16777216)
 	public String getContent() {
 		return content;
 	}
@@ -1133,7 +1128,5 @@ public class Info implements java.io.Serializable {
 	public void setContent(String content) {
 		this.content = content;
 	}
-	
-
 
 }

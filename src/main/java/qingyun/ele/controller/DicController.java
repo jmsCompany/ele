@@ -121,8 +121,10 @@ public class DicController {
 	@RequestMapping(value = "/sys/dic/dicDicSelects", method = RequestMethod.GET)
 	public List<WSSelectObj> dicDicSelects() {
 		List<WSSelectObj> ws = new ArrayList<WSSelectObj>();
+		WSSelectObj w1 = new WSSelectObj("", "请选择");
+		ws.add(w1);
 		for (DicDic d : dicDicRepository.findAll()) {
-			WSSelectObj w = new WSSelectObj(d.getId(), d.getDescr());
+			WSSelectObj w = new WSSelectObj(""+d.getId(), d.getDescr());
 			ws.add(w);
 		}
 		return ws;
@@ -131,8 +133,10 @@ public class DicController {
 	@RequestMapping(value = "/sys/dic/dicSelects", method = RequestMethod.GET)
 	public List<WSSelectObj> dicSelects(@RequestParam("dicDicName") String dicDicName) {
 		List<WSSelectObj> ws = new ArrayList<WSSelectObj>();
+		WSSelectObj w1 = new WSSelectObj("", "请选择");
+		ws.add(w1);
 		for (Dic d : dicRepository.findByDicDicName(dicDicName)) {
-			WSSelectObj w = new WSSelectObj(d.getId(), d.getCode());
+			WSSelectObj w = new WSSelectObj(""+d.getId(), d.getCode());
 			ws.add(w);
 		}
 		return ws;

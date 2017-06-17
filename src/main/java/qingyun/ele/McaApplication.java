@@ -1,16 +1,22 @@
 package qingyun.ele;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+
+@EnableScheduling
 @SpringBootApplication
 @EnableTransactionManagement(proxyTargetClass = true)
 public class McaApplication {
 	AccessControlAllowFilter acaFilter = new AccessControlAllowFilter();
+	private static final Log logger = LogFactory.getLog(McaApplication.class);
 
 	public static void main(String[] args) {
 		ConfigurableApplicationContext ctx = SpringApplication.run(McaApplication.class, args);

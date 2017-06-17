@@ -2,23 +2,23 @@ package qingyun.ele.ws;
 
 public class WSSelectObj {
 
-	private Long id;
+	private String id;
 	private String name;
 
 	public WSSelectObj() {
 	}
 
-	public WSSelectObj(Long id, String name) {
+	public WSSelectObj(String id, String name) {
 		super();
 		this.id = id;
 		this.name = name;
 	}
 
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
