@@ -32,6 +32,8 @@ public class Steps implements java.io.Serializable {
 	private String delay_email;
 	private String delay_more_email;
 	private String remark;
+	
+	private String nextSteps;
 	private Set<Noti> notis = new HashSet<Noti>(0);
 	private Set<ProjectSteps> projectStepses = new HashSet<ProjectSteps>(0);
 
@@ -181,6 +183,14 @@ public class Steps implements java.io.Serializable {
 
 	public void setRemark(String remark) {
 		this.remark = remark;
+	}
+	@Column(name = "next_steps", length = 45)
+	public String getNextSteps() {
+		return nextSteps;
+	}
+
+	public void setNextSteps(String nextSteps) {
+		this.nextSteps = nextSteps;
 	}
 
 }

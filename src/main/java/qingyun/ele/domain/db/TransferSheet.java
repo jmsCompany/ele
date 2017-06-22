@@ -119,6 +119,8 @@ public class TransferSheet implements java.io.Serializable {
 
 	private String content;
 	private Long idProject;
+	
+	private Long commit;
 
 	@Column(name = "id_project")
 	public Long getIdProject() {
@@ -1139,6 +1141,15 @@ public class TransferSheet implements java.io.Serializable {
 
 	public void setContent(String content) {
 		this.content = content;
+	}
+
+	@Column(name = "commit")
+	public Long getCommit() {
+		return commit;
+	}
+
+	public void setCommit(Long commit) {
+		this.commit = commit;
 	}
 
 }

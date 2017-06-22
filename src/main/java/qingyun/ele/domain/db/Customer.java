@@ -1,7 +1,5 @@
 package qingyun.ele.domain.db;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -18,6 +16,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
 
 @Entity
 @Table(name = "customer", catalog = "ele")
@@ -58,8 +57,8 @@ public class Customer implements java.io.Serializable {
 	private Long currStep;
 	//0 保存  1 提交签名
 	private Long commit;
-
-
+	
+	private String mobile;
 
 	private Set<So> sos = new HashSet<So>(0);
 	private Set<ProjectSteps> projectStepses = new HashSet<ProjectSteps>(0);
@@ -389,6 +388,15 @@ public class Customer implements java.io.Serializable {
 
 	public void setCommit(Long commit) {
 		this.commit = commit;
+	}
+
+	@Column(name = "mobile", length = 45)
+	public String getMobile() {
+		return mobile;
+	}
+
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
 	}
 
 }

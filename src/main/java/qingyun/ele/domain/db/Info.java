@@ -118,6 +118,8 @@ public class Info implements java.io.Serializable {
 	// private ProjectSteps projectSteps;
 
 	private String content;
+	
+	private Long commit;
 
 	// private Long idProject;
 	@Column(name = "id_project")
@@ -1127,6 +1129,15 @@ public class Info implements java.io.Serializable {
 
 	public void setContent(String content) {
 		this.content = content;
+	}
+
+	@Column(name = "commit")
+	public Long getCommit() {
+		return commit;
+	}
+
+	public void setCommit(Long commit) {
+		this.commit = commit;
 	}
 
 }
