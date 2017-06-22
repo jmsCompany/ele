@@ -25,8 +25,8 @@ public class MyApplicationSecurity extends WebSecurityConfigurerAdapter {
 				.antMatchers("/dic/**").permitAll().antMatchers("/getFile/**").permitAll().antMatchers("/getImage/**")
 				.permitAll().antMatchers("/login").permitAll().antMatchers(HttpMethod.OPTIONS, "/**").permitAll();
 		http.addFilter(authenticationTokenProcessingFilter);
-		http.authorizeRequests().anyRequest().authenticated();
-
+		http.authorizeRequests().antMatchers("/customer").hasAuthority("customer");
+		http.authorizeRequests().anyRequest().hasAuthority("company");
 	}
 
 	@Autowired

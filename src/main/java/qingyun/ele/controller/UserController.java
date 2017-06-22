@@ -241,7 +241,8 @@ public class UserController {
 			v.setMsg("系统用户不能被删除！");
 			return v;
 		}
-		usersRepository.delete(u);
+		u.setEnabled(0l);
+		usersRepository.save(u);
 		v.setValid(true);
 		return v;
 

@@ -1,7 +1,11 @@
 package qingyun.ele;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -38,7 +42,29 @@ public class MCAUserDetailService implements Serializable, UserDetailsService {
 		}
 
 		userDetails.setUserId(user.getId());
-		userDetails.setAuthorities(null);
+		if(user.getDicByRole()!=null)
+		{
+			List<GrantedAuthority> l = new ArrayList<GrantedAuthority>();
+			l.add( new GrantedAuthority() {
+				private static final long serialVersionUID = 1L;
+				
+				@Override
+				public String getAuthority() {
+					if(user.getDicByRole().getCode().trim().equals("农户"))
+					 return "customer";
+					else
+					 return "company";
+				}
+				
+				@Override
+				public String toString() {
+					return getAuthority();
+				}
+			});
+			
+			userDetails.setAuthorities(l);
+		}
+		
 		userDetails.setPassword(user.getPassword());
 		userDetails.setMobile(user.getMobile());
 		return userDetails;

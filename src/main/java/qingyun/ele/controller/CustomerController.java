@@ -336,6 +336,7 @@ public class CustomerController {
 		Users sessionUser = securityUtils.getCurrentDBUser();
 		int page_num = (start.intValue() / length.intValue()) + 1;
 		Pageable pageable = new PageRequest(page_num - 1, length);
+		System.out.println("user id: " +sessionUser.getId());
 		Page<Customer> customers;
 		if (q == null) {
 			customers = customerRepository.findAllCustomersByRoleId(sessionUser.getId(), pageable);
@@ -621,6 +622,7 @@ public class CustomerController {
 //		return v;
 //	}
 
+	
 	//信息采集表
 	//项目基本信息从项目中抓取
 	@Transactional(readOnly = false)
@@ -635,6 +637,8 @@ public class CustomerController {
 		return c;
 	}
 
+	
+	
 	@Transactional(readOnly = false)
 	@RequestMapping(value = "/project/saveForm2", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public Valid saveForm2(@RequestBody TransferSheet transferSheet) {
@@ -658,6 +662,7 @@ public class CustomerController {
 		return v;
 	}
 
+	
 	//施工-验收-贷款流转单
 	//项目基本信息从项目中抓取
 	@Transactional(readOnly = false)
@@ -679,6 +684,7 @@ public class CustomerController {
 
 	}
 
+	
 	@Transactional(readOnly = false)
 	@RequestMapping(value = "/project/saveForm3", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public Valid saveForm3(@RequestBody Loan loan) {
@@ -705,6 +711,7 @@ public class CustomerController {
 	}
 	
 
+	
 	//贷款根据单
 	//项目基本信息从项目中抓取
 	//财务数据从销售跟踪单上抓取
@@ -735,6 +742,7 @@ public class CustomerController {
 		return dbLoan;
 
 	}
+	
 	
 	
 	

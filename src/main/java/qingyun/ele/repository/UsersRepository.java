@@ -14,7 +14,7 @@ public interface UsersRepository extends JpaRepository<Users, Long> {
 
 	public Users findByToken(String token);
 
-	@Query("select u from Users u order by u.id asc")
+	@Query("select u from Users u where u.enabled=1 order by u.id asc")
 	public Page<Users> findUsers(Pageable page);
 
 	public List<Users> findByEnabled(Long enabled);
