@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/qttech.iml" filepath="$PROJECT_DIR$/.idea/qttech.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ele.iml" filepath="$PROJECT_DIR$/ele.iml" />
     </modules>
   </component>
 </project>

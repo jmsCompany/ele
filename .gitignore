@@ -14,9 +14,12 @@ target/
 
 */target/*
 */.settings/*
-*/.springBeans
+.springBeans
 
 # IDEA #
 .idea/
 out/
 *.iml
+
+application.properties
+hibernate.properties

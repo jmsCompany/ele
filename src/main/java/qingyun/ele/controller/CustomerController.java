@@ -1,9 +1,8 @@
 package qingyun.ele.controller;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,15 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import qingyun.ele.SecurityUtils;
-import qingyun.ele.domain.db.CodeNum;
-import qingyun.ele.domain.db.Customer;
-import qingyun.ele.domain.db.Info;
-import qingyun.ele.domain.db.Loan;
-import qingyun.ele.domain.db.ProjectSteps;
-import qingyun.ele.domain.db.Steps;
-import qingyun.ele.domain.db.SubSubLocation;
-import qingyun.ele.domain.db.TransferSheet;
-import qingyun.ele.domain.db.Users;
+import qingyun.ele.domain.db.*;
 import qingyun.ele.repository.CodeNumRepository;
 import qingyun.ele.repository.CustomerRepository;
 import qingyun.ele.repository.DicRepository;
@@ -90,11 +81,13 @@ public class CustomerController {
 			dbCustomer = new Customer();
 			dbCustomer.setDeleted(0l);
 			dbCustomer.setCreationTime(new Date());
+			dbCustomer.setStart(new Date());
 			dbCustomer.setCreator(securityUtils.getCurrentDBUser().getId());
 			CodeNum codeNum = codeNumRepository.findByIdforUpdate(1l);
 			Long currentVal = codeNum.getCurr_val();
-			String code = codeNum.getPrefix() + String.format("%08d", currentVal);
+			String code = codeNum.getPrefix() + String.format("%04d", currentVal);
 			dbCustomer.setCode(code);
+			dbCustomer.setDic(new Dic(7l));
 			codeNum.setCurr_val(currentVal + 1);
 			codeNumRepository.save(codeNum);
 		} else {
@@ -105,14 +98,19 @@ public class CustomerController {
 		dbCustomer.setName(customer.getName());
 		dbCustomer.setProject(customer.getProject());
 		dbCustomer.setAddress(customer.getAddress());
-		dbCustomer.setStart(customer.getStart());
+		if (customer.getStart()!=null){
+			dbCustomer.setStart(customer.getStart());
+		}
 		dbCustomer.setEnd(customer.getEnd());
 		dbCustomer.setProcess(customer.getProcess());
 		dbCustomer.setSaleMan(customer.getSaleMan());
-		Long idDic = customer.getDic().getId();
-		if (idDic != null) {
-			dbCustomer.setDic(dicRepository.findOne(idDic));
-		}
+		dbCustomer.setCurrStep(customer.getCurrStep());
+		dbCustomer.setCommit(customer.getCommit());
+		dbCustomer.setContent(customer.getContent());
+//		Long idDic = customer.getDic().getId();
+//		if (idDic != null) {
+//			dbCustomer.setDic(dicRepository.findOne(idDic));
+//		}
 		Long idSubSubLocation = customer.getSubSubLocation().getId();
 		if (idSubSubLocation != null) {
 			dbCustomer.setSubSubLocation(subSubLocationRepository.findOne(idSubSubLocation));
@@ -329,16 +327,26 @@ public class CustomerController {
 		return dbCustomer;
 	}
 
-	
+	/**
+	 * 分页查询项目列表
+	 * @param q 查询关键字
+	 * @param start 开始页
+	 * @param draw
+	 * @param length 页面长度
+     * @return
+     */
 	@RequestMapping(value = "/project/projectTable", method = RequestMethod.POST)
 	public WSTableData projectTable(@RequestParam(required = false, value = "q") String q,@RequestParam Integer start, @RequestParam Integer draw,
 			@RequestParam Integer length) {
+		//获取当前登录用户的对象
 		Users sessionUser = securityUtils.getCurrentDBUser();
+		//计算当前页码
 		int page_num = (start.intValue() / length.intValue()) + 1;
 		Pageable pageable = new PageRequest(page_num - 1, length);
 		System.out.println("user id: " +sessionUser.getId());
 		Page<Customer> customers;
-		if (q == null) {
+		//判断是否输入查询关键字,如果有则按照关键字查询,否则根据登录用户的角色查询
+		if (q == null||"".equals(q)) {
 			customers = customerRepository.findAllCustomersByRoleId(sessionUser.getId(), pageable);
 		} else {
 			customers = customerRepository.findByQ(q, sessionUser.getId(), pageable);
@@ -357,8 +365,8 @@ public class CustomerController {
 			{
 				p =""+ w.getDic().getId();
 			}
-			String[] d = { "" + w.getId(), w.getCode(), w.getName(), w.getAddress(), w.getProject(), loc,
-					w.getDic().getCode(), saleMan, "" + w.getId(),"" + w.getId(),"" + w.getId(),"" + w.getId(), "" + p, "" + w.getId() };
+			String[] d = { "" + w.getId(), w.getCode(), w.getName(), w.getAddress(), w.getProject(), loc,w.getDic().getCode(),
+					 saleMan, "" + w.getId(),"" + w.getId(),"" + w.getId(),"" + w.getId(), "" + p, "" + w.getId() };
 			lst.add(d);
 		}
 
@@ -627,14 +635,18 @@ public class CustomerController {
 	//项目基本信息从项目中抓取
 	@Transactional(readOnly = false)
 	@RequestMapping(value = "/project/getForm1", method = RequestMethod.GET)
-	public Customer getForm1(@RequestParam Long projectId) {
+	public Object getForm1(@RequestParam Long projectId) {
 
 		Customer c = customerRepository.findOne(projectId);
 		//Info dbInfo = infoRepository.findByIdProject(projectId);
 		if (c == null) {
 			c = new Customer();
 		}
-		return c;
+		Map<String,Object> map=new HashMap<>();
+		map.put("id",c!=null?c.getId():0);
+		map.put("code",c!=null?c.getCode():"");
+		map.put("content",c!=null?c.getContent():"");
+		return map;
 	}
 
 	
