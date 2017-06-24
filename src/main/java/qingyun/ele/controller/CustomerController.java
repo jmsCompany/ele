@@ -660,14 +660,15 @@ public class CustomerController {
 		if (dbTransferSheet != null) {
 			transferSheet.setId(dbTransferSheet.getId());
 			transferSheet.setCode(dbTransferSheet.getCode());
-		} else {
-			CodeNum codeNum = codeNumRepository.findByIdforUpdate(4l);
-			Long currentVal = codeNum.getCurr_val();
-			String code = codeNum.getPrefix() + String.format("%08d", currentVal);
-			transferSheet.setCode(code);
-			codeNum.setCurr_val(currentVal + 1);
-			codeNumRepository.save(codeNum);
 		}
+//		else {
+//			CodeNum codeNum = codeNumRepository.findByIdforUpdate(4l);
+//			Long currentVal = codeNum.getCurr_val();
+//			String code = codeNum.getPrefix() + String.format("%08d", currentVal);
+//			transferSheet.setCode(code);
+//			codeNum.setCurr_val(currentVal + 1);
+//			codeNumRepository.save(codeNum);
+//		}
 
 		transferSheetRepository.save(transferSheet);
 		v.setValid(true);
@@ -708,14 +709,14 @@ public class CustomerController {
 			loan.setCode(dbLoan.getCode());
 		}
 
-		else {
-			CodeNum codeNum = codeNumRepository.findByIdforUpdate(5l);
-			Long currentVal = codeNum.getCurr_val();
-			String code = codeNum.getPrefix() + String.format("%08d", currentVal);
-			loan.setCode(code);
-			codeNum.setCurr_val(currentVal + 1);
-			codeNumRepository.save(codeNum);
-		}
+//		else {
+//			CodeNum codeNum = codeNumRepository.findByIdforUpdate(5l);
+//			Long currentVal = codeNum.getCurr_val();
+//			String code = codeNum.getPrefix() + String.format("%08d", currentVal);
+//			loan.setCode(code);
+//			codeNum.setCurr_val(currentVal + 1);
+//			codeNumRepository.save(codeNum);
+//		}
 
 		loanRepository.save(loan);
 		v.setValid(true);
