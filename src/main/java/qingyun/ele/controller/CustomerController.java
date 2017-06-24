@@ -783,6 +783,41 @@ public class CustomerController {
 		}
 		return result;
 	}
+
+	/**
+	 * 修改项目步骤状态为结束，保存当前时间为项目步骤结束时间,保存当前用户为员工,新建项目后续步骤并保存当前时间为
+	 * 后续步骤开始时间
+	 * @param proStepId
+	 * @return
+     */
+	@Transactional(readOnly = false)
+	@RequestMapping(value = "/project/finishProjectStep",method = RequestMethod.POST)
+	public Valid finishProjectStep(@RequestParam Long proStepId){
+		Valid v=new Valid();
+		ProjectSteps projectSteps = projectStepsRepository.findById(proStepId);
+		Dic dic = dicRepository.findById(43l);
+		projectSteps.setDicByStatus(dic);
+		projectSteps.setEnd(new Date());
+		projectSteps.setUsers(securityUtils.getCurrentDBUser());
+		//修改项目步骤状态
+		projectStepsRepository.save(projectSteps);
+		//查询后续步骤
+		String nextSteps = projectSteps.getSteps().getNextSteps();
+		if (nextSteps!=null){
+			String[] nextStep = nextSteps.split(",");
+			for (String n:nextStep){
+				ProjectSteps p=new ProjectSteps();
+				p.setSteps(stepsRepository.findById(Long.valueOf(n)));
+				p.setCustomer(projectSteps.getCustomer());
+				p.setDicByStatus(dicRepository.findById(42l));
+				p.setStart(new Date());
+				projectStepsRepository.save(p);
+			}
+		}
+		v.setValid(Boolean.TRUE);
+		return v;
+	}
+
 	private List<Long> getSteps(List<WSProjectStepStatus> list){
 		List<Long> stepIds=new ArrayList<>();
 		for (WSProjectStepStatus p:list){

@@ -22,4 +22,6 @@ public interface DicRepository extends JpaRepository<Dic, Long> {
 	@Query("select d from Dic d where d.dicDic.name=?1")
 	public List<Dic> findByDicDicName(String dicDicName);
 
+	@Query("select d from Dic d where d.id=?1")
+	public Dic findById(Long code);
 }
