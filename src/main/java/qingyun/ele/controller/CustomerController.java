@@ -74,13 +74,14 @@ public class CustomerController {
 			dbCustomer.setCreationTime(new Date());
 			dbCustomer.setStart(new Date());
 			dbCustomer.setCreator(securityUtils.getCurrentDBUser().getId());
-			CodeNum codeNum = codeNumRepository.findByPrefixAndDesc(customer.getSubSubLocation().getCode(),"project");
+			SubSubLocation subSubLocation = subSubLocationRepository.findOne(customer.getSubSubLocation().getId());
+			CodeNum codeNum = codeNumRepository.findByPrefixAndDesc(subSubLocation.getCode(),"project");
 			if (codeNum==null){
 				//新增一条数据
 				codeNum=new CodeNum();
 				codeNum.setDescr("project");
 				codeNum.setCurr_val(0l);
-				codeNum.setPrefix(customer.getSubSubLocation().getCode());
+				codeNum.setPrefix(subSubLocation.getCode());
 				codeNumRepository.save(codeNum);
 			}
 			Long currentVal = codeNum.getCurr_val();
