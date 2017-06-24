@@ -23,4 +23,7 @@ public interface SubSubLocationRepository extends JpaRepository<SubSubLocation, 
 
 	public Page<SubSubLocation> findByEnabled(Long enabled, Pageable pageable);
 
+
+	public List<SubSubLocation> findByCode(String code);
+
 }

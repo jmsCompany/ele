@@ -60,7 +60,7 @@ public class LocationController {
 	@Transactional(readOnly = false)
 	@RequestMapping(value = "/sys/location/changeStatus", method = RequestMethod.GET)
 	public Valid enableSubSubLocation(@RequestParam("subSubLocationId") Long subSubLocationId,
-			@RequestParam("enabled") Long enabled) {
+			@RequestParam("enabled") Long enabled,@RequestParam String code) {
 
 		Valid v = new Valid();
 		SubSubLocation subSubLocation = subSubLocationRepository.findOne(subSubLocationId);
@@ -81,6 +81,13 @@ public class LocationController {
 				return v;
 			}
 		}
+		List<SubSubLocation> subSubLocations = subSubLocationRepository.findByCode(code);
+		if (subSubLocations!=null&&subSubLocations.size()>0){
+			v.setValid(false);
+			v.setMsg("区域编码已存在");
+			return v;
+		}
+		subSubLocation.setCode(code);
 		subSubLocation.setEnabled(enabled);
 		subSubLocationRepository.save(subSubLocation);
 		v.setValid(true);

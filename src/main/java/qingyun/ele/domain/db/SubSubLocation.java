@@ -26,6 +26,7 @@ public class SubSubLocation implements java.io.Serializable {
 	private SubLocation subLocation;
 	private String name;
 	private Long enabled;
+	private String code;
 	private Set<Dic> dics = new HashSet<Dic>(0);
 	private Set<Customer> customers = new HashSet<Customer>(0);
 
@@ -74,6 +75,7 @@ public class SubSubLocation implements java.io.Serializable {
 		this.name = name;
 	}
 
+
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinTable(name = "role_locations", catalog = "ele", joinColumns = {
 			@JoinColumn(name = "id_sub_sub_location", nullable = false, updatable = false) }, inverseJoinColumns = {
@@ -104,4 +106,12 @@ public class SubSubLocation implements java.io.Serializable {
 		this.enabled = enabled;
 	}
 
+	@Column(name = "code",length = 45)
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
 }
