@@ -818,6 +818,24 @@ public class CustomerController {
 		return v;
 	}
 
+	/**
+	 * 修改项目状态
+	 * @param projId
+	 * @param statusId
+     * @return
+     */
+	@Transactional(readOnly = false)
+	@RequestMapping(value = "/project/changeProjectStatus",method = RequestMethod.POST)
+	public Valid changeProjectStatus(@RequestParam Long projId,@RequestParam Long statusId){
+		Valid v=new Valid();
+		Customer customer = customerRepository.findOne(projId);
+		Dic dic = dicRepository.findOne(statusId);
+		customer.setDic(dic);
+		customerRepository.save(customer);
+		v.setValid(Boolean.TRUE);
+		return v;
+	}
+
 	private List<Long> getSteps(List<WSProjectStepStatus> list){
 		List<Long> stepIds=new ArrayList<>();
 		for (WSProjectStepStatus p:list){
