@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import qingyun.ele.LocationCodeModel;
 import qingyun.ele.domain.db.SubSubLocation;
 import qingyun.ele.repository.LocationRepository;
 import qingyun.ele.repository.SubLocationRepository;
@@ -117,6 +118,20 @@ public class LocationController {
 		t.setRecordsFiltered((int) loc.getTotalElements());
 		t.setData(lst);
 		return t;
+	}
+
+	/**
+	 * 根据subSubLocationId查询对应的区域码
+	 * @param subSubLocationId
+	 * @return
+     */
+	@RequestMapping(value = "/sys/location/findLocationCode",method = RequestMethod.GET)
+	public LocationCodeModel getSubSubLocationCodeById(@RequestParam Long subSubLocationId){
+		SubSubLocation subSubLocation = subSubLocationRepository.findOne(subSubLocationId);
+		LocationCodeModel model=new LocationCodeModel();
+		model.setId(subSubLocation.getId());
+		model.setCode(subSubLocation.getCode());
+		return model;
 	}
 
 }
