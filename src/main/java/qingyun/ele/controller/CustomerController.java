@@ -853,4 +853,21 @@ public class CustomerController {
 		}
 		return stepIds;
 	}
+
+	/**
+	 * 修改项目是否提交
+	 * @param projId
+	 * @param commit
+     * @return
+     */
+	@Transactional(readOnly = false)
+	@RequestMapping(value = "/project/changeProjectCommit",method = RequestMethod.POST)
+	public Valid changeProjectCommit(@RequestParam Long projId,@RequestParam Long commit){
+		Customer customer = customerRepository.findOne(projId);
+		customer.setCommit(commit);
+		customerRepository.save(customer);
+		Valid v=new Valid();
+		v.setValid(true);
+		return v;
+	}
 }
