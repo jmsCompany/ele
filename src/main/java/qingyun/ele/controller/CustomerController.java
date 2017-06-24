@@ -763,7 +763,7 @@ public class CustomerController {
 			wsProjectStepStatus.setProStepId(p.getId());
 			wsProjectStepStatus.setStepId(p.getSteps().getId());
 			wsProjectStepStatus.setStatus(p.getDicByStatus().getId());
-			wsProjectStepStatus.setStepName(p.getSteps().getName());
+			wsProjectStepStatus.setStepName(p.getSteps().getId()+"."+p.getSteps().getName());
 			result.add(wsProjectStepStatus);
 		}
 		//如果步骤不全则补全缺少的步骤数据
