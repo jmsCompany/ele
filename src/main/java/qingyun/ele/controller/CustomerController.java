@@ -11,11 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import qingyun.ele.SecurityUtils;
 import qingyun.ele.domain.db.*;
 import qingyun.ele.repository.CodeNumRepository;
@@ -30,12 +26,7 @@ import qingyun.ele.repository.TransferSheetRepository;
 import qingyun.ele.repository.UsersRepository;
 import qingyun.ele.service.EmailSenderService;
 import qingyun.ele.service.UsrService;
-import qingyun.ele.ws.Valid;
-import qingyun.ele.ws.WSProjectSteps;
-import qingyun.ele.ws.WSSelectObj;
-import qingyun.ele.ws.WSSoTrack;
-import qingyun.ele.ws.WSTableData;
-
+import qingyun.ele.ws.*;
 
 
 @RestController
@@ -337,7 +328,7 @@ public class CustomerController {
      */
 	@RequestMapping(value = "/project/projectTable", method = RequestMethod.POST)
 	public WSTableData projectTable(@RequestParam(required = false, value = "q") String q,@RequestParam Integer start, @RequestParam Integer draw,
-			@RequestParam Integer length) {
+			@RequestParam Integer length,@RequestParam Long status) {
 		//获取当前登录用户的对象
 		Users sessionUser = securityUtils.getCurrentDBUser();
 		//计算当前页码
@@ -347,9 +338,9 @@ public class CustomerController {
 		Page<Customer> customers;
 		//判断是否输入查询关键字,如果有则按照关键字查询,否则根据登录用户的角色查询
 		if (q == null||"".equals(q)) {
-			customers = customerRepository.findAllCustomersByRoleId(sessionUser.getId(), pageable);
+			customers = customerRepository.findAllCustomersByRoleIdAndStatus(sessionUser.getId(),status, pageable);
 		} else {
-			customers = customerRepository.findByQ(q, sessionUser.getId(), pageable);
+			customers = customerRepository.findByQAndStatus(q, sessionUser.getId(),status, pageable);
 		}
 		List<String[]> lst = new ArrayList<String[]>();
 		for (Customer w : customers.getContent()) {
@@ -754,8 +745,49 @@ public class CustomerController {
 		return dbLoan;
 
 	}
-	
-	
-	
-	
+
+
+	/**
+	 * 获取项目步骤状态
+	 * @param projId
+	 * @return
+     */
+	@Transactional(readOnly = false)
+	@RequestMapping(value = "/project/getProjectStepStatus",method = RequestMethod.GET)
+	public List<WSProjectStepStatus> getProjectStepStatusByProId(@RequestParam Long projId){
+		//根据projId查询项目步骤信息
+		List<ProjectSteps> projectStepses = projectStepsRepository.findByProjectId(projId);
+		List<WSProjectStepStatus> result=new ArrayList<>();
+		for (ProjectSteps p:projectStepses){
+			WSProjectStepStatus wsProjectStepStatus=new WSProjectStepStatus();
+			wsProjectStepStatus.setProStepId(p.getId());
+			wsProjectStepStatus.setStepId(p.getSteps().getId());
+			wsProjectStepStatus.setStatus(p.getDicByStatus().getId());
+			wsProjectStepStatus.setStepName(p.getSteps().getName());
+			result.add(wsProjectStepStatus);
+		}
+		//如果步骤不全则补全缺少的步骤数据
+		if (result!=null&&result.size()>0&&result.size()<12){
+			//获取已经存在的步骤的Id集合
+			List<Long> steps = getSteps(result);
+			for (int i=1;i<=12;i++){
+				if (!steps.contains(Long.valueOf(i))){
+					WSProjectStepStatus wsProjectStepStatus=new WSProjectStepStatus();
+					wsProjectStepStatus.setProStepId(0l);
+					wsProjectStepStatus.setStepId(Long.valueOf(i));
+					wsProjectStepStatus.setStatus(0l);
+					wsProjectStepStatus.setStepName("");
+					result.add(wsProjectStepStatus);
+				}
+			}
+		}
+		return result;
+	}
+	private List<Long> getSteps(List<WSProjectStepStatus> list){
+		List<Long> stepIds=new ArrayList<>();
+		for (WSProjectStepStatus p:list){
+			stepIds.add(p.getStepId());
+		}
+		return stepIds;
+	}
 }

@@ -44,13 +44,15 @@ public class MCAUserDetailService implements Serializable, UserDetailsService {
 		userDetails.setUserId(user.getId());
 		if(user.getDicByRole()!=null)
 		{
+
+			String role = user.getDicByRole().getCode();
 			List<GrantedAuthority> l = new ArrayList<GrantedAuthority>();
 			l.add( new GrantedAuthority() {
 				private static final long serialVersionUID = 1L;
 				
 				@Override
 				public String getAuthority() {
-					if(user.getDicByRole().getCode().trim().equals("农户"))
+					if(role.trim().equals("农户"))
 					 return "customer";
 					else
 					 return "company";
