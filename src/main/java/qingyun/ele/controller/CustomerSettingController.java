@@ -60,7 +60,8 @@ public class CustomerSettingController {
         for (Customer customer:customers){
             Users users = usersRepository.findByUsername(customer.getMobile());
             String status=(users!=null)?"1":"0";
-            String[] fields={customer.getName(),customer.getMobile(),customer.getProject(),customer.getAlertEmail(),status,customer.getId()+""};
+            String[] fields={customer.getName(),customer.getMobile(),customer.getProject(),
+                    customer.getAlertEmail(),status,customer.getId()+"",customer.getId()+"",customer.getId()+"",customer.getId()+""};
             list.add(fields);
         }
         WSTableData t = new WSTableData();

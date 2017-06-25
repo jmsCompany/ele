@@ -1,15 +1,22 @@
 package qingyun.ele.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import qingyun.ele.SecurityUtils;
+import qingyun.ele.domain.db.Customer;
 import qingyun.ele.domain.db.CustomerDevice;
+import qingyun.ele.domain.db.Users;
 import qingyun.ele.repository.CustomerDeviceRepository;
+import qingyun.ele.repository.CustomerRepository;
 import qingyun.ele.ws.Valid;
+import qingyun.ele.ws.WSTableData;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by zhaohelong on 2017/6/25.
@@ -23,6 +30,9 @@ public class CustomerDeviceController {
 
     @Autowired
     private SecurityUtils securityUtils;
+
+    @Autowired
+    private CustomerRepository customerRepository;
 
     /**
      * 新建/编辑项目设备
@@ -69,5 +79,18 @@ public class CustomerDeviceController {
         Valid v=new Valid();
         v.setValid(Boolean.TRUE);
         return v;
+    }
+
+    @RequestMapping(value = "/project/getCustomerDevices",method = RequestMethod.GET)
+    public WSTableData getCustomerDevices(){
+        Users users = securityUtils.getCurrentDBUser();
+        Customer customer = customerRepository.finByMobile(users.getMobile());
+        Page<CustomerDevice> customerDevices = customerDeviceRepository.findByProjectId(customer.getId());
+        List<String[]> list=new ArrayList<>();
+        for (CustomerDevice customerDevice:customerDevices){
+            String[] fields={customerDevice.getDataloggerSn(),customerDevice.getDataloggerAlias(),customerDevice.getInverterSn(),
+            customerDevice.getInverterType(),customerDevice.getStatus()+"",customerDevice.getLastUpdated()+""};
+        }
+        return null;
     }
 }
