@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bef305f4-f58f-46e7-8f3e-4a9ddf82b199" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/qingyun/ele/controller/CustomerDeviceController.java" afterPath="$PROJECT_DIR$/src/main/java/qingyun/ele/controller/CustomerDeviceController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/qingyun/ele/controller/CustomerSettingController.java" afterPath="$PROJECT_DIR$/src/main/java/qingyun/ele/controller/CustomerSettingController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/qingyun/ele/repository/CustomerDeviceRepository.java" afterPath="$PROJECT_DIR$/src/main/java/qingyun/ele/repository/CustomerDeviceRepository.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/qingyun/ele/repository/CustomerRepository.java" afterPath="$PROJECT_DIR$/src/main/java/qingyun/ele/repository/CustomerRepository.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/doc/电站管理信息系统开发需求.docx" afterPath="$PROJECT_DIR$/doc/电站管理信息系统开发需求.docx" />
     </list>
     <ignored path="qttech.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -64,8 +60,8 @@
       <file leaf-file-name="CustomerSettingController.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/qingyun/ele/controller/CustomerSettingController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="239">
-              <caret line="63" column="131" selection-start-line="63" selection-start-column="131" selection-end-line="63" selection-end-column="131" />
+            <state relative-caret-position="473">
+              <caret line="66" column="42" selection-start-line="66" selection-start-column="42" selection-end-line="66" selection-end-column="42" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -76,8 +72,8 @@
       <file leaf-file-name="CustomerDeviceController.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/qingyun/ele/controller/CustomerDeviceController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="824">
-              <caret line="91" column="109" selection-start-line="91" selection-start-column="109" selection-end-line="91" selection-end-column="109" />
+            <state relative-caret-position="1136">
+              <caret line="93" column="20" selection-start-line="93" selection-start-column="20" selection-end-line="93" selection-end-column="20" />
               <folding />
             </state>
           </provider>
@@ -259,14 +255,7 @@
     </navigator>
     <panes>
       <pane id="ProjectPane">
-        <subPane>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ele" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
+        <subPane />
       </pane>
       <pane id="Scope" />
       <pane id="Scratches" />
@@ -806,12 +795,12 @@
       <workItem from="1497669574728" duration="21642000" />
       <workItem from="1497881344675" duration="1518000" />
       <workItem from="1498267149250" duration="28031000" />
-      <workItem from="1498353474239" duration="24635000" />
+      <workItem from="1498353474239" duration="24982000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="105152000" />
+    <option name="totallyTimeSpent" value="105499000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-11" y="-11" width="1942" height="1042" extended-state="6" />
@@ -1446,16 +1435,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/qingyun/ele/controller/CustomerDeviceController.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="824">
-          <caret line="91" column="109" selection-start-line="91" selection-start-column="109" selection-end-line="91" selection-end-column="109" />
+        <state relative-caret-position="1136">
+          <caret line="93" column="20" selection-start-line="93" selection-start-column="20" selection-end-line="93" selection-end-column="20" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/qingyun/ele/controller/CustomerSettingController.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="239">
-          <caret line="63" column="131" selection-start-line="63" selection-start-column="131" selection-end-line="63" selection-end-column="131" />
+        <state relative-caret-position="473">
+          <caret line="66" column="42" selection-start-line="66" selection-start-column="42" selection-end-line="66" selection-end-column="42" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
