@@ -1,5 +1,7 @@
 package qingyun.ele.ws;
 
+import javax.persistence.Transient;
+
 public class WSSoTrack implements java.io.Serializable {
 	private Long id;
 	private String name;
@@ -27,6 +29,14 @@ public class WSSoTrack implements java.io.Serializable {
 	private Float percent;
 	
 	private Float actProfit;
+
+	private String paymentTime;
+
+	private Float amountPermonth;
+
+	private Long duration;
+
+	private Float estimateIncomePermonth;
 
 	public Long getId() {
 		return id;
@@ -210,5 +220,41 @@ public class WSSoTrack implements java.io.Serializable {
 
 	public void setActProfit(Float actProfit) {
 		this.actProfit = actProfit;
+	}
+
+	@Transient
+	public String getPaymentTime() {
+		return paymentTime;
+	}
+
+	public void setPaymentTime(String paymentTime) {
+		this.paymentTime = paymentTime;
+	}
+
+	@Transient
+	public Float getAmountPermonth() {
+		return amountPermonth;
+	}
+
+	public void setAmountPermonth(Float amountPermonth) {
+		this.amountPermonth = amountPermonth;
+	}
+
+	@Transient
+	public Long getDuration() {
+		return duration;
+	}
+
+	public void setDuration(Long duration) {
+		this.duration = duration;
+	}
+
+	@Transient
+	public Float getEstimateIncomePermonth() {
+		return estimateIncomePermonth;
+	}
+
+	public void setEstimateIncomePermonth(Float estimateIncomePermonth) {
+		this.estimateIncomePermonth = estimateIncomePermonth;
 	}
 }

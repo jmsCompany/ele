@@ -237,7 +237,9 @@ public class CustomerController {
 			} else {
 				dbCustomer.setSalesMan("");
 			}
-			dbCustomer.setActVol(customer.getActVol());
+			TransferSheet transferSheet = transferSheetRepository.findByIdProject(projectId);
+			//从form2中取实际容量 actVol
+			dbCustomer.setActVol(transferSheet.getActVol());
 			dbCustomer.setAgentCost(customer.getAgentCost());
 			dbCustomer.setUnitCost(customer.getUnitCost());
 			// dbCustomer.setDevCost(customer.getDevCost());
@@ -252,8 +254,13 @@ public class CustomerController {
 			dbCustomer.setUnitPrice(customer.getUnitPrice());
 			dbCustomer.setMainternanceCost(customer.getMainternanceCost());
 			dbCustomer.setPercent(customer.getPercent());
-			
-			
+
+			//从loan表中取出：每月还款时间,还款金额,贷款年限,预计每月收入
+			Loan loan = loanRepository.findByIdProject(projectId);
+			dbCustomer.setPaymentTime(loan.getPaymentTime());
+			dbCustomer.setAmountPermonth(loan.getAmountPermonth());
+			dbCustomer.setDuration(loan.getDuration());
+			dbCustomer.setEstimateIncomePermonth(loan.getEstimateIncomePermonth());
 		
 			if (customer.getSoCreationTime() != null) {
 				dbCustomer.setSoCreationTime(formatter.format(customer.getSoCreationTime()));
@@ -687,12 +694,8 @@ public class CustomerController {
 			dbTransferSheet = new TransferSheet();
 		}
 		Customer c = customerRepository.findOne(projectId);
-		dbTransferSheet.setC1(c.getAddress());
-		dbTransferSheet.setC2(c.getProject());
-		dbTransferSheet.setC3(c.getName());
-		if (c.getActVol() != null) {
-			dbTransferSheet.setC4("" + c.getActVol());
-		}
+		dbTransferSheet.setProjectName(c.getProject());
+		dbTransferSheet.setAddress(c.getAddress());
 		return dbTransferSheet;
 
 	}
@@ -749,7 +752,7 @@ public class CustomerController {
 
 		TransferSheet dbTransferSheet = transferSheetRepository.findByIdProject(projectId);
 		if (dbTransferSheet != null) {
-			dbLoan.setCapacity(dbTransferSheet.getC4());
+			dbLoan.setCapacity(dbTransferSheet.getActVol()+"");
 		}
 
 		return dbLoan;
