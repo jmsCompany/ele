@@ -63,9 +63,15 @@ public class CustomerDataController {
 		Page<CustomerData> customerData = customerDataRepository.findByIdDesc(pageable);
 		List<String[]> lst = new ArrayList<String[]>();
 		for (CustomerData w : customerData.getContent()) {
-			String[] d = {w.getC1(),w.getC2(),w.getC3(),w.getC4(),w.getC5(),w.getC6(),w.getC7(),
-					w.getC8(),w.getC9(),w.getC10(),w.getC11(),w.getC12(),w.getC13(),w.getC14(),
-					w.getC15(),w.getC16(),w.getC17(),w.getC18(),w.getC19(),w.getC20(),w.getC21(),w.getC22()};
+			String[] d = {w.getCustomerCode(),w.getCustomerName(),w.getInverterSn(),
+					""+w.getVpv1(),""+w.getVpv3(),""+w.getVpv3(),
+					""+w.getLpv1(),""+w.getLpv2(),""+w.getLpv3(),
+					""+w.getVac1(),""+w.getVac2(),""+w.getVac3(),
+					""+w.getLac1(),""+w.getLac2(),""+w.getLac3(),
+					""+w.getPac1(),""+w.getPac2(),""+w.getPac3(),
+					""+w.getFac(),""+w.getTemp(),""+w.getCTime(),
+					""+w.getTodayEne(),""+w.getTotalEne()
+			};
 			lst.add(d);
 		}
 
