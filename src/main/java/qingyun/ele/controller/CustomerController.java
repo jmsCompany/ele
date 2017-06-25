@@ -789,7 +789,8 @@ public class CustomerController {
 					wsProjectStepStatus.setProStepId(0l);
 					wsProjectStepStatus.setStepId(Long.valueOf(i));
 					wsProjectStepStatus.setStatus(0l);
-					wsProjectStepStatus.setStepName("");
+					Steps s = stepsRepository.findOne(Long.valueOf(i));
+					wsProjectStepStatus.setStepName(i+"."+s.getName());
 					result.add(wsProjectStepStatus);
 				}
 			}
