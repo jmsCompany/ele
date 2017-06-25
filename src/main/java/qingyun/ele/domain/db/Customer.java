@@ -59,6 +59,14 @@ public class Customer implements java.io.Serializable {
 	private Long commit;
 	
 	private String mobile;
+	//经度
+	private Float lng;
+	//纬度
+	private Float lat;
+	//图片
+	private String pic;
+
+	private String alertEmail;
 
 	private Set<So> sos = new HashSet<So>(0);
 	private Set<ProjectSteps> projectStepses = new HashSet<ProjectSteps>(0);
@@ -399,4 +407,37 @@ public class Customer implements java.io.Serializable {
 		this.mobile = mobile;
 	}
 
+	@Column(name = "lng",precision = 12,scale = 0)
+	public Float getLng() {
+		return lng;
+	}
+
+	public void setLng(Float lng) {
+		this.lng = lng;
+	}
+
+	@Column(name = "lat",precision = 12,scale = 0)
+	public Float getLat() {
+		return lat;
+	}
+
+	public void setLat(Float lat) {
+		this.lat = lat;
+	}
+	@Column(name = "pic",length = 128)
+	public String getPic() {
+		return pic;
+	}
+
+	public void setPic(String pic) {
+		this.pic = pic;
+	}
+	@Column(name = "alert_email",length = 128)
+	public String getAlertEmail() {
+		return alertEmail;
+	}
+
+	public void setAlertEmail(String alertEmail) {
+		this.alertEmail = alertEmail;
+	}
 }

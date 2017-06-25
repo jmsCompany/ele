@@ -40,7 +40,7 @@ public class LogController {
 			Users u = w.getUsers();
 			String name = (u == null) ? "" : u.getUsername();
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-			String[] d = { formatter.format(w.getTime()), name, w.getIp(), w.getUrl() };
+			String[] d = { formatter.format(w.getTime()), name, w.getIp(), w.getUrl() ,w.getParams()!=null?w.getParams().trim():""};
 			// logger.debug("url: " + w.getUrl());
 			lst.add(d);
 		}

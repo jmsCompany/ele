@@ -27,6 +27,7 @@ public class Pages implements java.io.Serializable {
 	private String menuName;
 	private String groups;
 	private String url;
+	private Long seq;
 	private Set<RolePages> rolePageses = new HashSet<RolePages>(0);
 
 	public Pages() {
@@ -109,4 +110,12 @@ public class Pages implements java.io.Serializable {
 		this.url = url;
 	}
 
+	@Column(name = "seq")
+	public Long getSeq() {
+		return seq;
+	}
+
+	public void setSeq(Long seq) {
+		this.seq = seq;
+	}
 }

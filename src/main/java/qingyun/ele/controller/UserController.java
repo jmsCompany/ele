@@ -87,7 +87,7 @@ public class UserController {
 			wsUserProfile.setDepartment(u.getDicByDepartment().getCode());
 		}
 
-		List<Pages> appList = pagesRepository.findAll();
+		List<Pages> appList = pagesRepository.findAllOrderBySeq();
 
 		List<WSMenu> WSMenuList = new ArrayList<WSMenu>();
 		// Dic role = u.getDicByRole();

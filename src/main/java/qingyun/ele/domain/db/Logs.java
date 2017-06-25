@@ -27,6 +27,7 @@ public class Logs implements java.io.Serializable {
 	private Date time;
 	private String url;
 	private String ip;
+	private String params;
 
 	public Logs() {
 	}
@@ -92,4 +93,12 @@ public class Logs implements java.io.Serializable {
 		this.ip = ip;
 	}
 
+	@Column(name = "params",length = 2048)
+	public String getParams() {
+		return params;
+	}
+
+	public void setParams(String params) {
+		this.params = params;
+	}
 }

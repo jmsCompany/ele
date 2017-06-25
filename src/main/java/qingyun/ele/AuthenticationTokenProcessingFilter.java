@@ -2,6 +2,10 @@ package qingyun.ele;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.Enumeration;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -85,6 +89,20 @@ public class AuthenticationTokenProcessingFilter extends AbstractPreAuthenticate
 						log.setTime(new Date());
 						log.setUrl(request.getRequestURI());
 						log.setUsers(userDetails.getUser());
+						Enumeration<String> enumeration = req.getParameterNames();
+						String params="";
+						while (enumeration.hasMoreElements()){
+							String paramName=enumeration.nextElement();
+							if (isAvailableParam(paramName)){
+								params+=paramName+":"+req.getParameter(paramName)+",";
+							}
+						}
+						if (params!=null&&!"".equals(params)){
+							params=params.substring(0,params.length()-1);
+							System.out.println("=========>"+params);
+							System.out.println(params.length());
+							log.setParams(params.trim());
+						}
 						logsRepository.save(log);
 
 					}
@@ -94,5 +112,18 @@ public class AuthenticationTokenProcessingFilter extends AbstractPreAuthenticate
 			chain.doFilter(request, response);
 		}
 	}
+
+	/**
+	 * 判断是否是可用参数
+	 * @param paramName 参数名称
+	 * @return true表示可用  false表示不可用
+     */
+	private boolean isAvailableParam(String paramName){
+		String regex="^(columns|search).*";
+		Pattern pattern=Pattern.compile(regex);
+		Matcher matcher = pattern.matcher(paramName);
+		return !matcher.matches();
+	}
+
 
 }

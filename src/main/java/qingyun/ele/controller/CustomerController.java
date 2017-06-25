@@ -811,17 +811,23 @@ public class CustomerController {
 		projectSteps.setUsers(securityUtils.getCurrentDBUser());
 		//修改项目步骤状态
 		projectStepsRepository.save(projectSteps);
+		sendEmail("项目步骤结束",projectSteps.getSteps().getEnd_email(),projectSteps);
 		//查询后续步骤
 		String nextSteps = projectSteps.getSteps().getNextSteps();
 		if (nextSteps!=null){
 			String[] nextStep = nextSteps.split(",");
 			for (String n:nextStep){
-				ProjectSteps p=new ProjectSteps();
-				p.setSteps(stepsRepository.findById(Long.valueOf(n)));
-				p.setCustomer(projectSteps.getCustomer());
-				p.setDicByStatus(dicRepository.findById(42l));
-				p.setStart(new Date());
-				projectStepsRepository.save(p);
+				ProjectSteps _p = projectStepsRepository.findByProjIdAndStepId(projectSteps.getCustomer().getId(), Long.valueOf(n));
+				if (_p==null){
+					Steps steps = stepsRepository.findById(Long.valueOf(n));
+					ProjectSteps p=new ProjectSteps();
+					p.setSteps(steps);
+					p.setCustomer(projectSteps.getCustomer());
+					p.setDicByStatus(dicRepository.findById(42l));
+					p.setStart(new Date());
+					projectStepsRepository.save(p);
+					sendEmail("项目步骤开始",steps.getEnd_email(),p);
+				}
 			}
 		}
 		v.setValid(Boolean.TRUE);
