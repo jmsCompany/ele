@@ -2,6 +2,8 @@ package qingyun.ele.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -82,15 +84,22 @@ public class CustomerDeviceController {
     }
 
     @RequestMapping(value = "/project/getCustomerDevices",method = RequestMethod.GET)
-    public WSTableData getCustomerDevices(){
+    public WSTableData getCustomerDevices(@RequestParam Integer start,@RequestParam Integer draw,@RequestParam Integer length){
+        int page_num = (start.intValue() / length.intValue()) + 1;
+        Pageable pageable = new PageRequest(page_num - 1, length);
         Users users = securityUtils.getCurrentDBUser();
         Customer customer = customerRepository.finByMobile(users.getMobile());
-        Page<CustomerDevice> customerDevices = customerDeviceRepository.findByProjectId(customer.getId());
+        Page<CustomerDevice> customerDevices = customerDeviceRepository.findByProjectId(customer.getId(),pageable);
         List<String[]> list=new ArrayList<>();
         for (CustomerDevice customerDevice:customerDevices){
             String[] fields={customerDevice.getDataloggerSn(),customerDevice.getDataloggerAlias(),customerDevice.getInverterSn(),
             customerDevice.getInverterType(),customerDevice.getStatus()+"",customerDevice.getLastUpdated()+""};
         }
-        return null;
+        WSTableData t = new WSTableData();
+        t.setDraw(draw);
+        t.setRecordsTotal((int) customerDevices.getTotalElements());
+        t.setRecordsFiltered((int) customerDevices.getTotalElements());
+        t.setData(list);
+        return t;
     }
 }
