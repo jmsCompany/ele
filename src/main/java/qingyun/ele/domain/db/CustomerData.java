@@ -196,210 +196,210 @@ public class CustomerData  implements java.io.Serializable {
     public void setCustomerAddress(String customerAddress) {
         this.customerAddress = customerAddress;
     }
-    
+
     @Column(name="c1", length=45)
     public String getC1() {
         return this.c1;
     }
-    
+
     public void setC1(String c1) {
         this.c1 = c1;
     }
-    
+
     @Column(name="c2", length=45)
     public String getC2() {
         return this.c2;
     }
-    
+
     public void setC2(String c2) {
         this.c2 = c2;
     }
-    
+
     @Column(name="c3", length=45)
     public String getC3() {
         return this.c3;
     }
-    
+
     public void setC3(String c3) {
         this.c3 = c3;
     }
-    
+
     @Column(name="c4", length=45)
     public String getC4() {
         return this.c4;
     }
-    
+
     public void setC4(String c4) {
         this.c4 = c4;
     }
-    
+
     @Column(name="c5", length=45)
     public String getC5() {
         return this.c5;
     }
-    
+
     public void setC5(String c5) {
         this.c5 = c5;
     }
-    
+
     @Column(name="c6", length=45)
     public String getC6() {
         return this.c6;
     }
-    
+
     public void setC6(String c6) {
         this.c6 = c6;
     }
-    
+
     @Column(name="c7", length=45)
     public String getC7() {
         return this.c7;
     }
-    
+
     public void setC7(String c7) {
         this.c7 = c7;
     }
-    
+
     @Column(name="c8", length=45)
     public String getC8() {
         return this.c8;
     }
-    
+
     public void setC8(String c8) {
         this.c8 = c8;
     }
-    
+
     @Column(name="c9", length=45)
     public String getC9() {
         return this.c9;
     }
-    
+
     public void setC9(String c9) {
         this.c9 = c9;
     }
-    
+
     @Column(name="c10", length=45)
     public String getC10() {
         return this.c10;
     }
-    
+
     public void setC10(String c10) {
         this.c10 = c10;
     }
-    
+
     @Column(name="c11", length=45)
     public String getC11() {
         return this.c11;
     }
-    
+
     public void setC11(String c11) {
         this.c11 = c11;
     }
-    
+
     @Column(name="c12", length=45)
     public String getC12() {
         return this.c12;
     }
-    
+
     public void setC12(String c12) {
         this.c12 = c12;
     }
-    
+
     @Column(name="c13", length=45)
     public String getC13() {
         return this.c13;
     }
-    
+
     public void setC13(String c13) {
         this.c13 = c13;
     }
-    
+
     @Column(name="c14", length=45)
     public String getC14() {
         return this.c14;
     }
-    
+
     public void setC14(String c14) {
         this.c14 = c14;
     }
-    
+
     @Column(name="c15", length=45)
     public String getC15() {
         return this.c15;
     }
-    
+
     public void setC15(String c15) {
         this.c15 = c15;
     }
-    
+
     @Column(name="c16", length=45)
     public String getC16() {
         return this.c16;
     }
-    
+
     public void setC16(String c16) {
         this.c16 = c16;
     }
-    
+
     @Column(name="c17", length=45)
     public String getC17() {
         return this.c17;
     }
-    
+
     public void setC17(String c17) {
         this.c17 = c17;
     }
-    
+
     @Column(name="c18", length=45)
     public String getC18() {
         return this.c18;
     }
-    
+
     public void setC18(String c18) {
         this.c18 = c18;
     }
-    
+
     @Column(name="c19", length=45)
     public String getC19() {
         return this.c19;
     }
-    
+
     public void setC19(String c19) {
         this.c19 = c19;
     }
-    
+
     @Column(name="c20", length=45)
     public String getC20() {
         return this.c20;
     }
-    
+
     public void setC20(String c20) {
         this.c20 = c20;
     }
-    
+
     @Column(name="c21", length=45)
     public String getC21() {
         return this.c21;
     }
-    
+
     public void setC21(String c21) {
         this.c21 = c21;
     }
-    
+
     @Column(name="c22", length=45)
     public String getC22() {
         return this.c22;
     }
-    
+
     public void setC22(String c22) {
         this.c22 = c22;
     }
-    
+
     @Column(name="c23", length=45)
     public String getC23() {
         return this.c23;
     }
-    
+
     public void setC23(String c23) {
         this.c23 = c23;
     }
