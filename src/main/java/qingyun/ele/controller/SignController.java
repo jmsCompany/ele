@@ -184,15 +184,33 @@ public class SignController {
 			}
 
 			Long idSignatory = w.getIdSignatory();
+			String idU = "";
 			String sn = "";
 			if (idSignatory != null) {
+				idU = ""+idSignatory;
 				Users signatory = usersRepository.findOne(idSignatory);
 				if (signatory != null) {
 					sn = signatory.getName();
 				}
 			}
+		
+			String pos = "";
+			
+		//	w.get
+			String posId = "";
+			if(w.getIdRole()!=null)
+			{
+				pos = dicRepository.findOne(w.getIdRole()).getCode();
+				posId= ""+ w.getIdRole();
+			}
 
-			String[] d = { "" + w.getId(), "" + w.getLvl(), w.getContent(), sd, sn, "" + w.getId() };
+			String isLoc ="否";
+			if(w.getIsLoc()!=null&&w.getIsLoc().equals(1l))
+			{
+				isLoc ="是";
+			}
+					
+			String[] d = { "" + w.getId(), "" + w.getLvl(), w.getContent(), pos, isLoc, sd, sn,posId,idU};
 			lst.add(d);
 			// seq++;
 		}

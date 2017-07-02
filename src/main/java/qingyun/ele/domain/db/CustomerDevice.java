@@ -2,9 +2,12 @@ package qingyun.ele.domain.db;
 // Generated 2017-6-25 10:39:13 by Hibernate Tools 3.2.2.GA
 
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -21,13 +24,13 @@ public class CustomerDevice  implements java.io.Serializable {
 
 
      private Long id;
-     private Long idCustomer;
-     private String inverterSn;
-     private String dataloggerSn;
-     private String inverterAlias;
-     private String dataloggerAlias;
-     private String inverterType;
-     private Long status;
+     private Long idCustomer;    //项目Id
+     private String inverterSn;  //逆变器序列号
+     private String dataloggerSn; //采集器序列号
+     private String inverterAlias; //逆变器别名
+     private String dataloggerAlias; //采集器别名
+     private String inverterType;   
+     private Long status;   //1在线 0 离线
      private Date lastUpdated;
      private Long createdBy;
 
@@ -52,7 +55,7 @@ public class CustomerDevice  implements java.io.Serializable {
        this.createdBy = createdBy;
     }
    
-     @Id 
+     @Id @GeneratedValue(strategy=IDENTITY)
     
     @Column(name="id", unique=true, nullable=false)
     public Long getId() {
