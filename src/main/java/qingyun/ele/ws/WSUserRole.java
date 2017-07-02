@@ -2,14 +2,13 @@ package qingyun.ele.ws;
 
 public class WSUserRole implements java.io.Serializable {
 
-
-	 /**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private Long id;
-	 private Long isSelected;
-	 private String name;
+	private Long isSelected;
+	private String name;
+	private Long userId;
+	private Long idPrim;
+	
 	public Long getId() {
 		return id;
 	}
@@ -27,6 +26,18 @@ public class WSUserRole implements java.io.Serializable {
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	public Long getUserId() {
+		return userId;
+	}
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+	public Long getIdPrim() {
+		return idPrim;
+	}
+	public void setIdPrim(Long idPrim) {
+		this.idPrim = idPrim;
 	}
 
 }

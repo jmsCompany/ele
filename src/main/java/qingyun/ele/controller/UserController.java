@@ -348,15 +348,43 @@ public class UserController {
 			UserRole ur = userRoleRepository.findrolesByUserIdAndroleId(userId, w.getId());
 			if(ur ==null)
 			{
-				w.setIsSelected(1l);
+				w.setIsSelected(0l);
 			}
 			else
 			{
-				w.setIsSelected(0l);
+				w.setIsSelected(1l);
 			}
 			ws.add(w);
 		}
 		return ws;
+	}
+	
+	
+	@Transactional(readOnly = false)
+	@RequestMapping(value = "/sys/user/saveUserRoles")
+	public Valid saveUserRoles(List<WSUserRole> ws) {
+		
+	//	List <Dic> dics = dicRepository.findByDicDicId(5l);
+		Long userId = ws.get(0).getUserId();
+		for(UserRole d: userRoleRepository.findrolesByUserId(userId))
+		{
+			userRoleRepository.delete(d);
+		}
+		for (WSUserRole u : ws) {
+			if(u.getIsSelected().equals(1l))
+			{
+				UserRole ur = new UserRole();
+				ur.setIdRole(u.getId());
+				ur.setIdUser(userId);
+				//ur.setIsPrim(u.getIsSelected());
+				userRoleRepository.save(ur);
+				
+			}
+	
+		}
+		Valid v = new Valid();
+		v.setValid(true);
+		return v;
 	}
 	
 	
