@@ -265,9 +265,17 @@ public class UserController {
 		for (Users w : users.getContent()) {
 			Dic department = w.getDicByDepartment();
 			String sd = (department == null) ? "" : department.getCode();
-			Dic position = w.getDicByPos();
-			String sp = (position == null) ? "" : position.getCode();
+			//Dic position = w.getDicByPos();
+			//String sp = (position == null) ? "" : position.getCode();
 			Dic role = w.getDicByRole();
+			String sp="";
+			List<UserRole> urs = userRoleRepository.findrolesByUserId(w.getId());
+			for(UserRole ur: urs)
+			{
+				Dic d  = dicRepository.findById(ur.getIdRole());
+				sp = sp + d.getCode() + " ";
+			}
+			
 			String sr = (role == null) ? "" : role.getCode();
 			Dic status = w.getDicByEmpStatus();
 			String ss = (status == null) ? "" : status.getCode();
