@@ -28,11 +28,13 @@ import qingyun.ele.domain.db.Logs;
 import qingyun.ele.domain.db.Pages;
 import qingyun.ele.domain.db.RolePages;
 import qingyun.ele.domain.db.RolePagesId;
+import qingyun.ele.domain.db.UserRole;
 import qingyun.ele.domain.db.Users;
 import qingyun.ele.repository.DicRepository;
 import qingyun.ele.repository.LogsRepository;
 import qingyun.ele.repository.PagesRepository;
 import qingyun.ele.repository.RolePagesRepository;
+import qingyun.ele.repository.UserRoleRepository;
 import qingyun.ele.repository.UsersRepository;
 import qingyun.ele.service.UsrService;
 import qingyun.ele.ws.Valid;
@@ -63,6 +65,9 @@ public class UserController {
 	@Autowired
 	private LogsRepository logsRepository;
 
+	@Autowired
+	private UserRoleRepository userRoleRepository;
+	
 	private static final Log logger = LogFactory.getLog(UserController.class);
 
 	@Transactional(readOnly = false)
@@ -260,9 +265,17 @@ public class UserController {
 		for (Users w : users.getContent()) {
 			Dic department = w.getDicByDepartment();
 			String sd = (department == null) ? "" : department.getCode();
-			Dic position = w.getDicByPos();
-			String sp = (position == null) ? "" : position.getCode();
+			//Dic position = w.getDicByPos();
+			//String sp = (position == null) ? "" : position.getCode();
 			Dic role = w.getDicByRole();
+			String sp="";
+			List<UserRole> urs = userRoleRepository.findrolesByUserId(w.getId());
+			for(UserRole ur: urs)
+			{
+				Dic d  = dicRepository.findById(ur.getIdRole());
+				sp = sp + d.getCode() + " ";
+			}
+			
 			String sr = (role == null) ? "" : role.getCode();
 			Dic status = w.getDicByEmpStatus();
 			String ss = (status == null) ? "" : status.getCode();
@@ -340,10 +353,46 @@ public class UserController {
 			w.setId(u.getId());
 			w.setName(u.getCode());
 			//todo:
-			w.setIsSelected(1l);
+			UserRole ur = userRoleRepository.findrolesByUserIdAndroleId(userId, w.getId());
+			if(ur ==null)
+			{
+				w.setIsSelected(0l);
+			}
+			else
+			{
+				w.setIsSelected(1l);
+			}
 			ws.add(w);
 		}
 		return ws;
+	}
+	
+	
+	@Transactional(readOnly = false)
+	@RequestMapping(value = "/sys/user/saveUserRoles")
+	public Valid saveUserRoles(List<WSUserRole> ws) {
+		
+	//	List <Dic> dics = dicRepository.findByDicDicId(5l);
+		Long userId = ws.get(0).getUserId();
+		for(UserRole d: userRoleRepository.findrolesByUserId(userId))
+		{
+			userRoleRepository.delete(d);
+		}
+		for (WSUserRole u : ws) {
+			if(u.getIsSelected().equals(1l))
+			{
+				UserRole ur = new UserRole();
+				ur.setIdRole(u.getId());
+				ur.setIdUser(userId);
+				//ur.setIsPrim(u.getIsSelected());
+				userRoleRepository.save(ur);
+				
+			}
+	
+		}
+		Valid v = new Valid();
+		v.setValid(true);
+		return v;
 	}
 	
 	
