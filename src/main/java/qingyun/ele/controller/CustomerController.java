@@ -111,6 +111,9 @@ public class CustomerController {
 		dbCustomer.setLat(customer.getLat());
 		dbCustomer.setLng(customer.getLng());
 		dbCustomer.setMobile(customer.getMobile());
+		dbCustomer.setAlertEmail(customer.getAlertEmail());
+		dbCustomer.setPic(customer.getPic());
+
 		//新增功能 保存 C1到C64 字段
 		dbCustomer.setC1(customer.getC1());
 		dbCustomer.setC2(customer.getC2());
@@ -192,12 +195,24 @@ public class CustomerController {
 		dbCustomer.setP11(customer.getP11());
 		dbCustomer.setP12(customer.getP12());
 
+		//新增9个字段
+		dbCustomer.setIntent(customer.getIntent());
+		dbCustomer.setType(customer.getType());
+		dbCustomer.setKind(customer.getKind());
+		dbCustomer.setHow(customer.getHow());
+		dbCustomer.setInn(customer.getInn());
+		dbCustomer.setInkind(customer.getInkind());
+		dbCustomer.setItem(customer.getItem());
+		dbCustomer.setItem1(customer.getItem1());
+		dbCustomer.setNi(customer.getNi());
+		dbCustomer.setTele(customer.getTele());
 
 //		Long idDic = customer.getDic().getId();
 //		if (idDic != null) {
 //			dbCustomer.setDic(dicRepository.findOne(idDic));
 //		}
 		Long idSubSubLocation = customer.getSubSubLocation().getId();
+		dbCustomer.setIdSubSubLocation(idSubSubLocation);
 		if (idSubSubLocation != null) {
 			dbCustomer.setSubSubLocation(subSubLocationRepository.findOne(idSubSubLocation));
 		}
@@ -914,7 +929,7 @@ public class CustomerController {
 			result.add(wsProjectStepStatus);
 		}
 		//如果步骤不全则补全缺少的步骤数据
-		if (result!=null&&result.size()>0&&result.size()<12){
+		if (result!=null&&result.size()>=0&&result.size()<12){
 			//获取已经存在的步骤的Id集合
 			List<Long> steps = getSteps(result);
 			for (int i=1;i<=12;i++){

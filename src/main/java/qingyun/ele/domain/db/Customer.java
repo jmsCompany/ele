@@ -3,19 +3,9 @@ package qingyun.ele.domain.db;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
+import javax.persistence.*;
+
 import static javax.persistence.GenerationType.IDENTITY;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 
 @Entity
@@ -152,9 +142,31 @@ public class Customer implements java.io.Serializable {
 	private String p10;
 	private String p11;
 	private String p12;
+    //新增9个字段
+	private  String intent;
+	private  String type;
+	private  String kind;
+	private  String how;
+	private  String inn;
+	private  String inkind;
+	private  String item;
+	private  String item1;
+	private  String ni;
+	private  String tele;
 
 	private Set<So> sos = new HashSet<So>(0);
 	private Set<ProjectSteps> projectStepses = new HashSet<ProjectSteps>(0);
+
+	private  Long idSubSubLocation;
+	@Column(name = "idSubSubLocation", length = 64)
+	public Long getIdSubSubLocation() {
+		return idSubSubLocation;
+	}
+
+	public void setIdSubSubLocation(Long idSubSubLocation) {
+		this.idSubSubLocation = idSubSubLocation;
+	}
+
 
 	public Customer() {}
 
@@ -1196,5 +1208,85 @@ public class Customer implements java.io.Serializable {
 
 	public void setP12(String p12) {
 		this.p12 = p12;
+	}
+	@Column(name = "intent", length = 64)
+	public String getIntent() {
+		return intent;
+	}
+
+	public void setIntent(String intent) {
+		this.intent = intent;
+	}
+	@Column(name = "type", length = 64)
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+	@Column(name = "kind", length = 64)
+	public String getKind() {
+		return kind;
+	}
+
+	public void setKind(String kind) {
+		this.kind = kind;
+	}
+	@Column(name = "how", length = 64)
+	public String getHow() {
+		return how;
+	}
+
+	public void setHow(String how) {
+		this.how = how;
+	}
+	@Column(name = "inn", length = 64)
+	public String getInn() {
+		return inn;
+	}
+
+	public void setInn(String inn) {
+		this.inn = inn;
+	}
+	@Column(name = "inkind", length = 64)
+	public String getInkind() {
+		return inkind;
+	}
+
+	public void setInkind(String inkind) {
+		this.inkind = inkind;
+	}
+	@Column(name = "item", length = 64)
+	public String getItem() {
+		return item;
+	}
+
+	public void setItem(String item) {
+		this.item = item;
+	}
+	@Column(name = "item1", length = 64)
+	public String getItem1() {
+		return item1;
+	}
+
+	public void setItem1(String item1) {
+		this.item1 = item1;
+	}
+	@Column(name = "ni", length = 64)
+	public String getNi() {
+		return ni;
+	}
+
+	public void setNi(String ni) {
+		this.ni = ni;
+	}
+	@Column(name = "tele", length = 64)
+	public String getTele() {
+		return tele;
+	}
+
+	public void setTele(String tele) {
+		this.tele = tele;
 	}
 }
