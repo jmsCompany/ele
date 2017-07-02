@@ -108,6 +108,9 @@ public class CustomerController {
 		dbCustomer.setCurrStep(customer.getCurrStep());
 		dbCustomer.setCommit(customer.getCommit());
 		dbCustomer.setContent(customer.getContent());
+		dbCustomer.setLat(customer.getLat());
+		dbCustomer.setLng(customer.getLng());
+		dbCustomer.setMobile(customer.getMobile());
 		//新增功能 保存 C1到C64 字段
 		dbCustomer.setC1(customer.getC1());
 		dbCustomer.setC2(customer.getC2());
