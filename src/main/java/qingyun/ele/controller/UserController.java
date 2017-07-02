@@ -23,13 +23,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import qingyun.ele.SecurityUtils;
+import qingyun.ele.domain.db.Customer;
 import qingyun.ele.domain.db.Dic;
 import qingyun.ele.domain.db.Logs;
 import qingyun.ele.domain.db.Pages;
 import qingyun.ele.domain.db.RolePages;
 import qingyun.ele.domain.db.RolePagesId;
+import qingyun.ele.domain.db.SubSubLocation;
 import qingyun.ele.domain.db.UserRole;
 import qingyun.ele.domain.db.Users;
+import qingyun.ele.repository.CustomerRepository;
 import qingyun.ele.repository.DicRepository;
 import qingyun.ele.repository.LogsRepository;
 import qingyun.ele.repository.PagesRepository;
@@ -64,6 +67,8 @@ public class UserController {
 	private RolePagesRepository rolePagesRepository;
 	@Autowired
 	private LogsRepository logsRepository;
+	@Autowired
+	private CustomerRepository customerRepository;
 
 	@Autowired
 	private UserRoleRepository userRoleRepository;
@@ -369,8 +374,8 @@ public class UserController {
 	
 	
 	@Transactional(readOnly = false)
-	@RequestMapping(value = "/sys/user/saveUserRoles")
-	public Valid saveUserRoles(List<WSUserRole> ws) {
+	@RequestMapping(value = "/sys/user/saveUserRoles", method = RequestMethod.POST)
+	public Valid saveUserRoles(@RequestBody List<WSUserRole> ws) {
 		
 	//	List <Dic> dics = dicRepository.findByDicDicId(5l);
 		Long userId = ws.get(0).getUserId();
@@ -394,6 +399,61 @@ public class UserController {
 		v.setValid(true);
 		return v;
 	}
+	
+	
+	
+	
+	
+	
+	
+	/**
+	 * 分页查询农户列表
+	 * @param q 查询关键字
+	 * @param start 开始页
+	 * @param draw
+	 * @param length 页面长度
+     * @return
+     */
+	@RequestMapping(value = "/project/customerTable", method = RequestMethod.POST)
+	public WSTableData projectTable(@RequestParam Integer start, @RequestParam Integer draw,
+			@RequestParam Integer length) {
+		//获取当前登录用户的对象
+		Users sessionUser = securityUtils.getCurrentDBUser();
+		//计算当前页码
+		int page_num = (start.intValue() / length.intValue()) + 1;
+		Pageable pageable = new PageRequest(page_num - 1, length);
+		System.out.println("user id: " +sessionUser.getId());
+		Page<Customer> 
+			customers = customerRepository.findAllCustomersByRoleIdAndStatus(sessionUser.getId(),8l, pageable);
+		
+		List<String[]> lst = new ArrayList<String[]>();
+		for (Customer w : customers.getContent()) {
+			SubSubLocation s = w.getSubSubLocation();
+			String loc = s.getSubLocation().getLocation().getName() + "," + s.getSubLocation().getName() + ","
+					+ s.getName();
+			
+			String status="已开通";
+			Users u = usersRepository.findByUsername(w.getMobile());
+			if(u==null)
+			{
+				status = "未开通";
+			}
+			String[] d = { w.getName(), loc,w.getDic().getCode(), w.getAddress(), w.getMobile(), status,""+ w.getId() };
+			lst.add(d);
+		}
+
+		WSTableData t = new WSTableData();
+		t.setDraw(draw);
+		t.setRecordsTotal((int) customers.getTotalElements());
+		t.setRecordsFiltered((int) customers.getTotalElements());
+		t.setData(lst);
+		return t;
+	}
+
+	
+	
+	
+	
 	
 	
 }

@@ -66,6 +66,27 @@ public class MCAUserDetailService implements Serializable, UserDetailsService {
 			
 			userDetails.setAuthorities(l);
 		}
+		else
+		{
+
+			List<GrantedAuthority> l = new ArrayList<GrantedAuthority>();
+			l.add( new GrantedAuthority() {
+				private static final long serialVersionUID = 1L;
+				
+				@Override
+				public String getAuthority() {
+					 return "company";
+				}
+				
+				@Override
+				public String toString() {
+					return getAuthority();
+				}
+			});
+			
+			userDetails.setAuthorities(l);
+		
+		}
 		
 		userDetails.setPassword(user.getPassword());
 		userDetails.setMobile(user.getMobile());
