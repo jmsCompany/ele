@@ -448,15 +448,34 @@ public class CustomerController {
 					+ s.getName();
 			String saleMan = "";
 			if (w.getSaleMan() != null) {
-				saleMan = usersRepository.findOne(w.getSaleMan()).getName();
+				try{
+					saleMan = usersRepository.findOne(w.getSaleMan()).getName();
+				}catch (Exception e){
+					saleMan="";
+				}
+
 			}
 			String p = "";
 			if(w.getDic()!=null)
 			{
 				p =""+ w.getDic().getId();
 			}
+			//获得工程ID
+			Long id_project=w.getId();
+			//根据工程ID获得施工单状态和贷款单状态。
+			//施工单状态
+			String transfer_Flag="0";
+			if(transferSheetRepository.findByIdProject(id_project)!=null){
+				transfer_Flag="1";
+			};
+			//贷款单状态
+			String loan_Flag="0";
+			if(loanRepository.findByIdProject(id_project)!=null){
+				loan_Flag="1";
+			};
+
 			String[] d = { "" + w.getId(), w.getCode(), w.getName(), w.getAddress(), w.getProject(), loc,w.getDic().getCode(),
-					 saleMan, "" + w.getId(),"" + w.getId(),"" + w.getId(),"" + w.getId(), "" + p, "" + w.getId() };
+					 saleMan, "" + w.getId(),"" + w.getId(),"" + transfer_Flag,"" + loan_Flag, "" + p, "" + w.getId() };
 			lst.add(d);
 		}
 
@@ -753,7 +772,7 @@ public class CustomerController {
 			}catch (Exception e){
 				val="";
 			}
-			System.out.println("name2:" + f.getName() + "\t value2 = " + val);
+			//System.out.println("name2:" + f.getName() + "\t value2 = " + val);
 			mapNew.put(f.getName(),val);
 
 		}
