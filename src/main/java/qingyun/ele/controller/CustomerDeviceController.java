@@ -83,17 +83,19 @@ public class CustomerDeviceController {
         return v;
     }
 
-    @RequestMapping(value = "/project/getCustomerDevices",method = RequestMethod.GET)
-    public WSTableData getCustomerDevices(@RequestParam Integer start,@RequestParam Integer draw,@RequestParam Integer length){
+    @RequestMapping(value = "/project/getCustomerDevices",method = RequestMethod.POST)
+    public WSTableData getCustomerDevices(@RequestParam Long projectId, @RequestParam Integer start,@RequestParam Integer draw,@RequestParam Integer length){
         int page_num = (start.intValue() / length.intValue()) + 1;
         Pageable pageable = new PageRequest(page_num - 1, length);
-        Users users = securityUtils.getCurrentDBUser();
-        Customer customer = customerRepository.finByMobile(users.getMobile());
-        Page<CustomerDevice> customerDevices = customerDeviceRepository.findByProjectId(customer.getId(),pageable);
+        //Users users = securityUtils.getCurrentDBUser();
+       // Customer customer = customerRepository.finByMobile(users.getMobile());
+        Page<CustomerDevice> customerDevices = customerDeviceRepository.findByProjectId(projectId,pageable);
+        //采集器序列号	网关品牌	逆变器序列号	逆变器品牌	状态	更新时间
         List<String[]> list=new ArrayList<>();
         for (CustomerDevice customerDevice:customerDevices){
             String[] fields={customerDevice.getDataloggerSn(),customerDevice.getDataloggerAlias(),customerDevice.getInverterSn(),
-            customerDevice.getInverterType(),customerDevice.getStatus()+"",customerDevice.getLastUpdated()+""};
+            customerDevice.getInverterType(),customerDevice.getStatus()+"",customerDevice.getLastUpdated()+"", "" +customerDevice.getId()};
+            list.add(fields);
         }
         WSTableData t = new WSTableData();
         t.setDraw(draw);

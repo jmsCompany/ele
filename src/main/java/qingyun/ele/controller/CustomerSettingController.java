@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,6 +19,7 @@ import qingyun.ele.repository.CustomerRepository;
 import qingyun.ele.repository.DicRepository;
 import qingyun.ele.repository.UsersRepository;
 import qingyun.ele.ws.Valid;
+import qingyun.ele.ws.WSPassword;
 import qingyun.ele.ws.WSTableData;
 
 import java.util.ArrayList;
@@ -79,7 +81,7 @@ public class CustomerSettingController {
      */
     @Transactional(readOnly = false)
     @RequestMapping(value = "/sys/customer/openAccount",method = RequestMethod.POST)
-    public Valid openAccount(@RequestParam Long projId){
+    public Valid openAccount(@RequestParam("projId") Long projId){
         Valid v=new Valid();
         Customer customer = customerRepository.findOne(projId);
         Users users = usersRepository.findByUsername(customer.getMobile());
@@ -110,16 +112,16 @@ public class CustomerSettingController {
      */
     @Transactional(readOnly = false)
     @RequestMapping(value = "/sys/customer/updateUsersPasswordByProjectId",method = RequestMethod.POST)
-    public Valid updateUsersPasswordByProjectId(@RequestParam Long projId,@RequestParam String password){
+    public Valid updateUsersPasswordByProjectId(@RequestBody WSPassword wsPassword){
         Valid v=new Valid();
-        Customer customer = customerRepository.findOne(projId);
+        Customer customer = customerRepository.findOne(wsPassword.getProjId());
         Users users = usersRepository.findByUsername(customer.getMobile());
         if (users==null){
             v.setValid(Boolean.FALSE);
             v.setMsg("用户尚未开通账户");
             return v;
         }
-        users.setPassword(new BCryptPasswordEncoder().encode(password));
+        users.setPassword(new BCryptPasswordEncoder().encode(wsPassword.getPassword()));
         usersRepository.save(users);
         v.setValid(Boolean.TRUE);
         return v;
