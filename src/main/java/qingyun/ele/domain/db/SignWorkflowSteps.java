@@ -22,6 +22,19 @@ public class SignWorkflowSteps implements java.io.Serializable {
 	private Long lvl;
 	private Long idSignatory;
 	private Long idDepartment;
+	private Long idRole;
+
+	@Column(name = "id_role")
+	public Long getIdRole() {
+		return idRole;
+	}
+
+	public void setIdRole(Long idRole) {
+		this.idRole = idRole;
+	}
+
+
+
 
 	public SignWorkflowSteps() {
 	}

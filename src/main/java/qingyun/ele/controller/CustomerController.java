@@ -1,5 +1,6 @@
 package qingyun.ele.controller;
 
+import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -107,6 +108,88 @@ public class CustomerController {
 		dbCustomer.setCurrStep(customer.getCurrStep());
 		dbCustomer.setCommit(customer.getCommit());
 		dbCustomer.setContent(customer.getContent());
+		//新增功能 保存 C1到C64 字段
+		dbCustomer.setC1(customer.getC1());
+		dbCustomer.setC2(customer.getC2());
+		dbCustomer.setC3(customer.getC3());
+		dbCustomer.setC4(customer.getC4());
+		dbCustomer.setC5(customer.getC5());
+		dbCustomer.setC6(customer.getC6());
+		dbCustomer.setC7(customer.getC7());
+		dbCustomer.setC8(customer.getC8());
+		dbCustomer.setC9(customer.getC9());
+		dbCustomer.setC10(customer.getC10());
+		dbCustomer.setC11(customer.getC11());
+		dbCustomer.setC12(customer.getC12());
+		dbCustomer.setC13(customer.getC13());
+		dbCustomer.setC14(customer.getC14());
+		dbCustomer.setC15(customer.getC15());
+		dbCustomer.setC16(customer.getC16());
+		dbCustomer.setC17(customer.getC17());
+		dbCustomer.setC18(customer.getC18());
+		dbCustomer.setC19(customer.getC19());
+		dbCustomer.setC20(customer.getC20());
+		dbCustomer.setC21(customer.getC21());
+		dbCustomer.setC22(customer.getC22());
+		dbCustomer.setC23(customer.getC23());
+		dbCustomer.setC24(customer.getC24());
+		dbCustomer.setC25(customer.getC25());
+		dbCustomer.setC26(customer.getC26());
+		dbCustomer.setC27(customer.getC27());
+		dbCustomer.setC28(customer.getC28());
+		dbCustomer.setC29(customer.getC29());
+		dbCustomer.setC30(customer.getC30());
+		dbCustomer.setC31(customer.getC31());
+		dbCustomer.setC32(customer.getC32());
+		dbCustomer.setC33(customer.getC33());
+		dbCustomer.setC34(customer.getC34());
+		dbCustomer.setC35(customer.getC35());
+		dbCustomer.setC36(customer.getC36());
+		dbCustomer.setC37(customer.getC37());
+		dbCustomer.setC38(customer.getC38());
+		dbCustomer.setC39(customer.getC39());
+		dbCustomer.setC40(customer.getC40());
+		dbCustomer.setC41(customer.getC41());
+		dbCustomer.setC42(customer.getC42());
+		dbCustomer.setC43(customer.getC43());
+		dbCustomer.setC44(customer.getC44());
+		dbCustomer.setC45(customer.getC45());
+		dbCustomer.setC46(customer.getC46());
+		dbCustomer.setC47(customer.getC47());
+		dbCustomer.setC48(customer.getC48());
+		dbCustomer.setC49(customer.getC49());
+		dbCustomer.setC50(customer.getC50());
+		dbCustomer.setC51(customer.getC51());
+		dbCustomer.setC52(customer.getC52());
+		dbCustomer.setC53(customer.getC53());
+		dbCustomer.setC54(customer.getC54());
+		dbCustomer.setC55(customer.getC55());
+		dbCustomer.setC56(customer.getC56());
+		dbCustomer.setC57(customer.getC57());
+		dbCustomer.setC58(customer.getC58());
+		dbCustomer.setC59(customer.getC59());
+		dbCustomer.setC60(customer.getC60());
+		dbCustomer.setC61(customer.getC61());
+		dbCustomer.setC62(customer.getC62());
+		dbCustomer.setC63(customer.getC63());
+		dbCustomer.setC64(customer.getC64());
+
+
+		//新增功能 保存 P1到P12 字段
+		dbCustomer.setP1(customer.getP1());
+		dbCustomer.setP2(customer.getP2());
+		dbCustomer.setP3(customer.getP3());
+		dbCustomer.setP4(customer.getP4());
+		dbCustomer.setP5(customer.getP5());
+		dbCustomer.setP6(customer.getP6());
+		dbCustomer.setP7(customer.getP7());
+		dbCustomer.setP8(customer.getP8());
+		dbCustomer.setP9(customer.getP9());
+		dbCustomer.setP10(customer.getP10());
+		dbCustomer.setP11(customer.getP11());
+		dbCustomer.setP12(customer.getP12());
+
+
 //		Long idDic = customer.getDic().getId();
 //		if (idDic != null) {
 //			dbCustomer.setDic(dicRepository.findOne(idDic));
@@ -645,14 +728,43 @@ public class CustomerController {
 	public Object getForm1(@RequestParam Long projectId) {
 
 		Customer c = customerRepository.findOne(projectId);
-		//Info dbInfo = infoRepository.findByIdProject(projectId);
 		if (c == null) {
 			c = new Customer();
 		}
 		Map<String,Object> map=new HashMap<>();
 		map.put("id",c!=null?c.getId():0);
 		map.put("code",c!=null?c.getCode():"");
-		map.put("content",c!=null?c.getContent():"");
+		map.put("content","");
+
+		//得到类对象
+		Class customerCla = (Class) c.getClass();
+		//得到该类下所有的属性
+/*
+        * 得到类中的所有属性集合
+        */
+		Map<String,Object> mapNew=new HashMap<>();
+		Field[] fs = customerCla.getDeclaredFields();
+		for(int i = 0 ; i < fs.length; i++) {
+			Field f = fs[i];
+			f.setAccessible(true); //设置些属性是可以访问的
+			Object val ="";
+			try {
+				val = f.get(c).toString();//得到此属性的值
+			}catch (Exception e){
+				val="";
+			}
+			System.out.println("name2:" + f.getName() + "\t value2 = " + val);
+			mapNew.put(f.getName(),val);
+
+		}
+		map.put("content",mapNew);
+
+
+		//Info dbInfo = infoRepository.findByIdProject(projectId);
+
+
+
+	//	map.put("content",c!=null?c.getContent():"");
 		return map;
 	}
 

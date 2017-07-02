@@ -13,17 +13,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import qingyun.ele.SecurityUtils;
-import qingyun.ele.domain.db.Pages;
-import qingyun.ele.domain.db.RoleLocations;
-import qingyun.ele.domain.db.RoleLocationsId;
-import qingyun.ele.domain.db.RolePages;
-import qingyun.ele.domain.db.RolePagesId;
-import qingyun.ele.domain.db.SubSubLocation;
-import qingyun.ele.domain.db.Users;
-import qingyun.ele.repository.PagesRepository;
-import qingyun.ele.repository.RoleLocationRepository;
-import qingyun.ele.repository.RolePagesRepository;
-import qingyun.ele.repository.SubSubLocationRepository;
+import qingyun.ele.domain.db.*;
+import qingyun.ele.repository.*;
 import qingyun.ele.ws.Valid;
 import qingyun.ele.ws.WSRoleLocation;
 import qingyun.ele.ws.WSRolePage;
@@ -45,6 +36,51 @@ public class RoleController {
 	private RoleLocationRepository roleLocationRepository;
 	@Autowired
 	private SecurityUtils securityUtils;
+	@Autowired
+	private UserRoleRepository  userRoleRepository;
+
+	@Transactional(readOnly = false)
+	@RequestMapping(value = "/sys/role/saveUserRole", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public Valid saveUserRole(@RequestBody UserRole userRole ) {
+		Valid v = new Valid();
+		if (userRole.getIdRole() == null) {
+			v.setValid(false);
+			v.setMsg("角色ID不能为空！");
+			return v;
+		}
+		if (userRole.getIdUser() == null) {
+			v.setValid(false);
+			v.setMsg("用户ID不能为空！");
+			return v;
+		}
+
+
+		if(userRole.getId()==null){ //ID为空 新增操作
+          //判断该记录是否已经存在，防止重复提交
+			if(null!=userRoleRepository.findrolesByUserIdAndroleId(userRole.getIdUser(),userRole.getIdRole())){
+				v.setValid(false);
+				v.setMsg("该用户已经添加该角色，不能重复添加！");
+				return v;
+			}
+			userRoleRepository.save(userRole);
+		}else {                    //ID不为空，修改操作
+			Long id=userRole.getId();
+			UserRole unew=userRoleRepository.findOne(id);
+			unew.setIdUser(userRole.getIdUser());
+			unew.setIdRole(userRole.getIdRole());
+			unew.setIsPrim(userRole.getIsPrim());
+			userRoleRepository.save(unew);
+		}
+		v.setValid(true);
+		v.setMsg("角色操作成功！");
+		return v;
+	}
+
+	@RequestMapping(value = "/sys/role/getUserRoles", method = RequestMethod.GET)
+	public List<UserRole> getUserRoles(@RequestParam("userId") Long userId) {
+		List<UserRole> urs = userRoleRepository.findrolesByUserId(userId);
+		return urs;
+	}
 
 	@Transactional(readOnly = false)
 	@RequestMapping(value = "/sys/role/saveRolePermissions", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -180,5 +216,8 @@ public class RoleController {
 		t.setData(lst);
 		return t;
 	}
+
+
+
 
 }
