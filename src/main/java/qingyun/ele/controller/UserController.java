@@ -42,6 +42,7 @@ import qingyun.ele.ws.WSTableData;
 import qingyun.ele.ws.WSUser;
 import qingyun.ele.ws.WSUserPassword;
 import qingyun.ele.ws.WSUserProfile;
+import qingyun.ele.ws.WSUserRole;
 
 @RestController
 @Transactional(readOnly = true)
@@ -326,4 +327,24 @@ public class UserController {
 		}
 		return ws;
 	}
+	
+	
+
+	@RequestMapping(value = "/sys/user/userRoles", method = RequestMethod.GET)
+	public List<WSUserRole> userRoles(@RequestParam("userId") Long userId) {
+		List<WSUserRole> ws = new ArrayList<WSUserRole>();
+		List <Dic> dics = dicRepository.findByDicDicId(5l);
+		
+		for (Dic u : dics) {
+			WSUserRole w = new WSUserRole();
+			w.setId(u.getId());
+			w.setName(u.getCode());
+			//todo:
+			w.setIsSelected(1l);
+			ws.add(w);
+		}
+		return ws;
+	}
+	
+	
 }
