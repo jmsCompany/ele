@@ -28,11 +28,13 @@ import qingyun.ele.domain.db.Logs;
 import qingyun.ele.domain.db.Pages;
 import qingyun.ele.domain.db.RolePages;
 import qingyun.ele.domain.db.RolePagesId;
+import qingyun.ele.domain.db.UserRole;
 import qingyun.ele.domain.db.Users;
 import qingyun.ele.repository.DicRepository;
 import qingyun.ele.repository.LogsRepository;
 import qingyun.ele.repository.PagesRepository;
 import qingyun.ele.repository.RolePagesRepository;
+import qingyun.ele.repository.UserRoleRepository;
 import qingyun.ele.repository.UsersRepository;
 import qingyun.ele.service.UsrService;
 import qingyun.ele.ws.Valid;
@@ -63,6 +65,9 @@ public class UserController {
 	@Autowired
 	private LogsRepository logsRepository;
 
+	@Autowired
+	private UserRoleRepository userRoleRepository;
+	
 	private static final Log logger = LogFactory.getLog(UserController.class);
 
 	@Transactional(readOnly = false)
@@ -340,7 +345,15 @@ public class UserController {
 			w.setId(u.getId());
 			w.setName(u.getCode());
 			//todo:
-			w.setIsSelected(1l);
+			UserRole ur = userRoleRepository.findrolesByUserIdAndroleId(userId, w.getId());
+			if(ur ==null)
+			{
+				w.setIsSelected(1l);
+			}
+			else
+			{
+				w.setIsSelected(0l);
+			}
 			ws.add(w);
 		}
 		return ws;
