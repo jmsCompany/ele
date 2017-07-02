@@ -26,16 +26,6 @@ public class SignWorkflowSteps implements java.io.Serializable {
 	
 	private Long isLoc;
 
-	@Column(name = "id_role")
-	public Long getIdRole() {
-		return idRole;
-	}
-
-	public void setIdRole(Long idRole) {
-		this.idRole = idRole;
-	}
-
-
 
 
 	public SignWorkflowSteps() {
@@ -82,7 +72,6 @@ public class SignWorkflowSteps implements java.io.Serializable {
 	public void setLvl(Long lvl) {
 		this.lvl = lvl;
 	}
-
 	@Column(name = "id_signatory")
 	public Long getIdSignatory() {
 		return idSignatory;
@@ -101,7 +90,7 @@ public class SignWorkflowSteps implements java.io.Serializable {
 		this.idDepartment = idDepartment;
 	}
 
-	@Column(name = "isLoc")
+	@Column(name = "is_loc")
 	public Long getIsLoc() {
 		return isLoc;
 	}
@@ -109,5 +98,17 @@ public class SignWorkflowSteps implements java.io.Serializable {
 	public void setIsLoc(Long isLoc) {
 		this.isLoc = isLoc;
 	}
+	
+
+	@Column(name = "id_role")
+	public Long getIdRole() {
+		return idRole;
+	}
+
+	public void setIdRole(Long idRole) {
+		this.idRole = idRole;
+	}
+
+
 
 }
