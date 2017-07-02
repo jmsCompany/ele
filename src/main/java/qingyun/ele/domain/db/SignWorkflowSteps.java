@@ -23,6 +23,8 @@ public class SignWorkflowSteps implements java.io.Serializable {
 	private Long idSignatory;
 	private Long idDepartment;
 	private Long idRole;
+	
+	private Long isLoc;
 
 	@Column(name = "id_role")
 	public Long getIdRole() {
@@ -97,6 +99,15 @@ public class SignWorkflowSteps implements java.io.Serializable {
 
 	public void setIdDepartment(Long idDepartment) {
 		this.idDepartment = idDepartment;
+	}
+
+	@Column(name = "isLoc")
+	public Long getIsLoc() {
+		return isLoc;
+	}
+
+	public void setIsLoc(Long isLoc) {
+		this.isLoc = isLoc;
 	}
 
 }
