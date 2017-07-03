@@ -912,9 +912,10 @@ public class CustomerController {
 			wsProjectStepStatus.setStatus(p.getDicByStatus().getId());
 			wsProjectStepStatus.setStepName(p.getSteps().getId()+"."+p.getSteps().getName());
 			result.add(wsProjectStepStatus);
+			System.out.println("project Steps ");
 		}
 		//如果步骤不全则补全缺少的步骤数据
-		if (result!=null&&result.size()>0&&result.size()<12){
+		if (result!=null&&result.size()>=0&&result.size()<12){
 			//获取已经存在的步骤的Id集合
 			List<Long> steps = getSteps(result);
 			for (int i=1;i<=12;i++){
@@ -925,6 +926,7 @@ public class CustomerController {
 					wsProjectStepStatus.setStatus(0l);
 					Steps s = stepsRepository.findOne(Long.valueOf(i));
 					wsProjectStepStatus.setStepName(i+"."+s.getName());
+					System.out.println("补齐");
 					result.add(wsProjectStepStatus);
 				}
 			}
