@@ -68,8 +68,10 @@ public class CustomerController {
 	public Valid saveProject(@RequestBody Customer customer) {
 		Valid v = new Valid();
 		Customer dbCustomer;
+		boolean startfirtstep = false;
 		// create new
 		if (customer.getId() == null || customer.getId().equals(0l)) {
+			startfirtstep = true;
 			dbCustomer = new Customer();
 			dbCustomer.setDeleted(0l);
 			dbCustomer.setCreationTime(new Date());
@@ -86,7 +88,7 @@ public class CustomerController {
 				codeNumRepository.save(codeNum);
 			}
 			Long currentVal = codeNum.getCurr_val();
-			String code = codeNum.getPrefix() + String.format("%04d", currentVal);
+			String code = codeNum.getPrefix() + String.format("%04d", currentVal+1);
 			dbCustomer.setCode(code);
 			dbCustomer.setDic(new Dic(7l));
 			codeNum.setCurr_val(currentVal + 1);
@@ -96,6 +98,7 @@ public class CustomerController {
 
 		}
 		// dbCustomer.setCode(customer.getCode());
+		dbCustomer.setCommit(0l); //编辑
 		dbCustomer.setName(customer.getName());
 		dbCustomer.setProject(customer.getProject());
 		dbCustomer.setAddress(customer.getAddress());
@@ -179,6 +182,7 @@ public class CustomerController {
 		dbCustomer.setC62(customer.getC62());
 		dbCustomer.setC63(customer.getC63());
 		dbCustomer.setC64(customer.getC64());
+		dbCustomer.setC65(customer.getC65());
 
 
 		//新增功能 保存 P1到P12 字段
@@ -216,7 +220,20 @@ public class CustomerController {
 		if (idSubSubLocation != null) {
 			dbCustomer.setSubSubLocation(subSubLocationRepository.findOne(idSubSubLocation));
 		}
-		customerRepository.save(dbCustomer);
+		dbCustomer = customerRepository.save(dbCustomer);
+		
+		if(startfirtstep)
+		{
+			
+			Steps steps = stepsRepository.findById(1l); //第一步 意向协议
+			ProjectSteps p=new ProjectSteps();
+			p.setSteps(steps);
+			p.setCustomer(dbCustomer);
+			p.setDicByStatus(dicRepository.findById(42l)); //是
+			p.setStart(new Date());
+			projectStepsRepository.save(p);
+		}
+		
 		v.setValid(true);
 		return v;
 	}
@@ -331,6 +348,7 @@ public class CustomerController {
 		Customer customer = customerRepository.findOne(projectId);
 		if (customer != null) {
 			dbCustomer.setId(customer.getId());
+			//dbCustomer.set
 			dbCustomer.setCode(customer.getCode());
 			dbCustomer.setAddress(customer.getSubSubLocation().getName());
 			if (customer.getSaleMan() != null) {
@@ -338,9 +356,20 @@ public class CustomerController {
 			} else {
 				dbCustomer.setSalesMan("");
 			}
+		
+
 			TransferSheet transferSheet = transferSheetRepository.findByIdProject(projectId);
 			//从form2中取实际容量 actVol
-			dbCustomer.setActVol(transferSheet.getActVol());
+			if(transferSheet!=null)
+			{
+				if(transferSheet.getActVol()!=null)
+				{
+					dbCustomer.setActVol(transferSheet.getActVol());
+				}
+				
+			}
+			
+			
 			dbCustomer.setAgentCost(customer.getAgentCost());
 			dbCustomer.setUnitCost(customer.getUnitCost());
 			// dbCustomer.setDevCost(customer.getDevCost());
@@ -348,7 +377,8 @@ public class CustomerController {
 			dbCustomer.setLoanTime(customer.getLoanTime());
 			dbCustomer.setManagementCost(customer.getManagementCost());
 			dbCustomer.setMonthIncome(customer.getMonthIncome());
-			dbCustomer.setMonthLoan(customer.getMonthLoan());
+		
+			//dbCustomer.setMonthLoan(customer.getMonthLoan());
 
 			dbCustomer.setSaleCost(customer.getSaleCost());
 			dbCustomer.setUnitCost(customer.getUnitCost());
@@ -360,7 +390,7 @@ public class CustomerController {
 			Loan loan = loanRepository.findByIdProject(projectId);
 			dbCustomer.setPaymentTime(loan.getPaymentTime());
 			dbCustomer.setAmountPermonth(loan.getAmountPermonth());
-			dbCustomer.setDuration(loan.getDuration());
+			dbCustomer.setDuration(loan.getDuration()*12);
 			dbCustomer.setEstimateIncomePermonth(loan.getEstimateIncomePermonth());
 		
 			if (customer.getSoCreationTime() != null) {
@@ -446,12 +476,16 @@ public class CustomerController {
 	@RequestMapping(value = "/project/projectTable", method = RequestMethod.POST)
 	public WSTableData projectTable(@RequestParam(required = false, value = "q") String q,@RequestParam Integer start, @RequestParam Integer draw,
 			@RequestParam Integer length,@RequestParam Long status) {
+		
+		
+		
+		System.out.println("get project table: " + new Date());
 		//获取当前登录用户的对象
 		Users sessionUser = securityUtils.getCurrentDBUser();
 		//计算当前页码
 		int page_num = (start.intValue() / length.intValue()) + 1;
 		Pageable pageable = new PageRequest(page_num - 1, length);
-		System.out.println("user id: " +sessionUser.getId());
+		//System.out.println("user id: " +sessionUser.getId());
 		Page<Customer> customers;
 		//判断是否输入查询关键字,如果有则按照关键字查询,否则根据登录用户的角色查询
 		if (q == null||"".equals(q)) {
@@ -495,6 +529,7 @@ public class CustomerController {
 			String[] d = { "" + w.getId(), w.getCode(), w.getName(), w.getAddress(), w.getProject(), loc,w.getDic().getCode(),
 					 saleMan, "" + w.getId(),"" + w.getId(),"" + transfer_Flag,"" + loan_Flag, "" + p, "" + w.getId() };
 			lst.add(d);
+			
 		}
 
 		WSTableData t = new WSTableData();
@@ -566,22 +601,33 @@ public class CustomerController {
 				if (projectSteps.getEnd() != null) {
 					act_end = formatter.format(projectSteps.getEnd());
 				}
-
+				
 				act_days = "";
-				if (projectSteps.getActDays() != null) {
-					act_days = "" + projectSteps.getActDays();
+				if(projectSteps.getStart() != null &&projectSteps.getEnd() != null )
+				{
+					act_days =""+ (int) ((projectSteps.getEnd().getTime() - projectSteps.getStart().getTime()) / (1000*3600*24));
+				     
 				}
+			
 
-				if (projectSteps.getDicByStatus() != null) {
-					status = projectSteps.getDicByStatus().getCode();
-				}
+//				act_days = "";
+//				if (projectSteps.getActDays() != null) {
+//					act_days = "" + projectSteps.getActDays();
+//				}
+
+//				if (projectSteps.getDicByStatus() != null) {
+//					status = projectSteps.getDicByStatus().getCode();
+//				}
 
 				remark = projectSteps.getRemark();
 				// 11正常，12延迟13结束
 
+				
 				if (projectSteps.getEnd() != null) {
 					delay = "结束";
+					 status="是";
 				} else {
+					 status="否";
 					if (projectSteps.getStart() != null) {
 
 						long lastedDays = projectSteps.getSteps().getLastedDays(); // 最慢天数设置
@@ -613,6 +659,7 @@ public class CustomerController {
 				}
 			}
 
+			//ID	步骤编号	名称	最快天数	最慢天数	实际开始	实际结束	实际天数	进度	完工	备注	部门	员工	表单	操作
 			String[] d = { "" + id, "" + w.getId(), w.getName(), "" + w.getForcastDays(), "" + w.getLastedDays(),
 					act_start, act_end, act_days, delay, status, remark, depart, emp, form, "" + id };
 			lst.add(d);
@@ -627,6 +674,9 @@ public class CustomerController {
 		return t;
 	}
 
+	
+	
+	
 	
 	// 实际开始，实际结束，进度。状态，备注
 	@Transactional(readOnly = false)
@@ -771,6 +821,21 @@ public class CustomerController {
 		Map<String,Object> map=new HashMap<>();
 		map.put("id",c!=null?c.getId():0);
 		map.put("code",c!=null?c.getCode():"");
+		String status="";
+		if(c.getCommit()==null||c.getCommit().equals(0l))
+		{
+			status ="编辑";
+		}
+		else if(c.getCommit().equals(1l))
+		{
+			status ="签字";
+		}
+		else
+		{
+			status ="激活";
+		}
+		map.put("status", status);
+	//	System.out.println("status: " + status);
 		map.put("content","");
 
 		//得到类对象
@@ -796,12 +861,6 @@ public class CustomerController {
 		}
 		map.put("content",mapNew);
 
-
-		//Info dbInfo = infoRepository.findByIdProject(projectId);
-
-
-
-	//	map.put("content",c!=null?c.getContent():"");
 		return map;
 	}
 
@@ -812,20 +871,11 @@ public class CustomerController {
 	public Valid saveForm2(@RequestBody TransferSheet transferSheet) {
 		Valid v = new Valid();
 
+		System.out.println(" save Form2!");
 		TransferSheet dbTransferSheet = transferSheetRepository.findByIdProject(transferSheet.getIdProject());
 		if (dbTransferSheet != null) {
 			transferSheet.setId(dbTransferSheet.getId());
-			transferSheet.setCode(dbTransferSheet.getCode());
 		}
-//		else {
-//			CodeNum codeNum = codeNumRepository.findByIdforUpdate(4l);
-//			Long currentVal = codeNum.getCurr_val();
-//			String code = codeNum.getPrefix() + String.format("%08d", currentVal);
-//			transferSheet.setCode(code);
-//			codeNum.setCurr_val(currentVal + 1);
-//			codeNumRepository.save(codeNum);
-//		}
-
 		transferSheetRepository.save(transferSheet);
 		v.setValid(true);
 		return v;
@@ -836,16 +886,64 @@ public class CustomerController {
 	//项目基本信息从项目中抓取
 	@Transactional(readOnly = false)
 	@RequestMapping(value = "/project/getForm2", method = RequestMethod.GET)
-	public TransferSheet getForm2(@RequestParam Long projectId) {
+	public Object getForm2(@RequestParam Long projectId) {
 
 		TransferSheet dbTransferSheet = transferSheetRepository.findByIdProject(projectId);
 		if (dbTransferSheet == null) {
 			dbTransferSheet = new TransferSheet();
 		}
 		Customer c = customerRepository.findOne(projectId);
-		dbTransferSheet.setProjectName(c.getProject());
-		dbTransferSheet.setAddress(c.getAddress());
-		return dbTransferSheet;
+		
+		Map<String,Object> map=new HashMap<>();
+		map.put("id",dbTransferSheet.getId()!=null?dbTransferSheet.getId():0);
+		map.put("code",c!=null?c.getCode():"");
+		map.put("projectName",c!=null?c.getProject():"");
+		map.put("address",c!=null?c.getAddress():"");
+		map.put("idProject", projectId);
+		//map.put("actVol", 32.5);
+		
+		
+		String status="";
+		if(dbTransferSheet.getCommit()==null||dbTransferSheet.getCommit().equals(0l))
+		{
+			status ="编辑";
+		}
+		else if(dbTransferSheet.getCommit().equals(1l))
+		{
+			status ="签字";
+		}
+		else
+		{
+			status ="激活";
+		}
+		map.put("status", status);
+		
+		
+		
+		
+		map.put("content","");
+
+		//得到类对象
+		Class transferSheetCla = (Class) dbTransferSheet.getClass();
+		
+		Map<String,Object> mapNew=new HashMap<>();
+		Field[] fs = transferSheetCla.getDeclaredFields();
+		for(int i = 0 ; i < fs.length; i++) {
+			Field f = fs[i];
+			f.setAccessible(true); //设置些属性是可以访问的
+			Object val ="";
+			try {
+				val = f.get(dbTransferSheet).toString();//得到此属性的值
+			}catch (Exception e){
+				val="";
+			}
+			//System.out.println("name2:" + f.getName() + "\t value2 = " + val);
+			mapNew.put(f.getName(),val);
+
+		}
+		map.put("content",mapNew);
+
+		return map;
 
 	}
 
@@ -858,17 +956,8 @@ public class CustomerController {
 		Loan dbLoan = loanRepository.findByIdProject(projectId);
 		if (dbLoan != null) {
 			loan.setId(dbLoan.getId());
-			loan.setCode(dbLoan.getCode());
+			//loan.setCode(dbLoan.getCode());
 		}
-
-//		else {
-//			CodeNum codeNum = codeNumRepository.findByIdforUpdate(5l);
-//			Long currentVal = codeNum.getCurr_val();
-//			String code = codeNum.getPrefix() + String.format("%08d", currentVal);
-//			loan.setCode(code);
-//			codeNum.setCurr_val(currentVal + 1);
-//			codeNumRepository.save(codeNum);
-//		}
 
 		loanRepository.save(loan);
 		v.setValid(true);
@@ -882,29 +971,75 @@ public class CustomerController {
 	//财务数据从销售跟踪单上抓取
 	@Transactional(readOnly = false)
 	@RequestMapping(value = "/project/getForm3", method = RequestMethod.GET)
-	public Loan getForm3(@RequestParam Long projectId) {
-
+	public Object getForm3(@RequestParam Long projectId) {
+		
 		Loan dbLoan = loanRepository.findByIdProject(projectId);
 		if (dbLoan == null) {
 			dbLoan = new Loan();
 		}
-		Customer c = customerRepository.findOne(projectId);
-		dbLoan.setC1(c.getAddress());
-		dbLoan.setC2(c.getProject());
-		dbLoan.setC3(c.getName());
 
-		dbLoan.setDuration(c.getDurationLoan()/12);
-		dbLoan.setAmountPermonth(c.getMonthLoan());
-		dbLoan.setPaymentTime(c.getLoanTime());
-		dbLoan.setIdProject(c.getId());
-		// private Long capacity;//实际容量 form2
 
 		TransferSheet dbTransferSheet = transferSheetRepository.findByIdProject(projectId);
-		if (dbTransferSheet != null) {
-			dbLoan.setCapacity(dbTransferSheet.getActVol()+"");
+		if (dbTransferSheet == null) {
+			dbTransferSheet = new TransferSheet();
 		}
+		
+		Customer c = customerRepository.findOne(projectId);
+		
+		Map<String,Object> map=new HashMap<>();
+		map.put("id",dbTransferSheet.getId()!=null?dbTransferSheet.getId():0);
+		map.put("code",c!=null?c.getCode():"");
+		map.put("projectName",c!=null?c.getProject():"");
+		map.put("address",c!=null?c.getAddress():"");
+		map.put("idProject", projectId);
+		map.put("actVol", dbTransferSheet.getActVol()!=null?dbTransferSheet.getActVol():0);
+		if(c.getDurationLoan()!=null)
+		{
+			map.put("duration", c.getDurationLoan()/12);
+		}
+		else
+		{
+			map.put("duration", "");
+		}
+		if(c.getMonthLoan()!=null)
+		{
+			map.put("amountPermonth", c.getMonthLoan());
+		}
+		else
+		{
+			map.put("amountPermonth", "");
+		}
+		
+		if(c.getLoanTime()!=null)
+		{
+			map.put("paymentTime", c.getLoanTime());
+		}
+		else
+		{
+			map.put("paymentTime", "");
+		}
+		map.put("content","");
 
-		return dbLoan;
+		//得到类对象
+		Class loanSheetCla = (Class) dbLoan.getClass();
+		Map<String,Object> mapNew=new HashMap<>();
+		Field[] fs = loanSheetCla.getDeclaredFields();
+		for(int i = 0 ; i < fs.length; i++) {
+			Field f = fs[i];
+			f.setAccessible(true); //设置些属性是可以访问的
+			Object val ="";
+			try {
+				val = f.get(dbLoan).toString();//得到此属性的值
+			}catch (Exception e){
+				val="";
+			}
+			System.out.println("name2:" + f.getName() + "\t value2 = " + val);
+			mapNew.put(f.getName(),val);
+
+		}
+		map.put("content",mapNew);
+
+		return map;
 
 	}
 
@@ -927,10 +1062,10 @@ public class CustomerController {
 			wsProjectStepStatus.setStatus(p.getDicByStatus().getId());
 			wsProjectStepStatus.setStepName(p.getSteps().getId()+"."+p.getSteps().getName());
 			result.add(wsProjectStepStatus);
-			System.out.println("project Steps ");
+			//System.out.println("project Steps ");
 		}
 		//如果步骤不全则补全缺少的步骤数据
-		if (result!=null&&result.size()>=0&&result.size()<12){
+		//if (result!=null&&result.size()>=0&&result.size()<12){
 			//获取已经存在的步骤的Id集合
 			List<Long> steps = getSteps(result);
 			for (int i=1;i<=12;i++){
@@ -941,11 +1076,11 @@ public class CustomerController {
 					wsProjectStepStatus.setStatus(0l);
 					Steps s = stepsRepository.findOne(Long.valueOf(i));
 					wsProjectStepStatus.setStepName(i+"."+s.getName());
-					System.out.println("补齐");
+					//System.out.println("补齐");
 					result.add(wsProjectStepStatus);
 				}
 			}
-		}
+		//}
 		return result;
 	}
 
@@ -967,6 +1102,10 @@ public class CustomerController {
 		//修改项目步骤状态
 		projectStepsRepository.save(projectSteps);
 		sendEmail("项目步骤结束",projectSteps.getSteps().getEnd_email(),projectSteps);
+		
+		
+		
+		
 		//查询后续步骤
 		String nextSteps = projectSteps.getSteps().getNextSteps();
 		if (nextSteps!=null){
@@ -978,10 +1117,24 @@ public class CustomerController {
 					ProjectSteps p=new ProjectSteps();
 					p.setSteps(steps);
 					p.setCustomer(projectSteps.getCustomer());
+					
 					p.setDicByStatus(dicRepository.findById(42l));
 					p.setStart(new Date());
 					projectStepsRepository.save(p);
 					sendEmail("项目步骤开始",steps.getEnd_email(),p);
+				}
+				
+				if(n.trim().equals("9")) //创建form2  TransferSheet dbTransferSheet
+				{
+					 TransferSheet dbTransferSheet =  transferSheetRepository.findByIdProject(projectSteps.getCustomer().getId());
+					 
+					 if(dbTransferSheet==null)
+					 {
+						 dbTransferSheet = new TransferSheet();
+						 dbTransferSheet.setCommit(0l);
+						 dbTransferSheet.setIdProject(projectSteps.getCustomer().getId());
+						 transferSheetRepository.save(dbTransferSheet);
+					 }
 				}
 			}
 		}
@@ -996,7 +1149,7 @@ public class CustomerController {
      * @return
      */
 	@Transactional(readOnly = false)
-	@RequestMapping(value = "/project/changeProjectStatus",method = RequestMethod.POST)
+	@RequestMapping(value = "/project/changeProjectStatus",method = RequestMethod.GET)
 	public Valid changeProjectStatus(@RequestParam Long projId,@RequestParam Long statusId){
 		Valid v=new Valid();
 		Customer customer = customerRepository.findOne(projId);
@@ -1007,6 +1160,7 @@ public class CustomerController {
 		return v;
 	}
 
+	
 	private List<Long> getSteps(List<WSProjectStepStatus> list){
 		List<Long> stepIds=new ArrayList<>();
 		for (WSProjectStepStatus p:list){
@@ -1022,13 +1176,27 @@ public class CustomerController {
      * @return
      */
 	@Transactional(readOnly = false)
-	@RequestMapping(value = "/project/changeProjectCommit",method = RequestMethod.POST)
-	public Valid changeProjectCommit(@RequestParam Long projId,@RequestParam Long commit){
+	@RequestMapping(value = "/project/startSignForm1",method = RequestMethod.GET)
+	public Valid changeProjectCommit(@RequestParam Long projId){
 		Customer customer = customerRepository.findOne(projId);
-		customer.setCommit(commit);
+		customer.setCommit(1l);
 		customerRepository.save(customer);
 		Valid v=new Valid();
 		v.setValid(true);
 		return v;
 	}
+	
+
+	@Transactional(readOnly = false)
+	@RequestMapping(value = "/project/startSignForm2",method = RequestMethod.GET)
+	public Valid changeFormCommit(@RequestParam Long projId){
+		
+		TransferSheet dbTransferSheet = transferSheetRepository.findByIdProject(projId);
+		dbTransferSheet.setCommit(1l);
+		transferSheetRepository.save(dbTransferSheet);
+		Valid v=new Valid();
+		v.setValid(true);
+		return v;
+	}
+	
 }

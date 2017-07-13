@@ -99,8 +99,8 @@ public class AuthenticationTokenProcessingFilter extends AbstractPreAuthenticate
 						}
 						if (params!=null&&!"".equals(params)){
 							params=params.substring(0,params.length()-1);
-							System.out.println("=========>"+params);
-							System.out.println(params.length());
+							//System.out.println("=========>"+params);
+							//System.out.println(params.length());
 							log.setParams(params.trim());
 						}
 						logsRepository.save(log);

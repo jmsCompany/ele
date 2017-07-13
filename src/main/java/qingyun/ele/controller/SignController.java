@@ -17,15 +17,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import qingyun.ele.SecurityUtils;
+import qingyun.ele.domain.db.Customer;
 import qingyun.ele.domain.db.Dic;
 import qingyun.ele.domain.db.SignEvent;
 import qingyun.ele.domain.db.SignWorkflow;
 import qingyun.ele.domain.db.SignWorkflowSteps;
+import qingyun.ele.domain.db.TransferSheet;
 import qingyun.ele.domain.db.Users;
+import qingyun.ele.repository.CustomerRepository;
 import qingyun.ele.repository.DicRepository;
 import qingyun.ele.repository.SignEventRepository;
 import qingyun.ele.repository.SignWorkflowRepository;
 import qingyun.ele.repository.SignWorkflowStepsRepository;
+import qingyun.ele.repository.TransferSheetRepository;
 import qingyun.ele.repository.UsersRepository;
 import qingyun.ele.service.SignService;
 import qingyun.ele.ws.Valid;
@@ -48,6 +54,13 @@ public class SignController {
 	private UsersRepository usersRepository;
 	@Autowired
 	private SignService signService;
+	
+	@Autowired
+	private CustomerRepository customerRepository;
+	@Autowired
+	private TransferSheetRepository transferSheetRepository;
+	@Autowired
+	private SecurityUtils securityUtils;
 
 	private static final Log logger = LogFactory.getLog(SignController.class);
 
@@ -222,6 +235,8 @@ public class SignController {
 		t.setData(lst);
 		return t;
 	}
+	
+	
 
 	@Transactional(readOnly = false)
 	@RequestMapping(value = "/sys/sign/saveSignEvent", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -233,14 +248,17 @@ public class SignController {
 			v.setMsg("该表单没有被保存过，不能签字");
 			return v;
 		}
-	    SignEvent dbSignEvent = signEventRepository.findByIdEventAndIdSignWorkflowSteps(signEvent.getIdEvent(),
-					signEvent.getIdSignWorkflowSteps());
-	    //拒绝状态
+	    SignEvent dbSignEvent = signEventRepository.findByIdEventAndIdSignWorkflowStepsAndDeleted(signEvent.getIdEvent(),
+					signEvent.getIdSignWorkflowSteps(),0l);
+	    
+	  
+	    //拒绝状态, 应该永远不会发生
 	   if (dbSignEvent != null) {
-		   if(dbSignEvent.getStatus().equals(0l))
+		   if(dbSignEvent.getStatus().equals(0l)) //拒绝
 		   {
 				dbSignEvent.setStatus(signEvent.getStatus());
 				dbSignEvent.setRemark(signEvent.getRemark());
+				dbSignEvent.setIdUser(securityUtils.getCurrentDBUser().getId());
 				signEventRepository.save(dbSignEvent);
 				v.setValid(true);
 				return v;
@@ -255,12 +273,76 @@ public class SignController {
 		}
      else {
 		signEvent.setSignTime(new Date());
+		signEvent.setDeleted(0l);
+		signEvent.setIdUser(securityUtils.getCurrentDBUser().getId());
 		signEventRepository.save(signEvent);
+		
+		if(signEvent.getStatus().equals(0l)) //拒绝，更改该项目所有签字为删除状态， 把该表单更改成保存状态
+		{
+			//
+			Long eventId = signEvent.getIdEvent();
+		//	System.out.println("事件ID " + eventId +", 删除所有签字：");
+			for(SignEvent se: signEventRepository.findByIdEvent(eventId))
+			{
+				se.setDeleted(1l);
+				signEventRepository.save(se);
+			}
+			SignWorkflowSteps signWorkflowSteps = signWorkflowStepsRepository.findOne(signEvent.getIdSignWorkflowSteps());
+			Long idSignWorkFlow =  signWorkflowSteps.getIdSignWorkflow();
+			SignWorkflow signWorkflow = signWorkflowRepository.findOne(idSignWorkFlow);
+			if(signWorkflow.getId().equals(1l))  //信息采集表
+			{
+				Customer customer = customerRepository.findOne(eventId);
+				customer.setCommit(0l);
+				customerRepository.save(customer);
+			}
+			else  //流转单
+			{
+				TransferSheet transferSheet = transferSheetRepository.findOne(eventId);
+				transferSheet.setCommit(0l);
+				transferSheetRepository.save(transferSheet);
+			}
+
+		}
+		
+		
+		//判断是否所有人都签字了，如果是，将Customer 或TransferSheet commit更改成2. 即是激活状态。
+		SignWorkflowSteps currentSignWorkflowSteps = signWorkflowStepsRepository.findOne(signEvent.getIdSignWorkflowSteps());
+		Long idSignWorkFlow =  currentSignWorkflowSteps.getIdSignWorkflow();
+		SignWorkflow signWorkflow = signWorkflowRepository.findOne(idSignWorkFlow);
+		boolean active = true;
+		for(SignWorkflowSteps signWorkflowSteps: signWorkflowStepsRepository.findByIdSignWorkflow(idSignWorkFlow))
+		{
+			SignEvent se= signEventRepository.findByIdEventAndIdSignWorkflowStepsAndDeleted(signEvent.getIdEvent(), signWorkflowSteps.getId(), 0l);
+		    if(se==null||se.getStatus().equals(0l)) //未签字或拒绝
+		    {
+		    	active = false;
+		    	break;
+		    }
+		}
+		
+		if(active)
+		{
+			if(signWorkflow.getId().equals(1l))  //信息采集表
+			{
+				Customer customer = customerRepository.findOne(signEvent.getIdEvent());
+				customer.setCommit(2l);  //激活状态
+				customerRepository.save(customer);
+			}
+			else  //流转单
+			{
+				TransferSheet transferSheet = transferSheetRepository.findOne(signEvent.getIdEvent());
+				transferSheet.setCommit(2l); //激活状态
+				transferSheetRepository.save(transferSheet);
+			}
+		}
 		v.setValid(true);
 		return v;
      }
 	}
 
+	
+	
 	@Transactional(readOnly = true)
 	@RequestMapping(value = "/sys/sign/findWSSignEventByEventIdAndSignWorkflowId", method = RequestMethod.GET)
 	public List<WSSignEvent> findWSSignEventByEventIdAndSignWorkflowId(@RequestParam("eventId") Long eventId,
@@ -268,7 +350,7 @@ public class SignController {
 		List<WSSignEvent> ws = new ArrayList<WSSignEvent>();
 		List<SignWorkflowSteps> sws = signWorkflowStepsRepository.findByIdSignWorkflow(signWorkflowId);
 		for (SignWorkflowSteps s : sws) {
-			SignEvent signEvent = signEventRepository.findByIdEventAndIdSignWorkflowSteps(eventId, signWorkflowId);
+			SignEvent signEvent = signEventRepository.findByIdEventAndIdSignWorkflowStepsAndDeleted(eventId, signWorkflowId,0l);
 			WSSignEvent w = new WSSignEvent();
 			w.setIdEvent(eventId);
 			w.setIdSignWorkflowSteps(signWorkflowId);
@@ -305,13 +387,16 @@ public class SignController {
 				w.setStatus(0l);// 待签字
 
 			}
-			w.setEditable(signService.isEditable(s.getId(), eventId, s.getIdSignatory()));
+			w.setEditable(signService.isEditable(s.getId(), eventId, s.getIdSignatory(),s.getIdRole()));
 
 			ws.add(w);
 		}
 		return ws;
 	}
 
+	
+	
+	
 	@Transactional(readOnly = true)
 	@RequestMapping(value = "/sys/sign/signTable", method = RequestMethod.POST)
 	public WSTableData signTable(@RequestParam("eventId") Long eventId,
@@ -327,7 +412,7 @@ public class SignController {
 		int seq = 1;
 		for (SignWorkflowSteps s : sws) {
 			//System.out.println("eventId: " + eventId +", signWorkflowId: " + s.getId());
-			SignEvent signEvent = signEventRepository.findByIdEventAndIdSignWorkflowSteps(eventId, s.getId());
+			SignEvent signEvent = signEventRepository.findByIdEventAndIdSignWorkflowStepsAndDeleted(eventId, s.getId(),0l);
 			WSSignEvent w = new WSSignEvent();
 		//	w.setId(eventId);
 			w.setIdEvent(eventId);
@@ -342,11 +427,18 @@ public class SignController {
 					w.setDepartment(depart.getCode());
 				}
 			}
-			if (s.getIdSignatory() != null) {
+			if (s.getIdSignatory() != null) {  //应签字人
 				Users signatory = usersRepository.findOne(s.getIdSignatory());
 				if (signatory != null) {
 					w.setSignatory(signatory.getName());
 				}
+			}
+			else{   //没有签字人，则必须有签字的职位
+				
+				Long posId = s.getIdRole();
+				Dic posDic = dicRepository.findById(posId);
+				w.setSignatory(posDic.getCode());
+				
 			}
 			if (signEvent != null) {
 				w.setId(signEvent.getId());
@@ -367,7 +459,8 @@ public class SignController {
 				w.setId(0l);
 
 			}
-			w.setEditable(signService.isEditable(s.getId(), eventId, s.getIdSignatory()));
+			//System.out.println("singId: " + s.getId() +", eventId: " + eventId +", idSignatory: " + s.getIdSignatory());
+			w.setEditable(signService.isEditable(s.getId(), eventId, s.getIdSignatory(),s.getIdRole()));
 
 			// ws.add(w);
 			String time = "";
@@ -376,9 +469,9 @@ public class SignController {
 			}
 			String[] d = { "" + seq,  "" + w.getLvl(), ""+w.getIdSignWorkflowSteps(), w.getSignWorkflowSteps(), w.getDepartment(),
 					w.getSignatory(), time, ""+w.getStatus(),w.getRemark(),"" + w.getEditable() };
-//            System.out.println("顺序 " + seq  + "， 层级： " + w.getLvl() + "， 步骤ID： "+w.getIdSignWorkflowSteps()+ ", 步骤： "+w.getSignWorkflowSteps() +",  部门： "+ w.getDepartment()+
+//			System.out.println("顺序 " + seq  + "， 层级： " + w.getLvl() + "， 步骤ID： "+w.getIdSignWorkflowSteps()+ ", 步骤： "+w.getSignWorkflowSteps() +",  部门： "+ w.getDepartment()+
 //					",签字人: "+w.getSignatory()+ ", 时间： "+time + " 备注： "+w.getRemark() +"， 可编辑： " + w.getEditable() +", 状态： "+w.getStatus());
-			lst.add(d);
+    		lst.add(d);
 			seq++;
 		}
 		t.setData(lst);

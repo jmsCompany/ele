@@ -22,7 +22,7 @@ public class Loan implements java.io.Serializable {
 	private Long duration; // 贷款年限 来至跟踪单
 	private String capacity;// 实际容量 form2
 	private Long radio; // 贷款比例
-	private String amount; // 贷款金额
+	private Float amount; // 贷款金额
 	private Float amountPermonth; // 每月还款金额 跟踪单
 	private String paymentTime; // 每月还款时间 跟踪单
 	private Float unitPrice; // 度电单价
@@ -84,8 +84,8 @@ public class Loan implements java.io.Serializable {
 		this.bank = bank;
 	}
 
-	// @Column(name = "duration")
-	@Transient
+	 @Column(name = "duration")
+//	@Transient
 	public Long getDuration() {
 		return this.duration;
 	}
@@ -113,18 +113,17 @@ public class Loan implements java.io.Serializable {
 		this.radio = radio;
 	}
 
-	@Transient
-	// @Column(name = "amount")
-	public String getAmount() {
+	//@Transient
+	@Column(name = "amount", precision = 12, scale = 0)
+	public Float getAmount() {
 		return this.amount;
 	}
 
-	public void setAmount(String amount) {
+	public void setAmount(Float amount) {
 		this.amount = amount;
 	}
 
-	// @Column(name = "amount_permonth", precision = 12, scale = 0)
-	@Transient
+	 @Column(name = "amount_permonth", precision = 12, scale = 0)
 	public Float getAmountPermonth() {
 		return this.amountPermonth;
 	}
@@ -133,8 +132,7 @@ public class Loan implements java.io.Serializable {
 		this.amountPermonth = amountPermonth;
 	}
 
-	// @Column(name = "payment_time", length = 20)
-	@Transient
+	@Column(name = "payment_time", length = 20)
 	public String getPaymentTime() {
 		return this.paymentTime;
 	}

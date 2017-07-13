@@ -61,7 +61,9 @@ public class LocationController {
 	@Transactional(readOnly = false)
 	@RequestMapping(value = "/sys/location/changeStatus", method = RequestMethod.GET)
 	public Valid enableSubSubLocation(@RequestParam("subSubLocationId") Long subSubLocationId,
-			@RequestParam("enabled") Long enabled,@RequestParam String code) {
+			@RequestParam("enabled") Long enabled,@RequestParam("code") String code) {
+		
+		//System.out.println("save location: ");
 
 		Valid v = new Valid();
 		SubSubLocation subSubLocation = subSubLocationRepository.findOne(subSubLocationId);
@@ -95,6 +97,42 @@ public class LocationController {
 		return v;
 
 	}
+	
+	
+	
+	@Transactional(readOnly = false)
+	@RequestMapping(value = "sys/location/deleteLoc", method = RequestMethod.GET)
+	public Valid enableSubSubLocation(@RequestParam("subSubLocationId") Long subSubLocationId,
+			@RequestParam("enabled") Long enabled) {
+
+		Valid v = new Valid();
+		SubSubLocation subSubLocation = subSubLocationRepository.findOne(subSubLocationId);
+		if (subSubLocation == null) {
+			v.setValid(false);
+			v.setMsg("不能找到此数据 ID： " + subSubLocationId);
+			return v;
+		}
+		if (enabled == null || (!enabled.equals(0l) && !enabled.equals(1l))) {
+			v.setValid(false);
+			v.setMsg("状态只能为 0 或 1 ");
+			return v;
+		}
+		if (enabled.equals(0l)) {
+			if (!subSubLocation.getCustomers().isEmpty()) {
+				v.setValid(false);
+				v.setMsg("该区域被使用，不能被删除");
+				return v;
+			}
+		}
+		subSubLocation.setEnabled(enabled);
+		subSubLocationRepository.save(subSubLocation);
+		v.setValid(true);
+		return v;
+
+	}
+	
+	
+	
 
 	@RequestMapping(value = "/sys/location/locationTable", method = RequestMethod.POST)
 	public WSTableData logsTable(@RequestParam Integer draw, @RequestParam Integer start,
@@ -106,8 +144,13 @@ public class LocationController {
 		Page<SubSubLocation> loc = subSubLocationRepository.findByEnabled(1l, pageable);
 		List<String[]> lst = new ArrayList<String[]>();
 		for (SubSubLocation s : loc.getContent()) {
+			String code ="";
+			if(s.getCode()!=null)
+			{
+				code = s.getCode();
+			}
 			String[] d = { "" + s.getId(),
-					s.getSubLocation().getLocation().getName() + "," + s.getSubLocation().getName() + "," + s.getName(),
+					s.getSubLocation().getLocation().getName() + "," + s.getSubLocation().getName() + "," + s.getName(),code,
 					"" + s.getId() };
 			lst.add(d);
 		}

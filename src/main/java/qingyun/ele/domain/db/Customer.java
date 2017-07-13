@@ -29,6 +29,7 @@ public class Customer implements java.io.Serializable {
 	private Float unitPrice;
 	private Float unitCost;
 	private Long process;
+	
 	private Float saleCost;
 	private Float managementCost;
 	private Float agentCost;
@@ -127,6 +128,12 @@ public class Customer implements java.io.Serializable {
 	private String c62;
 	private String c63;
 	private String c64;
+	
+	
+	private String c65;
+	private String c66;
+	private String c67;
+	private String c68;
 
 
     //新增U1到U12字段
@@ -1288,5 +1295,40 @@ public class Customer implements java.io.Serializable {
 
 	public void setTele(String tele) {
 		this.tele = tele;
+	}
+
+	@Column(name = "c65", length = 64)
+	public String getC65() {
+		return c65;
+	}
+
+	public void setC65(String c65) {
+		this.c65 = c65;
+	}
+	@Column(name = "c66", length = 64)
+	public String getC66() {
+		return c66;
+	}
+
+	public void setC66(String c66) {
+		this.c66 = c66;
+	}
+
+	@Column(name = "c67", length = 64)
+	public String getC67() {
+		return c67;
+	}
+
+	public void setC67(String c67) {
+		this.c67 = c67;
+	}
+
+	@Column(name = "c68", length = 64)
+	public String getC68() {
+		return c68;
+	}
+
+	public void setC68(String c68) {
+		this.c68 = c68;
 	}
 }

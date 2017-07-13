@@ -175,7 +175,7 @@ public class UserController {
 			u.setMobile(wsUser.getMobile());
 			u.setDicByEmpStatus(dicRepository.getOne(wsUser.getIdEmpStatus()));
 			u.setDicByDepartment(dicRepository.getOne(wsUser.getIdDepartment()));
-			u.setDicByPos(dicRepository.getOne(wsUser.getIdPos()));
+			//u.setDicByPos(dicRepository.getOne(wsUser.getIdPos()));
 			u.setDicByRole(dicRepository.getOne(wsUser.getIdRole()));
 			u.setEnabled(wsUser.getEnabled());
 			u.setName(wsUser.getName());
@@ -194,7 +194,7 @@ public class UserController {
 			u.setMobile(wsUser.getMobile());
 			u.setDicByEmpStatus(dicRepository.getOne(wsUser.getIdEmpStatus()));
 			u.setDicByDepartment(dicRepository.getOne(wsUser.getIdDepartment()));
-			u.setDicByPos(dicRepository.getOne(wsUser.getIdPos()));
+			//u.setDicByPos(dicRepository.getOne(wsUser.getIdPos()));
 			u.setDicByRole(dicRepository.getOne(wsUser.getIdRole()));
 			u.setEnabled(wsUser.getEnabled());
 			u.setName(wsUser.getName());

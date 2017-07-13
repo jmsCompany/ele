@@ -9,9 +9,11 @@ import org.springframework.transaction.annotation.Transactional;
 import qingyun.ele.SecurityUtils;
 import qingyun.ele.domain.db.SignEvent;
 import qingyun.ele.domain.db.SignWorkflowSteps;
+import qingyun.ele.domain.db.UserRole;
 import qingyun.ele.domain.db.Users;
 import qingyun.ele.repository.SignEventRepository;
 import qingyun.ele.repository.SignWorkflowStepsRepository;
+import qingyun.ele.repository.UserRoleRepository;
 import qingyun.ele.repository.UsersRepository;
 
 @Service
@@ -27,59 +29,133 @@ public class SignService {
 
 	@Autowired
 	private SecurityUtils securityUtils;
+	
+	
+	@Autowired
+	private UserRoleRepository userRoleRepository;
 
 	// 判断是否出现签字按钮 0不出现，1出现
-	public Long isEditable(Long signWorkflowStepsId, Long eventId, Long idSignatory) {
+	public Long isEditable(Long signWorkflowStepsId, Long eventId, Long idSignatory,Long idPos) {
 		Users usr = securityUtils.getCurrentDBUser();
-		System.out.println(" signId: "+idSignatory +", uid: " + usr.getId() );
+		//System.out.println(" signId: "+idSignatory +", uid: " + usr.getId() );
 		//System.out.println(" signId: "+idSignatory );
-		if (idSignatory == null) {
+		
+		
+	
+		
+		
+		if (idSignatory == null&&idPos==null) {
 			return 0l;
-		} else {
-			if (!usr.getId().equals(idSignatory)) {
-				return 0l;
-			}
-		}
-
-		Long editable = 0l;
-		System.out.println(" stepId: "+signWorkflowStepsId);
-		SignWorkflowSteps signWorkflowSteps = signWorkflowStepsRepository.findOne(signWorkflowStepsId);
-		SignEvent signEvent = signEventRepository.findByIdEventAndIdSignWorkflowSteps(eventId, signWorkflowStepsId);
-		Long currentLvl = signWorkflowSteps.getLvl();
-		Long upperLvl = currentLvl - 1l;
-		// 上一级签字数
-
-		if (signEvent == null) // 还未签字,这时有两种情况，未签但是应该签了，一种是未签但是还需要等上级签完
+		} 
+		if(idSignatory!=null)
 		{
-			if (currentLvl.equals(1l)) // 第一层，可签字
-			{
-				System.out.println("第一层，可签");
-				editable = 1l;
-				return editable;
+			if (!usr.getId().equals(idSignatory)) {
+					return 0l;
+				}
+			Long editable = 0l;
+			//System.out.println(" stepId: "+signWorkflowStepsId);
+			SignWorkflowSteps signWorkflowSteps = signWorkflowStepsRepository.findOne(signWorkflowStepsId);
+			SignEvent signEvent = signEventRepository.findByIdEventAndIdSignWorkflowStepsAndDeleted(eventId, signWorkflowStepsId,0l);
+			Long currentLvl = signWorkflowSteps.getLvl();
+			Long upperLvl = currentLvl - 1l;
+			// 上一级签字数
 
-			} else {
-				boolean uppperSignfinished = isThisLvlFinished(signWorkflowSteps.getIdSignWorkflow(), upperLvl,
-						eventId);
-				if (uppperSignfinished) {
+			if (signEvent == null) // 还未签字,这时有两种情况，未签但是应该签了，一种是未签但是还需要等上级签完
+			{
+				if (currentLvl.equals(1l)) // 第一层，可签字
+				{
+					System.out.println("第一层，可签");
+					editable = 1l;
+					return editable;
+
+				} else {
+					boolean uppperSignfinished = isThisLvlFinished(signWorkflowSteps.getIdSignWorkflow(), upperLvl,
+							eventId);
+					if (uppperSignfinished) {
+						editable = 1l;
+						return editable;
+					} else {
+						editable = 0l;
+						return editable;
+					}
+				}
+			} else // 已经签字
+			{
+				if (signEvent.getStatus().equals(0l))// 拒绝
+				{
 					editable = 1l;
 					return editable;
 				} else {
 					editable = 0l;
 					return editable;
+
 				}
 			}
-		} else // 已经签字
+		}
+		
+		
+		if(idPos!=null)
 		{
-			if (signEvent.getStatus().equals(0l))// 拒绝
+			Long editable = 0l;
+			UserRole ur = userRoleRepository.findrolesByUserIdAndroleId(usr.getId(), idPos);
+			if(ur==null )
 			{
-				editable = 1l;
-				return editable;
-			} else {
 				editable = 0l;
 				return editable;
-
 			}
+			else
+			{
+				
+				//System.out.println(" stepId: "+signWorkflowStepsId);
+				SignWorkflowSteps signWorkflowSteps = signWorkflowStepsRepository.findOne(signWorkflowStepsId);
+				SignEvent signEvent = signEventRepository.findByIdEventAndIdSignWorkflowStepsAndDeleted(eventId, signWorkflowStepsId,0l);
+				Long currentLvl = signWorkflowSteps.getLvl();
+				Long upperLvl = currentLvl - 1l;
+				// 上一级签字数
+
+				if (signEvent == null) // 还未签字,这时有两种情况，未签但是应该签了，一种是未签但是还需要等上级签完
+				{
+					if (currentLvl.equals(1l)) // 第一层，可签字
+					{
+						//System.out.println("第一层，可签");
+						editable = 1l;
+						return editable;
+
+					} else {
+						boolean uppperSignfinished = isThisLvlFinished(signWorkflowSteps.getIdSignWorkflow(), upperLvl,
+								eventId);
+						if (uppperSignfinished) {
+							editable = 1l;
+							return editable;
+						} else {
+							editable = 0l;
+							return editable;
+						}
+					}
+				} else // 已经签字
+				{
+					if (signEvent.getStatus().equals(0l))// 拒绝
+					{
+						editable = 1l;
+						return editable;
+					} else {
+						editable = 0l;
+						return editable;
+
+					}
+				}
+				
+			}
+			//return 1l;
 		}
+		
+		
+		System.out.println("签名 和职位 不应该同时有值。 ");
+		return 0l;
+		
+		
+		
+		
 
 	}
 
@@ -88,7 +164,7 @@ public class SignService {
 		Boolean finished = true;
 		List<SignWorkflowSteps> sfs = signWorkflowStepsRepository.findByIdSignWorkflowAndLvl(signWorkflowId, lvl);
 		for (SignWorkflowSteps s : sfs) {
-			SignEvent signEvent = signEventRepository.findByIdEventAndIdSignWorkflowSteps(eventId, s.getId());
+			SignEvent signEvent = signEventRepository.findByIdEventAndIdSignWorkflowStepsAndDeleted(eventId, s.getId(),0l);
 			if (signEvent == null) {
 				finished = false;
 				return finished;
@@ -101,5 +177,7 @@ public class SignService {
 		}
 		return finished;
 	}
+	
+	
 
 }

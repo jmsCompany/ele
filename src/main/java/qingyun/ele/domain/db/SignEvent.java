@@ -25,6 +25,10 @@ public class SignEvent implements java.io.Serializable {
 	private Long idEvent;
 	private Long status;
 	private Date signTime;
+	
+	private Long deleted;
+	
+	private Long idUser;
 
 	public SignEvent() {
 	}
@@ -88,6 +92,22 @@ public class SignEvent implements java.io.Serializable {
 
 	public void setSignTime(Date signTime) {
 		this.signTime = signTime;
+	}
+	@Column(name = "deleted")
+	public Long getDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(Long deleted) {
+		this.deleted = deleted;
+	}
+	@Column(name = "id_user")
+	public Long getIdUser() {
+		return idUser;
+	}
+
+	public void setIdUser(Long idUser) {
+		this.idUser = idUser;
 	}
 
 }

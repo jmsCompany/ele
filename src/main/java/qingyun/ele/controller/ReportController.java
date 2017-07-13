@@ -159,7 +159,7 @@ public class ReportController {
 					radio = "" + loa.getRadio();
 				}
 				if (loa.getAmount() != null) {
-					loan = loa.getAmount();
+					loan =""+ loa.getAmount();
 				}
 			}
 			if (w.getMonthLoan() != null) {
@@ -212,7 +212,7 @@ public class ReportController {
 			if (loa != null) {
 
 				if (loa.getAmount() != null) {
-					loan = loa.getAmount();
+					loan =""+ loa.getAmount();
 				}
 				if (loa.getSubsidyPrice() != null) {
 					subsidyPrice = "" + loa.getSubsidyPrice();

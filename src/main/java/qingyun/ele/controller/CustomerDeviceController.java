@@ -46,6 +46,7 @@ public class CustomerDeviceController {
     public Valid saveCustomerDevice(@RequestBody CustomerDevice customerDevice){
         Valid v=new Valid();
         CustomerDevice dbCustomerDevice;
+        System.out.println("save device: " + new Date());
         if (customerDevice.getId()==null||customerDevice.getId().equals(0l)){
             dbCustomerDevice=new CustomerDevice();
             dbCustomerDevice.setStatus(1l);  //默认为有效1表示有效,0表示无效
@@ -93,9 +94,14 @@ public class CustomerDeviceController {
         //采集器序列号	网关品牌	逆变器序列号	逆变器品牌	状态	更新时间
         List<String[]> list=new ArrayList<>();
         for (CustomerDevice customerDevice:customerDevices){
+        	String status=(customerDevice.getStatus().equals(1l))?"在线":"离线";
             String[] fields={customerDevice.getDataloggerSn(),customerDevice.getDataloggerAlias(),customerDevice.getInverterSn(),
-            customerDevice.getInverterType(),customerDevice.getStatus()+"",customerDevice.getLastUpdated()+"", "" +customerDevice.getId()};
-            list.add(fields);
+            customerDevice.getInverterType(),status+"",customerDevice.getLastUpdated()+"", "" +customerDevice.getId()};
+           if(customerDevice.getStatus().equals(1l))
+           {
+        	   list.add(fields); 
+           }
+            
         }
         WSTableData t = new WSTableData();
         t.setDraw(draw);

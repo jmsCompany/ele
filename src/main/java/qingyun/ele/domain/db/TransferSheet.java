@@ -28,6 +28,102 @@ public class TransferSheet implements java.io.Serializable {
 	private String projectName;
 
 	private String address;
+	
+	
+	
+	
+	
+	//新增c1到c80字段
+
+		private String c1;
+		private String c2;
+		private String c3;
+		private String c4;
+		private String c5;
+		private String c6;
+		private String c7;
+		private String c8;
+		private String c9;
+		private String c10;
+		private String c11;
+		private String c12;
+		private String c13;
+		private String c14;
+		private String c15;
+		private String c16;
+		private String c17;
+		private String c18;
+		private String c19;
+		private String c20;
+		private String c21;
+		private String c22;
+		private String c23;
+		private String c24;
+		private String c25;
+		private String c26;
+		private String c27;
+		private String c28;
+		private String c29;
+		private String c30;
+		private String c31;
+		private String c32;
+		private String c33;
+		private String c34;
+		private String c35;
+		private String c36;
+		private String c37;
+		private String c38;
+		private String c39;
+		private String c40;
+		private String c41;
+		private String c42;
+		private String c43;
+		private String c44;
+		private String c45;
+		private String c46;
+		private String c47;
+		private String c48;
+		private String c49;
+		private String c50;
+		private String c51;
+		private String c52;
+		private String c53;
+		private String c54;
+		private String c55;
+		private String c56;
+		private String c57;
+		private String c58;
+		private String c59;
+		private String c60;
+		private String c61;
+		private String c62;
+		private String c63;
+		private String c64;
+		private String c65;
+		private String c66;
+		private String c67;
+		private String c68;
+		private String c69;
+		private String c70;
+		private String c71;
+		private String c72;
+		private String c73;
+		private String c74;
+		private String c75;
+		private String c76;
+		private String c77;
+		private String c78;
+		private String c79;
+		private String c80;
+
+	
+	
+		private String p1;
+	
+	
+	
+	
+	
 
 	@Column(name = "id_project")
 	public Long getIdProject() {
@@ -121,4 +217,742 @@ public class TransferSheet implements java.io.Serializable {
 	public void setAddress(String address) {
 		this.address = address;
 	}
+	
+	
+	
+	@Column(name = "c1", length = 64)
+	public String getC1() {
+		return this.c1;
+	}
+
+	public void setC1(String c1) {
+		this.c1 = c1;
+	}
+
+	@Column(name = "c2", length = 64)
+	public String getC2() {
+		return this.c2;
+	}
+
+	public void setC2(String c2) {
+		this.c2 = c2;
+	}
+
+	@Column(name = "c3", length = 64)
+	public String getC3() {
+		return this.c3;
+	}
+
+	public void setC3(String c3) {
+		this.c3 = c3;
+	}
+
+	@Column(name = "c4", length = 64)
+	public String getC4() {
+		return this.c4;
+	}
+
+	public void setC4(String c4) {
+		this.c4 = c4;
+	}
+
+	@Column(name = "c5", length = 64)
+	public String getC5() {
+		return this.c5;
+	}
+
+	public void setC5(String c5) {
+		this.c5 = c5;
+	}
+
+	@Column(name = "c6", length = 64)
+	public String getC6() {
+		return this.c6;
+	}
+
+	public void setC6(String c6) {
+		this.c6 = c6;
+	}
+
+	@Column(name = "c7", length = 64)
+	public String getC7() {
+		return this.c7;
+	}
+
+	public void setC7(String c7) {
+		this.c7 = c7;
+	}
+
+	@Column(name = "c8", length = 64)
+	public String getC8() {
+		return this.c8;
+	}
+
+	public void setC8(String c8) {
+		this.c8 = c8;
+	}
+
+	@Column(name = "c9", length = 64)
+	public String getC9() {
+		return this.c9;
+	}
+
+	public void setC9(String c9) {
+		this.c9 = c9;
+	}
+
+	@Column(name = "c10", length = 64)
+	public String getC10() {
+		return this.c10;
+	}
+
+	public void setC10(String c10) {
+		this.c10 = c10;
+	}
+
+	@Column(name = "c11", length = 64)
+	public String getC11() {
+		return this.c11;
+	}
+
+	public void setC11(String c11) {
+		this.c11 = c11;
+	}
+
+	@Column(name = "c12", length = 64)
+	public String getC12() {
+		return this.c12;
+	}
+
+	public void setC12(String c12) {
+		this.c12 = c12;
+	}
+
+	@Column(name = "c13", length = 64)
+	public String getC13() {
+		return this.c13;
+	}
+
+	public void setC13(String c13) {
+		this.c13 = c13;
+	}
+
+	@Column(name = "c14", length = 64)
+	public String getC14() {
+		return this.c14;
+	}
+
+	public void setC14(String c14) {
+		this.c14 = c14;
+	}
+
+	@Column(name = "c15", length = 64)
+	public String getC15() {
+		return this.c15;
+	}
+
+	public void setC15(String c15) {
+		this.c15 = c15;
+	}
+
+	@Column(name = "c16", length = 64)
+	public String getC16() {
+		return this.c16;
+	}
+
+	public void setC16(String c16) {
+		this.c16 = c16;
+	}
+
+	@Column(name = "c17", length = 64)
+	public String getC17() {
+		return this.c17;
+	}
+
+	public void setC17(String c17) {
+		this.c17 = c17;
+	}
+
+	@Column(name = "c18", length = 64)
+	public String getC18() {
+		return this.c18;
+	}
+
+	public void setC18(String c18) {
+		this.c18 = c18;
+	}
+
+	@Column(name = "c19", length = 64)
+	public String getC19() {
+		return this.c19;
+	}
+
+	public void setC19(String c19) {
+		this.c19 = c19;
+	}
+
+	@Column(name = "c20", length = 64)
+	public String getC20() {
+		return this.c20;
+	}
+
+	public void setC20(String c20) {
+		this.c20 = c20;
+	}
+
+	@Column(name = "c21", length = 64)
+	public String getC21() {
+		return this.c21;
+	}
+
+	public void setC21(String c21) {
+		this.c21 = c21;
+	}
+
+	@Column(name = "c22", length = 64)
+	public String getC22() {
+		return this.c22;
+	}
+
+	public void setC22(String c22) {
+		this.c22 = c22;
+	}
+
+	@Column(name = "c23", length = 64)
+	public String getC23() {
+		return this.c23;
+	}
+
+	public void setC23(String c23) {
+		this.c23 = c23;
+	}
+
+	@Column(name = "c24", length = 64)
+	public String getC24() {
+		return this.c24;
+	}
+
+	public void setC24(String c24) {
+		this.c24 = c24;
+	}
+
+	@Column(name = "c25", length = 64)
+	public String getC25() {
+		return this.c25;
+	}
+
+	public void setC25(String c25) {
+		this.c25 = c25;
+	}
+
+	@Column(name = "c26", length = 64)
+	public String getC26() {
+		return this.c26;
+	}
+
+	public void setC26(String c26) {
+		this.c26 = c26;
+	}
+
+	@Column(name = "c27", length = 64)
+	public String getC27() {
+		return this.c27;
+	}
+
+	public void setC27(String c27) {
+		this.c27 = c27;
+	}
+
+	@Column(name = "c28", length = 64)
+	public String getC28() {
+		return this.c28;
+	}
+
+	public void setC28(String c28) {
+		this.c28 = c28;
+	}
+
+	@Column(name = "c29", length = 64)
+	public String getC29() {
+		return this.c29;
+	}
+
+	public void setC29(String c29) {
+		this.c29 = c29;
+	}
+
+	@Column(name = "c30", length = 64)
+	public String getC30() {
+		return this.c30;
+	}
+
+	public void setC30(String c30) {
+		this.c30 = c30;
+	}
+
+	@Column(name = "c31", length = 64)
+	public String getC31() {
+		return this.c31;
+	}
+
+	public void setC31(String c31) {
+		this.c31 = c31;
+	}
+
+	@Column(name = "c32", length = 64)
+	public String getC32() {
+		return this.c32;
+	}
+
+	public void setC32(String c32) {
+		this.c32 = c32;
+	}
+
+	@Column(name = "c33", length = 64)
+	public String getC33() {
+		return this.c33;
+	}
+
+	public void setC33(String c33) {
+		this.c33 = c33;
+	}
+
+	@Column(name = "c34", length = 64)
+	public String getC34() {
+		return this.c34;
+	}
+
+	public void setC34(String c34) {
+		this.c34 = c34;
+	}
+
+	@Column(name = "c35", length = 64)
+	public String getC35() {
+		return this.c35;
+	}
+
+	public void setC35(String c35) {
+		this.c35 = c35;
+	}
+
+	@Column(name = "c36", length = 64)
+	public String getC36() {
+		return this.c36;
+	}
+
+	public void setC36(String c36) {
+		this.c36 = c36;
+	}
+
+	@Column(name = "c37", length = 64)
+	public String getC37() {
+		return this.c37;
+	}
+
+	public void setC37(String c37) {
+		this.c37 = c37;
+	}
+
+	@Column(name = "c38", length = 64)
+	public String getC38() {
+		return this.c38;
+	}
+
+	public void setC38(String c38) {
+		this.c38 = c38;
+	}
+
+	@Column(name = "c39", length = 64)
+	public String getC39() {
+		return this.c39;
+	}
+
+	public void setC39(String c39) {
+		this.c39 = c39;
+	}
+
+	@Column(name = "c40", length = 64)
+	public String getC40() {
+		return this.c40;
+	}
+
+	public void setC40(String c40) {
+		this.c40 = c40;
+	}
+
+	@Column(name = "c41", length = 64)
+	public String getC41() {
+		return this.c41;
+	}
+
+	public void setC41(String c41) {
+		this.c41 = c41;
+	}
+
+	@Column(name = "c42", length = 64)
+	public String getC42() {
+		return this.c42;
+	}
+
+	public void setC42(String c42) {
+		this.c42 = c42;
+	}
+
+	@Column(name = "c43", length = 64)
+	public String getC43() {
+		return this.c43;
+	}
+
+	public void setC43(String c43) {
+		this.c43 = c43;
+	}
+
+	@Column(name = "c44", length = 64)
+	public String getC44() {
+		return this.c44;
+	}
+
+	public void setC44(String c44) {
+		this.c44 = c44;
+	}
+
+	@Column(name = "c45", length = 64)
+	public String getC45() {
+		return this.c45;
+	}
+
+	public void setC45(String c45) {
+		this.c45 = c45;
+	}
+
+	@Column(name = "c46", length = 64)
+	public String getC46() {
+		return this.c46;
+	}
+
+	public void setC46(String c46) {
+		this.c46 = c46;
+	}
+
+	@Column(name = "c47", length = 64)
+	public String getC47() {
+		return this.c47;
+	}
+
+	public void setC47(String c47) {
+		this.c47 = c47;
+	}
+
+	@Column(name = "c48", length = 64)
+	public String getC48() {
+		return this.c48;
+	}
+
+	public void setC48(String c48) {
+		this.c48 = c48;
+	}
+
+	@Column(name = "c49", length = 64)
+	public String getC49() {
+		return this.c49;
+	}
+
+	public void setC49(String c49) {
+		this.c49 = c49;
+	}
+
+	@Column(name = "c50", length = 64)
+	public String getC50() {
+		return this.c50;
+	}
+
+	public void setC50(String c50) {
+		this.c50 = c50;
+	}
+
+	@Column(name = "c51", length = 64)
+	public String getC51() {
+		return this.c51;
+	}
+
+	public void setC51(String c51) {
+		this.c51 = c51;
+	}
+
+	@Column(name = "c52", length = 64)
+	public String getC52() {
+		return this.c52;
+	}
+
+	public void setC52(String c52) {
+		this.c52 = c52;
+	}
+
+	@Column(name = "c53", length = 64)
+	public String getC53() {
+		return this.c53;
+	}
+
+	public void setC53(String c53) {
+		this.c53 = c53;
+	}
+
+	@Column(name = "c54", length = 64)
+	public String getC54() {
+		return this.c54;
+	}
+
+	public void setC54(String c54) {
+		this.c54 = c54;
+	}
+
+	@Column(name = "c55", length = 64)
+	public String getC55() {
+		return this.c55;
+	}
+
+	public void setC55(String c55) {
+		this.c55 = c55;
+	}
+
+	@Column(name = "c56", length = 64)
+	public String getC56() {
+		return this.c56;
+	}
+
+	public void setC56(String c56) {
+		this.c56 = c56;
+	}
+
+	@Column(name = "c57", length = 64)
+	public String getC57() {
+		return this.c57;
+	}
+
+	public void setC57(String c57) {
+		this.c57 = c57;
+	}
+
+	@Column(name = "c58", length = 64)
+	public String getC58() {
+		return this.c58;
+	}
+
+	public void setC58(String c58) {
+		this.c58 = c58;
+	}
+
+	@Column(name = "c59", length = 64)
+	public String getC59() {
+		return this.c59;
+	}
+
+	public void setC59(String c59) {
+		this.c59 = c59;
+	}
+
+	@Column(name = "c60", length = 64)
+	public String getC60() {
+		return this.c60;
+	}
+
+	public void setC60(String c60) {
+		this.c60 = c60;
+	}
+
+	@Column(name = "c61", length = 64)
+	public String getC61() {
+		return this.c61;
+	}
+
+	public void setC61(String c61) {
+		this.c61 = c61;
+	}
+
+	@Column(name = "c62", length = 64)
+	public String getC62() {
+		return this.c62;
+	}
+
+	public void setC62(String c62) {
+		this.c62 = c62;
+	}
+
+	@Column(name = "c63", length = 64)
+	public String getC63() {
+		return this.c63;
+	}
+
+	public void setC63(String c63) {
+		this.c63 = c63;
+	}
+
+	@Column(name = "c64", length = 64)
+	public String getC64() {
+		return this.c64;
+	}
+
+	public void setC64(String c64) {
+		this.c64 = c64;
+	}
+
+	@Column(name = "c65", length = 64)
+	public String getC65() {
+		return c65;
+	}
+
+	public void setC65(String c65) {
+		this.c65 = c65;
+	}
+
+	@Column(name = "c66", length = 64)
+	public String getC66() {
+		return c66;
+	}
+
+	public void setC66(String c66) {
+		this.c66 = c66;
+	}
+
+	@Column(name = "c67", length = 64)
+	public String getC67() {
+		return c67;
+	}
+
+	public void setC67(String c67) {
+		this.c67 = c67;
+	}
+
+	@Column(name = "c68", length = 64)
+	public String getC68() {
+		return c68;
+	}
+
+	public void setC68(String c68) {
+		this.c68 = c68;
+	}
+
+	@Column(name = "c69", length = 64)
+	public String getC69() {
+		return c69;
+	}
+
+	public void setC69(String c69) {
+		this.c69 = c69;
+	}
+
+	@Column(name = "c70", length = 64)
+	public String getC70() {
+		return c70;
+	}
+
+	public void setC70(String c70) {
+		this.c70 = c70;
+	}
+
+	@Column(name = "c71", length = 64)
+	public String getC71() {
+		return c71;
+	}
+
+	public void setC71(String c71) {
+		this.c71 = c71;
+	}
+
+	@Column(name = "c72", length = 64)
+	public String getC72() {
+		return c72;
+	}
+
+	public void setC72(String c72) {
+		this.c72 = c72;
+	}
+
+	@Column(name = "c73", length = 64)	
+	public String getC73() {
+		return c73;
+	}
+
+	public void setC73(String c73) {
+		this.c73 = c73;
+	}
+
+	@Column(name = "c74", length = 64)
+	public String getC74() {
+		return c74;
+	}
+
+	public void setC74(String c74) {
+		this.c74 = c74;
+	}
+
+	@Column(name = "c75", length = 64)
+	public String getC75() {
+		return c75;
+	}
+
+	public void setC75(String c75) {
+		this.c75 = c75;
+	}
+
+	@Column(name = "c76", length = 64)
+	public String getC76() {
+		return c76;
+	}
+
+	public void setC76(String c76) {
+		this.c76 = c76;
+	}
+	
+	@Column(name = "c77", length = 64)
+	public String getC77() {
+		return c77;
+	}
+
+	public void setC77(String c77) {
+		this.c77 = c77;
+	}
+
+	@Column(name = "c78", length = 64)
+	public String getC78() {
+		return c78;
+	}
+
+	public void setC78(String c78) {
+		this.c78 = c78;
+	}
+
+	@Column(name = "c79", length = 64)
+	public String getC79() {
+		return c79;
+	}
+
+	public void setC79(String c79) {
+		this.c79 = c79;
+	}
+	@Column(name = "c80", length = 64)
+	public String getC80() {
+		return c80;
+	}
+
+	public void setC80(String c80) {
+		this.c80 = c80;
+	}
+	@Column(name = "p1", length = 128)
+	public String getP1() {
+		return p1;
+	}
+
+	public void setP1(String p1) {
+		this.p1 = p1;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

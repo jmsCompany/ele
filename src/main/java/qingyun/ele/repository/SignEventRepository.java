@@ -8,9 +8,9 @@ import qingyun.ele.domain.db.SignEvent;
 
 public interface SignEventRepository extends JpaRepository<SignEvent, Long> {
 
-	public SignEvent findByIdEventAndIdSignWorkflowSteps(Long idEvent, Long idSignWorkflowSteps);
+	public SignEvent findByIdEventAndIdSignWorkflowStepsAndDeleted(Long idEvent, Long idSignWorkflowSteps,Long deleted);
 
-	@Query("select s from SignEvent s where s.idEvent=?1 order by s.id desc")
-	public List<SignEvent> findLastByIdEventAnd(Long idEvent);
+	//@Query("select s from SignEvent s where s.idEvent=?1")
+	public List<SignEvent> findByIdEvent(Long idEvent);
 
 }
