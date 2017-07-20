@@ -343,58 +343,61 @@ public class SignController {
 
 	
 	
-	@Transactional(readOnly = true)
-	@RequestMapping(value = "/sys/sign/findWSSignEventByEventIdAndSignWorkflowId", method = RequestMethod.GET)
-	public List<WSSignEvent> findWSSignEventByEventIdAndSignWorkflowId(@RequestParam("eventId") Long eventId,
-			@RequestParam("signWorkflowId") Long signWorkflowId) {
-		List<WSSignEvent> ws = new ArrayList<WSSignEvent>();
-		List<SignWorkflowSteps> sws = signWorkflowStepsRepository.findByIdSignWorkflow(signWorkflowId);
-		for (SignWorkflowSteps s : sws) {
-			SignEvent signEvent = signEventRepository.findByIdEventAndIdSignWorkflowStepsAndDeleted(eventId, signWorkflowId,0l);
-			WSSignEvent w = new WSSignEvent();
-			w.setIdEvent(eventId);
-			w.setIdSignWorkflowSteps(signWorkflowId);
-			w.setSignWorkflowSteps(s.getContent());
-			w.setIdDepartment(s.getIdDepartment());
-			w.setIdSignatory(s.getIdSignatory());
-			w.setLvl(s.getLvl());
-			if (s.getIdDepartment() != null) {
-				Dic depart = dicRepository.findOne(s.getIdDepartment());
-				if (depart != null) {
-					w.setDepartment(depart.getCode());
-				}
-			}
-			if (s.getIdSignatory() != null) {
-				Users signatory = usersRepository.findOne(s.getIdSignatory());
-				if (signatory != null) {
-					w.setSignatory(signatory.getName());
-				}
-			}
-			if (signEvent != null) {
-				w.setId(signEvent.getId());
-				w.setStatus(signEvent.getStatus());
-				if (signEvent.getStatus().equals(1l)) // 拒绝
-				{
-					w.setEditable(1l);
-				} else if (signEvent.getStatus().equals(2l)) // 签字
-				{
-					w.setEditable(0l);
-				}
-				w.setSignTime(signEvent.getSignTime());
-				w.setRemark(signEvent.getRemark());
-
-			} else {
-				w.setStatus(0l);// 待签字
-
-			}
-			w.setEditable(signService.isEditable(s.getId(), eventId, s.getIdSignatory(),s.getIdRole()));
-
-			ws.add(w);
-		}
-		return ws;
-	}
-
-	
+//	@Transactional(readOnly = true)
+//	@RequestMapping(value = "/sys/sign/findWSSignEventByEventIdAndSignWorkflowId", method = RequestMethod.GET)
+//	public List<WSSignEvent> findWSSignEventByEventIdAndSignWorkflowId(@RequestParam("eventId") Long eventId,
+//			@RequestParam("signWorkflowId") Long signWorkflowId) {
+//		
+//		List<WSSignEvent> ws = new ArrayList<WSSignEvent>();
+//		List<SignWorkflowSteps> sws = signWorkflowStepsRepository.findByIdSignWorkflow(signWorkflowId);
+//		for (SignWorkflowSteps s : sws) {
+//			SignEvent signEvent = signEventRepository.findByIdEventAndIdSignWorkflowStepsAndDeleted(eventId, signWorkflowId,0l);
+//			WSSignEvent w = new WSSignEvent();
+//			w.setIdEvent(eventId);
+//			w.setIdSignWorkflowSteps(signWorkflowId);
+//			w.setSignWorkflowSteps(s.getContent());
+//			w.setIdDepartment(s.getIdDepartment());
+//			w.setIdSignatory(s.getIdSignatory());
+//			w.setLvl(s.getLvl());
+//			if (s.getIdDepartment() != null) {
+//				Dic depart = dicRepository.findOne(s.getIdDepartment());
+//				if (depart != null) {
+//					w.setDepartment(depart.getCode());
+//				}
+//			}
+//			if (s.getIdSignatory() != null) {
+//				Users signatory = usersRepository.findOne(s.getIdSignatory());
+//				if (signatory != null) {
+//					w.setSignatory(signatory.getName());
+//				}
+//			}
+//			if (signEvent != null) {
+//				w.setId(signEvent.getId());
+//				w.setStatus(signEvent.getStatus());
+//				if (signEvent.getStatus().equals(1l)) // 拒绝
+//				{
+//					System.out.println("被拒绝，不应该发生 " +signEvent.getId());
+//					w.setEditable(1l);
+//				} else if (signEvent.getStatus().equals(2l)) // 签字
+//				{
+//					System.out.println("已经签过字，不能再签 " +signEvent.getId());
+//					w.setEditable(0l);
+//				}
+//				w.setSignTime(signEvent.getSignTime());
+//				w.setRemark(signEvent.getRemark());
+//
+//			} else {
+//				w.setStatus(0l);// 待签字
+//
+//			}
+//			w.setEditable(signService.isEditable(s.getId(), eventId, s.getIdSignatory(),s.getIdRole()));
+//
+//			ws.add(w);
+//		}
+//		return ws;
+//	}
+//
+//	
 	
 	
 	@Transactional(readOnly = true)
@@ -411,7 +414,7 @@ public class SignController {
 		List<SignWorkflowSteps> sws = signWorkflowStepsRepository.findByIdSignWorkflow(signWorkflowId);
 		int seq = 1;
 		for (SignWorkflowSteps s : sws) {
-			//System.out.println("eventId: " + eventId +", signWorkflowId: " + s.getId());
+			System.out.println("eventId: " + eventId +", signWorkflowId: " + s.getId());
 			SignEvent signEvent = signEventRepository.findByIdEventAndIdSignWorkflowStepsAndDeleted(eventId, s.getId(),0l);
 			WSSignEvent w = new WSSignEvent();
 		//	w.setId(eventId);
@@ -443,18 +446,21 @@ public class SignController {
 			if (signEvent != null) {
 				w.setId(signEvent.getId());
 				w.setStatus(signEvent.getStatus());
-			//	System.out.println("id: " + signEvent.getId() +", status: " + signEvent.getStatus());
+				System.out.println("id: " + signEvent.getId() +", status: " + signEvent.getStatus());
 				if (signEvent.getStatus().equals(0l)) // 拒绝
 				{
+					System.out.println("被拒绝，不应该发生 " +signEvent.getId());
 					w.setEditable(1l);
 				} else if (signEvent.getStatus().equals(1l)) // 签字
 				{
+					System.out.println("已经签过字，不能再签 " +signEvent.getId());
 					w.setEditable(0l);
 				}
 				w.setSignTime(signEvent.getSignTime());
 				w.setRemark(signEvent.getRemark());
 
 			} else {
+				System.out.println("待签字 ");
 				w.setStatus(2l);// 待签字
 				w.setId(0l);
 
@@ -467,10 +473,13 @@ public class SignController {
 			if (w.getSignTime() != null) {
 				time = formatter.format(w.getSignTime());
 			}
+			String remark =w.getRemark()==null?"":w.getRemark();
+			String status =w.getStatus()==null?"":""+w.getStatus();
+			
 			String[] d = { "" + seq,  "" + w.getLvl(), ""+w.getIdSignWorkflowSteps(), w.getSignWorkflowSteps(), w.getDepartment(),
-					w.getSignatory(), time, ""+w.getStatus(),w.getRemark(),"" + w.getEditable() };
-//			System.out.println("顺序 " + seq  + "， 层级： " + w.getLvl() + "， 步骤ID： "+w.getIdSignWorkflowSteps()+ ", 步骤： "+w.getSignWorkflowSteps() +",  部门： "+ w.getDepartment()+
-//					",签字人: "+w.getSignatory()+ ", 时间： "+time + " 备注： "+w.getRemark() +"， 可编辑： " + w.getEditable() +", 状态： "+w.getStatus());
+					w.getSignatory(), time, ""+status,remark,"" + w.getEditable() };
+			System.out.println("顺序 " + seq  + "， 层级： " + w.getLvl() + "， 步骤ID： "+w.getIdSignWorkflowSteps()+ ", 步骤： "+w.getSignWorkflowSteps() +",  部门： "+ w.getDepartment()+
+					",签字人: "+w.getSignatory()+ ", 时间： "+time + " 备注： "+remark +"， 可编辑： " + w.getEditable() +", 状态： "+w.getStatus());
     		lst.add(d);
 			seq++;
 		}

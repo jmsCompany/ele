@@ -98,7 +98,18 @@ public class CustomerController {
 
 		}
 		// dbCustomer.setCode(customer.getCode());
-		dbCustomer.setCommit(0l); //编辑
+		
+		if(customer.getCommit()!=null)
+		{
+			dbCustomer.setCommit(customer.getCommit());
+		}
+		else
+		{
+			dbCustomer.setCommit(0l); //编辑
+		}
+		
+		
+		
 		dbCustomer.setName(customer.getName());
 		dbCustomer.setProject(customer.getProject());
 		dbCustomer.setAddress(customer.getAddress());
@@ -388,10 +399,14 @@ public class CustomerController {
 
 			//从loan表中取出：每月还款时间,还款金额,贷款年限,预计每月收入
 			Loan loan = loanRepository.findByIdProject(projectId);
-			dbCustomer.setPaymentTime(loan.getPaymentTime());
-			dbCustomer.setAmountPermonth(loan.getAmountPermonth());
-			dbCustomer.setDuration(loan.getDuration()*12);
-			dbCustomer.setEstimateIncomePermonth(loan.getEstimateIncomePermonth());
+			if(loan!=null)
+			{
+				dbCustomer.setPaymentTime(loan.getPaymentTime());
+				dbCustomer.setAmountPermonth(loan.getAmountPermonth());
+				dbCustomer.setDuration(loan.getDuration()*12);
+				dbCustomer.setEstimateIncomePermonth(loan.getEstimateIncomePermonth());
+			}
+	
 		
 			if (customer.getSoCreationTime() != null) {
 				dbCustomer.setSoCreationTime(formatter.format(customer.getSoCreationTime()));

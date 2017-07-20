@@ -37,19 +37,18 @@ public class SignService {
 	// 判断是否出现签字按钮 0不出现，1出现
 	public Long isEditable(Long signWorkflowStepsId, Long eventId, Long idSignatory,Long idPos) {
 		Users usr = securityUtils.getCurrentDBUser();
-		//System.out.println(" signId: "+idSignatory +", uid: " + usr.getId() );
+		System.out.println(" signId: "+idSignatory +", uid: " + usr.getId()  +", name: " +usr.getUsername());
 		//System.out.println(" signId: "+idSignatory );
-		
-		
-	
-		
+
 		
 		if (idSignatory == null&&idPos==null) {
 			return 0l;
 		} 
 		if(idSignatory!=null)
 		{
+			System.out.println("应签字人id: " + idSignatory);
 			if (!usr.getId().equals(idSignatory)) {
+				  System.out.println("直接返回不可编辑");
 					return 0l;
 				}
 			Long editable = 0l;

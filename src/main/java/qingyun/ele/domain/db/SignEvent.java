@@ -29,6 +29,17 @@ public class SignEvent implements java.io.Serializable {
 	private Long deleted;
 	
 	private Long idUser;
+	
+	
+	private String content;
+	private Long idSignWorkflow;
+	private Long lvl;
+	private Long idSignatory;
+	private Long idDepartment;
+	private Long idRole;
+	
+	private Long isLoc;
+
 
 	public SignEvent() {
 	}
@@ -108,6 +119,69 @@ public class SignEvent implements java.io.Serializable {
 
 	public void setIdUser(Long idUser) {
 		this.idUser = idUser;
+	}
+	
+	@Column(name = "content", length = 64)
+	public String getContent() {
+		return this.content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	@Column(name = "id_sign_workflow")
+	public Long getIdSignWorkflow() {
+		return idSignWorkflow;
+	}
+
+	public void setIdSignWorkflow(Long idSignWorkflow) {
+		this.idSignWorkflow = idSignWorkflow;
+	}
+
+	@Column(name = "lvl")
+	public Long getLvl() {
+		return lvl;
+	}
+
+	public void setLvl(Long lvl) {
+		this.lvl = lvl;
+	}
+	@Column(name = "id_signatory")
+	public Long getIdSignatory() {
+		return idSignatory;
+	}
+
+	public void setIdSignatory(Long idSignatory) {
+		this.idSignatory = idSignatory;
+	}
+
+	@Column(name = "id_department")
+	public Long getIdDepartment() {
+		return idDepartment;
+	}
+
+	public void setIdDepartment(Long idDepartment) {
+		this.idDepartment = idDepartment;
+	}
+
+	@Column(name = "is_loc")
+	public Long getIsLoc() {
+		return isLoc;
+	}
+
+	public void setIsLoc(Long isLoc) {
+		this.isLoc = isLoc;
+	}
+	
+
+	@Column(name = "id_role")
+	public Long getIdRole() {
+		return idRole;
+	}
+
+	public void setIdRole(Long idRole) {
+		this.idRole = idRole;
 	}
 
 }

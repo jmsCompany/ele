@@ -3,10 +3,8 @@ package qingyun.ele;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -71,16 +69,21 @@ public class AuthenticationTokenProcessingFilter extends AbstractPreAuthenticate
 		// logger.debug("request: " + request.getHeader("User-Agent"));
 		// logger.debug("from: " + request.getRequestURI());
 		if (req instanceof org.apache.catalina.connector.RequestFacade) {
+		//	System.out.println("wtf? ");
 			chain.doFilter(request, response);
 
 		} else {
 			if (SecurityContextHolder.getContext().getAuthentication() == null) {
 				String token = request.getHeader("JMS-TOKEN");
 				if (token != null) {
+					//System.out.println("token: " + token);
 					if (tokenUtils.validate(token)) {
+						
 						MCAUserDetails userDetails = tokenUtils.getUserFromToken(token);
 						UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
 								userDetails.getUsername(), userDetails.getPassword());
+						
+						//System.out.println("usernameL " + userDetails.getUsername());
 						authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 						Authentication authenticated = authenticationManager.authenticate(authentication);
 						SecurityContextHolder.getContext().setAuthentication(authenticated);

@@ -26,6 +26,8 @@ public class SignWorkflowSteps implements java.io.Serializable {
 	
 	private Long isLoc;
 
+	
+	private Long rev;
 
 
 	public SignWorkflowSteps() {
@@ -107,6 +109,14 @@ public class SignWorkflowSteps implements java.io.Serializable {
 
 	public void setIdRole(Long idRole) {
 		this.idRole = idRole;
+	}
+	@Column(name = "rev")
+	public Long getRev() {
+		return rev;
+	}
+
+	public void setRev(Long rev) {
+		this.rev = rev;
 	}
 
 

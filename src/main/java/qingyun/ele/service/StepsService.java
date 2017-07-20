@@ -23,7 +23,7 @@ public class StepsService {
 	private EmailSenderService emailSenderService;
 	private static final Log logger = LogFactory.getLog(StepsService.class);
 
-	@Scheduled(fixedRate = 1000 * 60 * 30)
+	@Scheduled(fixedRate = 1000 * 60 * 180)
 	public void sendDelayEmails() {
 		// logger.debug("scan project steps");
 		List<ProjectSteps> projectStepsList = projectStepsRepository.scanDelaySteps();
