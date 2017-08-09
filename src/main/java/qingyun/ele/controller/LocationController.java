@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import qingyun.ele.LocationCodeModel;
+import qingyun.ele.domain.db.Customer;
 import qingyun.ele.domain.db.SubSubLocation;
 import qingyun.ele.repository.LocationRepository;
 import qingyun.ele.repository.SubLocationRepository;
@@ -63,7 +64,7 @@ public class LocationController {
 	public Valid enableSubSubLocation(@RequestParam("subSubLocationId") Long subSubLocationId,
 			@RequestParam("enabled") Long enabled,@RequestParam("code") String code) {
 		
-		//System.out.println("save location: ");
+		System.out.println("save location: enabled: " + enabled + ", code: " + code);
 
 		Valid v = new Valid();
 		SubSubLocation subSubLocation = subSubLocationRepository.findOne(subSubLocationId);
@@ -78,11 +79,23 @@ public class LocationController {
 			return v;
 		}
 		if (enabled.equals(0l)) {
-			if (!subSubLocation.getCustomers().isEmpty()) {
-				v.setValid(false);
-				v.setMsg("该区域被使用，不能被删除");
-				return v;
+			
+			for(Customer c : subSubLocation.getCustomers())
+			{
+				if(c.getDeleted()!=null&&c.getDeleted().equals(0l))
+				{
+					v.setValid(false);
+					v.setMsg("该区域被使用，不能被删除");
+					return v;
+				}
 			}
+
+		}
+		if(code==null||code.isEmpty())
+		{
+			v.setValid(false);
+			v.setMsg("区域编码不能为空");
+			return v;
 		}
 		List<SubSubLocation> subSubLocations = subSubLocationRepository.findByCode(code);
 		if (subSubLocations!=null&&subSubLocations.size()>0){
@@ -90,7 +103,17 @@ public class LocationController {
 			v.setMsg("区域编码已存在");
 			return v;
 		}
-		subSubLocation.setCode(code);
+		
+		
+		if(enabled.equals(0l))
+		{
+			subSubLocation.setCode(null);
+			System.out.println("code is null");
+		}
+		else
+		{
+			subSubLocation.setCode(code);
+		}
 		subSubLocation.setEnabled(enabled);
 		subSubLocationRepository.save(subSubLocation);
 		v.setValid(true);
@@ -118,13 +141,19 @@ public class LocationController {
 			return v;
 		}
 		if (enabled.equals(0l)) {
-			if (!subSubLocation.getCustomers().isEmpty()) {
-				v.setValid(false);
-				v.setMsg("该区域被使用，不能被删除");
-				return v;
+			
+			for(Customer c : subSubLocation.getCustomers())
+			{
+				if(c.getDeleted()!=null&&c.getDeleted().equals(0l))
+				{
+					v.setValid(false);
+					v.setMsg("该区域被使用，不能被删除");
+					return v;
+				}
 			}
 		}
 		subSubLocation.setEnabled(enabled);
+		subSubLocation.setCode(null);
 		subSubLocationRepository.save(subSubLocation);
 		v.setValid(true);
 		return v;

@@ -18,8 +18,10 @@ public class AccessControlAllowFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		// LOGGER.debug("applying accessControlAllow filter");
+		//System.out.println("applying accessControlAllow filter");
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
+		String token = httpRequest.getHeader("JMS-TOKEN");
+	//	System.out.println("token: " + token);
 
 		HttpServletResponse httpResponse = (HttpServletResponse) response;
 

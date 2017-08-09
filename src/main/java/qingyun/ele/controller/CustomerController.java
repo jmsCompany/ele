@@ -26,6 +26,7 @@ import qingyun.ele.repository.SubSubLocationRepository;
 import qingyun.ele.repository.TransferSheetRepository;
 import qingyun.ele.repository.UsersRepository;
 import qingyun.ele.service.EmailSenderService;
+import qingyun.ele.service.SignService;
 import qingyun.ele.service.UsrService;
 import qingyun.ele.ws.*;
 
@@ -60,6 +61,9 @@ public class CustomerController {
 	private CodeNumRepository codeNumRepository;
 	@Autowired
 	private EmailSenderService emailSenderService;
+	
+	@Autowired
+	private  SignService signService;
 	private static final Log logger = LogFactory.getLog(CustomerController.class);
 
 	// 界面中需要添加项目开始时间，项目结束时间。
@@ -194,6 +198,7 @@ public class CustomerController {
 		dbCustomer.setC63(customer.getC63());
 		dbCustomer.setC64(customer.getC64());
 		dbCustomer.setC65(customer.getC65());
+		dbCustomer.setC66(customer.getC66());
 
 
 		//新增功能 保存 P1到P12 字段
@@ -243,6 +248,13 @@ public class CustomerController {
 			p.setDicByStatus(dicRepository.findById(42l)); //是
 			p.setStart(new Date());
 			projectStepsRepository.save(p);
+		}
+		
+		
+		if(customer.getCommit()!=null&&customer.getCommit().equals(1l))
+		{
+			
+			signService.initializedSign(1l, dbCustomer.getId());
 		}
 		
 		v.setValid(true);
@@ -399,12 +411,22 @@ public class CustomerController {
 
 			//从loan表中取出：每月还款时间,还款金额,贷款年限,预计每月收入
 			Loan loan = loanRepository.findByIdProject(projectId);
+			
+			Float monLoan = 0f;
+			
+			long dur = 0l;
+			Float monIncome = 0f;
+		
+
 			if(loan!=null)
 			{
 				dbCustomer.setPaymentTime(loan.getPaymentTime());
 				dbCustomer.setAmountPermonth(loan.getAmountPermonth());
+				monLoan = loan.getAmountPermonth();
 				dbCustomer.setDuration(loan.getDuration()*12);
+				dur = loan.getDuration()*12;
 				dbCustomer.setEstimateIncomePermonth(loan.getEstimateIncomePermonth());
+				monIncome = loan.getEstimateIncomePermonth();
 			}
 	
 		
@@ -450,20 +472,9 @@ public class CustomerController {
 			if (customer.getUnitCost() != null) {
 				unitCost = customer.getUnitCost();
 			}
-			long dur = 0l;
-			if (customer.getDurationLoan() != null) {
-				dur = customer.getDurationLoan();
-			}
-			Float monIncome = 0f;
-			if (customer.getMonthIncome() != null) {
-				monIncome = customer.getMonthIncome();
-
-			}
-			Float monLoan = 0f;
-			if (customer.getMonthLoan() != null) {
-				monLoan = customer.getMonthLoan();
-
-			}
+		
+		
+		
 			// 净利=实际容量*（销售价格-建设成本）-开发费用总额+（贷款期限*（预计每月售电收入-每月还贷金额））
 
 			Float netProfit = actVol * (unitPrice - unitCost) - devCost + (dur * (monIncome - monLoan));
@@ -494,7 +505,7 @@ public class CustomerController {
 		
 		
 		
-		System.out.println("get project table: " + new Date());
+		//System.out.println("get project table: " + new Date());
 		//获取当前登录用户的对象
 		Users sessionUser = securityUtils.getCurrentDBUser();
 		//计算当前页码
@@ -891,7 +902,14 @@ public class CustomerController {
 		if (dbTransferSheet != null) {
 			transferSheet.setId(dbTransferSheet.getId());
 		}
-		transferSheetRepository.save(transferSheet);
+		transferSheet = transferSheetRepository.save(transferSheet);
+		
+		if(transferSheet.getCommit()!=null&&transferSheet.getCommit().equals(1l))
+		{
+			
+			signService.initializedSign(2l, transferSheet.getId());
+		}
+		
 		v.setValid(true);
 		return v;
 	}

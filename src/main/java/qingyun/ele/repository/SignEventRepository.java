@@ -11,6 +11,14 @@ public interface SignEventRepository extends JpaRepository<SignEvent, Long> {
 	public SignEvent findByIdEventAndIdSignWorkflowStepsAndDeleted(Long idEvent, Long idSignWorkflowSteps,Long deleted);
 
 	//@Query("select s from SignEvent s where s.idEvent=?1")
-	public List<SignEvent> findByIdEvent(Long idEvent);
+	//public List<SignEvent> findByIdEvent(Long idEvent);
+	
+	@Query("select s from SignEvent s where s.idEvent=?1 and s.idSignWorkflow=?2 and s.deleted=0 order by s.id")
+	public List<SignEvent> findNotDeletedByIdEventAndIdSignWorkflow(Long idEvent,Long idSignWorkflow);
+	
+	
+	
+	@Query("select s from SignEvent s where s.idEvent=?1 and s.idSignWorkflow=?2 and s.lvl=?3 and s.deleted=0 order by s.id")
+	public List<SignEvent> findNotDeletedByIdEventAndIdSignWorkflowAndLvl(Long idEvent,Long idSignWorkflow,Long lvl);
 
 }

@@ -23,7 +23,7 @@ public class SignEvent implements java.io.Serializable {
 	private String remark;
 	private Long idSignWorkflowSteps;
 	private Long idEvent;
-	private Long status;
+	private Long status;  //0拒绝，1签字，2待签字
 	private Date signTime;
 	
 	private Long deleted;

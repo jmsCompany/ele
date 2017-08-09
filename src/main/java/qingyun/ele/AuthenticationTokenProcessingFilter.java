@@ -37,8 +37,7 @@ public class AuthenticationTokenProcessingFilter extends AbstractPreAuthenticate
 	private LogsRepository logsRepository;
 	private static final Log logger = LogFactory.getLog(UserController.class);
 
-	public AuthenticationTokenProcessingFilter() {
-	}
+	public AuthenticationTokenProcessingFilter() {}
 
 	@Autowired
 	public AuthenticationTokenProcessingFilter(
@@ -68,15 +67,18 @@ public class AuthenticationTokenProcessingFilter extends AbstractPreAuthenticate
 		HttpServletResponse response = (HttpServletResponse) res;
 		// logger.debug("request: " + request.getHeader("User-Agent"));
 		// logger.debug("from: " + request.getRequestURI());
+		//System.out.println("sec filter ");
 		if (req instanceof org.apache.catalina.connector.RequestFacade) {
-		//	System.out.println("wtf? ");
+			//System.out.println("wtf? ");
 			chain.doFilter(request, response);
 
 		} else {
-			if (SecurityContextHolder.getContext().getAuthentication() == null) {
+			//System.out.println("wtf1? ");
+//			System.out.println("ccc: " + SecurityContextHolder.getContext().getAuthentication().getName());
+//			if (SecurityContextHolder.getContext().getAuthentication() == null) {
 				String token = request.getHeader("JMS-TOKEN");
 				if (token != null) {
-					//System.out.println("token: " + token);
+				//	System.out.println("sec: token: " + token);
 					if (tokenUtils.validate(token)) {
 						
 						MCAUserDetails userDetails = tokenUtils.getUserFromToken(token);
@@ -111,11 +113,13 @@ public class AuthenticationTokenProcessingFilter extends AbstractPreAuthenticate
 					}
 				}
 
-			}
+			//}
 			chain.doFilter(request, response);
 		}
 	}
 
+
+	
 	/**
 	 * 判断是否是可用参数
 	 * @param paramName 参数名称
@@ -128,5 +132,6 @@ public class AuthenticationTokenProcessingFilter extends AbstractPreAuthenticate
 		return !matcher.matches();
 	}
 
+	
 
 }

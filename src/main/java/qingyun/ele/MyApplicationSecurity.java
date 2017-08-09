@@ -1,6 +1,7 @@
 package qingyun.ele;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -21,9 +22,15 @@ public class MyApplicationSecurity extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable();
-		http.authorizeRequests().antMatchers("/error").permitAll().antMatchers("/check/**").permitAll()
-				.antMatchers("/dic/**").permitAll().antMatchers("/getFile/**").permitAll().antMatchers("/getImage/**")
-				.permitAll().antMatchers("/login").permitAll().antMatchers(HttpMethod.OPTIONS, "/**").permitAll();
+		http.authorizeRequests()
+		.antMatchers("/error").permitAll()
+		.antMatchers("/check/**").permitAll()
+		.antMatchers("/actuator/**").permitAll()
+		.antMatchers("/dic/**").permitAll()
+		.antMatchers("/getFile/**").permitAll()
+		.antMatchers("/getImage/**").permitAll()
+		.antMatchers("/login").permitAll()
+		.antMatchers(HttpMethod.OPTIONS, "/**").permitAll();
 		http.addFilter(authenticationTokenProcessingFilter);
 		http.authorizeRequests().antMatchers("/customer").hasAuthority("customer");
 		http.authorizeRequests().anyRequest().hasAuthority("company");
